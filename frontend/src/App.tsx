@@ -1,17 +1,15 @@
-import UserLogin from './components/UserLogin/UserLogin';
-import './App.css';
-import './components/UserLogin/UserLogin.css';
-import JsonServer from './components/JsonServer';
-import Register from './components/UserLogin/Register';
+import React from "react";
+import UserLogin from "./components/UserLogin/UserLogin";
+import Login from "./components/UserLogin/Login";
+
 
 function App() {
-  return (
-      <>
-      <UserLogin />
-      <JsonServer />
-      <Register />
-      </>
-  );
+    return(
+    <>
+    <UserLogin />
+    </>
+   );
+
 }
 
 export default App;
