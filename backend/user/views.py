@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate
 @api_view(['POST'])
 def user_signup(request: Request):
     try:
+        print (request.data)
         if AppUser.objects.filter(email=request.data['email']).exists():
             return Response("User already exists.", status=status.HTTP_409_CONFLICT)
 
