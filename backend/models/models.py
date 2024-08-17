@@ -3,14 +3,14 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 
 
 class AppUserManager(BaseUserManager):
-    def create_user(self, email: str, phone_no: str, password=None, isAdmin=False):
+    def create_user(self, email: str, phone_no: str, password=None, **validated_data):
         if not email:
             raise ValueError("Email is required.")
         if not password:
             raise ValueError("Password is required.")
         
         email = self.normalize_email(email)
-        user = self.model(email=email, phone_no=phone_no, isAdmin=isAdmin)
+        user = self.model(**validated_data, email=email, phone_no=phone_no)
         user.set_password(password)
         user.save()
 
@@ -38,11 +38,12 @@ class AppUserManager(BaseUserManager):
 
         return user
 
+
 class AppUser(AbstractBaseUser, PermissionsMixin):
     
     email = models.EmailField(max_length=60, unique=True)
-    first_name = models.CharField(max_length=30, null=True)
-    last_name = models.CharField(max_length=30, null=True)
+    first_name = models.CharField(max_length=30, null=True, blank=True)
+    last_name = models.CharField(max_length=30, null=True, blank=True)
     phone_no = models.CharField(max_length=10, unique=True)
     isAdmin = models.BooleanField(default=False)
     created_on = models.DateTimeField(auto_now_add=True)
@@ -76,12 +77,14 @@ class Actor(models.Model):
     def __str__(self) -> str:
         return self.name
 
+
 class Language(models.Model):
 
-    name = models.CharField(max_length=25)
+    name = models.CharField(max_length=25, unique=True)
 
     def __str__(self) -> str:
         return self.name
+
 
 class Format(models.Model):
 
@@ -97,6 +100,7 @@ class Genre(models.Model):
 
     def __str__(self) -> str:
         return self._type
+
 
 class City(models.Model):
 
