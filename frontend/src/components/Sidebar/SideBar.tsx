@@ -19,20 +19,20 @@ const SideBar = () => {
 
     const getInfo = async () => {
         await axios.get<Format[]>("http://127.0.0.1:8000/movies/formats").
-        then(response => setFormats(response.data))
+            then(response => setFormats(response.data))
 
         await axios.get<Language[]>("http://127.0.0.1:8000/movies/languages")
-        .then(response => setLanguages(response.data))
+            .then(response => setLanguages(response.data))
 
         await axios.get<Genre[]>("http://127.0.0.1:8000/movies/genres").
-        then(response => setGenres(response.data))
+            then(response => setGenres(response.data))
     }
 
     useEffect(() => {
-        try{
+        try {
             getInfo()
         }
-        catch(error){
+        catch (error) {
             alert(error)
         }
     }, [langDropDown, genreDropDown, formatDropDown])
@@ -44,9 +44,24 @@ const SideBar = () => {
                     Filters
                 </h2>
             </div>
-            <Filter title={"Languages"} data={languages} dropDown={langDropDown} setDropDown={setLangDropDown}/>
-            <Filter title={"Formats"} data={formats} dropDown={formatDropDown} setDropDown={setFormatDropDown}/>
-            <Filter title={"Genres"} data={genres} dropDown={genreDropDown} setDropDown={setGenreDropDown}/>
+            <Filter
+                title={"Languages"}
+                data={languages}
+                dropDown={langDropDown}
+                setDropDown={setLangDropDown}
+            />
+            <Filter
+                title={"Formats"}
+                data={formats}
+                dropDown={formatDropDown}
+                setDropDown={setFormatDropDown}
+            />
+            <Filter
+                title={"Genres"}
+                data={genres}
+                dropDown={genreDropDown}
+                setDropDown={setGenreDropDown}
+            />
         </div>
     )
 }

@@ -13,7 +13,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
 
   return (
-    <Box display="flex" justifyContent="flex-end" alignItems="center" sx={{ width: '100%', maxWidth: '1600px' }}>
+    <Box display="flex" justifyContent="flex-end" alignItems="center" sx={{padding: "10px 0px 0px 10px", width: '98%', maxWidth: '1600px' }}>
       <TextField
         fullWidth
         label="Search Movies"

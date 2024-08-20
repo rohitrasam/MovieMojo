@@ -3,6 +3,10 @@ import { Grid, Box, Typography } from '@mui/material';
 import SearchBar from './SearchBar';
 import MovieTemplate from './MovieTemplate';
 import { Movie } from '../types';
+import SideBar from './Sidebar/SideBar';
+
+// TODO: Move this file and Login file to pages
+
 const Home: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   useEffect(() => {
@@ -17,7 +21,14 @@ const Home: React.FC = () => {
       { id: '7', title: 'kalki', description: 'Action', releaseDate: '2024', posterUrl: './src/assets/kalki.jpg' },
       { id: '8', title: 'Vedaa', description: 'Story and Action', releaseDate: '2024', posterUrl: './src/assets/vedaa.jpg' },
       { id: '9', title: 'Munja', description: 'Horoor', releaseDate: '2024', posterUrl: './src/assets/munja.jpg' },
-      { id: '10', title: 'Stree', description: 'Romantic and Darma', releaseDate: '2024', posterUrl: './src/assets/stree.jpg' },
+      { id: '11', title: 'Stree1', description: 'Romantic and Darma', releaseDate: '2024', posterUrl: './src/assets/stree.jpg' },
+      { id: '12', title: 'Stree2', description: 'Romantic and Darma', releaseDate: '2024', posterUrl: './src/assets/stree.jpg' },
+      { id: '13', title: 'Stree3', description: 'Romantic and Darma', releaseDate: '2024', posterUrl: './src/assets/stree.jpg' },
+      { id: '14', title: 'Stree4', description: 'Romantic and Darma', releaseDate: '2024', posterUrl: './src/assets/stree.jpg' },
+      { id: '15', title: 'Stree5', description: 'Romantic and Darma', releaseDate: '2024', posterUrl: './src/assets/stree.jpg' },
+      { id: '16', title: 'Stree6', description: 'Romantic and Darma', releaseDate: '2024', posterUrl: './src/assets/stree.jpg' },
+      { id: '17', title: 'Stree7', description: 'Romantic and Darma', releaseDate: '2024', posterUrl: './src/assets/stree.jpg' },
+      { id: '18', title: 'Stree8', description: 'Romantic and Darma', releaseDate: '2024', posterUrl: './src/assets/stree.jpg' },
     ];
 
     setMovies(movieData);
@@ -25,25 +36,32 @@ const Home: React.FC = () => {
 
   const handleSearch = (query: string) => {
     // Implement search functionality here, filtering movies based on the query
-    const filteredMovies = movieData.filter(movie =>
+    const filteredMovies = movies.filter(movie =>
       movie.title.toLowerCase().includes(query.toLowerCase())
     );
     setMovies(filteredMovies);
   };
 
   return (
-    <Box sx={{ flex: 1, padding: 3 }}>
-      <SearchBar onSearch={handleSearch} sx={{ marginBottom: 3 }} />
-      <Typography variant="h4" sx={{ mb: 2 }}>
-        Top 10 Movies
-      </Typography>
-      <Grid container spacing={0.1}>
-        {movies.slice(0, 10).map((movie) => (
-          <Grid item xs={12} sm={6} md={4} key={movie.id}>
-            <MovieTemplate movie={movie} />
-          </Grid>
-        ))}
-      </Grid>
+
+    <Box display={"flex"} sx={{ flex: 1}}>
+      <div>
+        <SideBar />
+      </div>
+      <div style={{ overflowY: "scroll", height: "100vh", marginLeft:"10px", paddingLeft: "20px", width: "100%"}}>
+
+        <SearchBar onSearch={handleSearch} />
+        <Typography variant="h4" sx={{ padding: "10px 0px 0px 10px", mb: 2 }}>
+         Latest Releases
+        </Typography>
+        <Grid container spacing={0.1}>
+          {movies.map((movie) => (
+            <Grid item xs={12} sm={6} md={4} key={movie.id}>
+              <MovieTemplate movie={movie} />
+            </Grid>
+          ))}
+        </Grid>
+      </div>
     </Box>
   );
 };

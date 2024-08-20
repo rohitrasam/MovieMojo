@@ -8,11 +8,9 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: start;
-    width: 400px;
-    /* border: 1px solid rgb(10, 42, 68); */
+    width: 300px;
 }
 
 .side-bar-body div{
-    /* color:rgb(13, 67, 137); */
     width: 300px;
 }
