@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate
 
 
 @api_view(['POST'])
-def user_signup(request: Request):
+def user_signup(request: Request) -> Response:
     try:
         if AppUser.objects.filter(email=request.data['email']).exists():
             return Response("User already exists.", status=status.HTTP_409_CONFLICT)
@@ -16,12 +16,12 @@ def user_signup(request: Request):
         user = AppUserSerializer(data=request.data)
         if user.is_valid(raise_exception=True):
             user.save()
-            return Response(data=user.data, status=status.HTTP_200_OK)
+            return Response(data=user.data, status=status.HTTP_200_OK)  # TODO: return success message
     except:
             return Response("Failed to create user", status=status.HTTP_400_BAD_REQUEST)
         
 @api_view(['POST'])
-def user_login(request: Request):
+def user_login(request: Request) -> Response:
     
     try:
         email = request.data['email']
@@ -31,7 +31,6 @@ def user_login(request: Request):
             return Response("Email or password is wrong", status=status.HTTP_404_NOT_FOUND)
 
         user = AppUserSerializer(user)
-        return Response(data=user.data, status=status.HTTP_200_OK)
+        return Response(data=user.data, status=status.HTTP_200_OK)  # TODO: return JWT token
     except:
         return Response("User not found", status=status.HTTP_404_NOT_FOUND)
-    
