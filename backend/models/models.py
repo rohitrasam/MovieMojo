@@ -28,13 +28,13 @@ class AppUserManager(BaseUserManager):
 
         return user
     
-    def create_admin(self, email: str, phone_no: str, password=None):
+    def create_admin(self, email: str, phone_no: str, password=None, **validated_data):
         if not email:
             raise ValueError("Email is required.")
         if not password:
             raise ValueError("Password is required.")
         
-        user = self.create_user(email=email, phone_no=phone_no, password=password, isAdmin=True)
+        user = self.create_user(email=email, phone_no=phone_no, password=password, **validated_data)
 
         return user
 
