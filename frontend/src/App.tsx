@@ -1,15 +1,11 @@
-import React from "react";
-import UserLogin from "./components/UserLogin/UserLogin";
-import Login from "./components/UserLogin/Login";
-
+import Home from './components/Home';
 
 function App() {
-    return(
-    <>
-    <Login />
-    </>
-   );
-
+    return (
+        <>
+            <Home />
+        </>
+    );
 }
 
 export default App;
