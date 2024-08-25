@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Movie } from '../core/models/Movie';
+import { Movie } from '../models/Movie';
 
 const API_KEY = 'your_api_key';
 const BASE_URL = 'https://api.themoviedb.org/3';
