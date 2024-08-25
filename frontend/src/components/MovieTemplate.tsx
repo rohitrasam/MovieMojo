@@ -18,7 +18,7 @@ const MovieTemplate: React.FC<MovieTemplateProps> = ({ movie }) => {
     <Card
       sx={{
         display: 'flex',
-        flexDirection: 'column',
+        height: '150px',
         margin: 2,
         transition: 'transform 0.3s ease, box-shadow 0.3s ease',
         '&:hover': {
@@ -35,15 +35,15 @@ const MovieTemplate: React.FC<MovieTemplateProps> = ({ movie }) => {
         image={movie.posterUrl}
         alt={movie.name}
       />
-      <Box sx={{ display: 'flex', flexDirection: 'column', padding: 2 }}>
-        <CardContent>
-          <Typography component="div" variant="h5">
+      <Box sx={{ display: 'flex'}}>
+        <CardContent  sx={{display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly'}}>
+          <Typography fontFamily="Rubik" component="div" variant="h5">
             {movie.name}
           </Typography>
-          <Typography variant="subtitle1" color="text.secondary" component="div">
+          <Typography fontFamily="Rubik" variant="subtitle1" color="text.secondary" component="div">
             {movie.release_date}
           </Typography>
-          <Typography variant="body2" color="text.secondary" component="div">
+          <Typography fontFamily="Rubik" variant="body2" color="text.secondary" component="div">
             {movie.desc}
           </Typography>
         </CardContent>

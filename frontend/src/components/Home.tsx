@@ -3,6 +3,10 @@ import { Grid, Box, Typography } from '@mui/material';
 import SearchBar from './SearchBar';
 import MovieTemplate from './MovieTemplate';
 import { Movie } from '../core/models/Movie';
+import SideBar from './Sidebar/SideBar';
+
+// TODO: Move this file and Login file to pages
+
 const Home: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   useEffect(() => {
@@ -32,18 +36,25 @@ const Home: React.FC = () => {
   };
 
   return (
-    <Box sx={{ flex: 1, padding: 3 }}>
-      <SearchBar onSearch={handleSearch} sx={{ marginBottom: 3 }} />
-      <Typography variant="h4" sx={{ mb: 2 }}>
-        Top 10 Movies
-      </Typography>
-      <Grid container spacing={0.1}>
-        {movies.slice(0, 10).map((movie) => (
-          <Grid item xs={12} sm={6} md={4} key={movie.id}>
-            <MovieTemplate movie={movie} />
-          </Grid>
-        ))}
-      </Grid>
+
+    <Box display={"flex"} sx={{ flex: 1}}>
+      <div>
+        <SideBar />
+      </div>
+      <div style={{ overflowY: "scroll", height: "100vh", marginLeft:"10px", paddingLeft: "20px", width: "100%"}}>
+
+        <SearchBar onSearch={handleSearch} />
+        <Typography variant="h4" sx={{ padding: "10px 0px 0px 10px", mb: 2 }}>
+         Latest Releases
+        </Typography>
+        <Grid container spacing={0.1}>
+          {movies.map((movie) => (
+            <Grid item xs={12} sm={6} md={4} key={movie.id}>
+              <MovieTemplate movie={movie} />
+            </Grid>
+          ))}
+        </Grid>
+      </div>
     </Box>
   );
 };
