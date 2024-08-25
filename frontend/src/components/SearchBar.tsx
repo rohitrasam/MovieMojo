@@ -24,7 +24,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       />
       <Button
         variant="contained"
-        sx={{ backgroundColor: '#8rgb(13, 67, 137);', color: 'rgb(13, 67, 137);' }}
+        sx={{ backgroundColor: '#8rgb(13, 67, 137);', color: 'white;' }}
         onClick={handleSearch}
       >
         Search
