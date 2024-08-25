@@ -1,10 +1,15 @@
-import UserLogin from './components/UserLogin';
-import './App.css';
-function App() {
-  return (
+import React from "react";
+import UserLogin from "./components/UserLogin/UserLogin";
+import Login from "./components/UserLogin/Login";
 
-      <UserLogin />
-  );
+
+function App() {
+    return(
+    <>
+    <Login />
+    </>
+   );
+
 }
 
 export default App;
