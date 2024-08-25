@@ -1,5 +1,4 @@
 :root {
-  /* font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif; */
   font-family: Rubik;
   line-height: 1.0;
   font-weight: 400;
@@ -12,7 +11,6 @@
 }
 
 body{
-  /* border: 1px solid black; */
   width: 100%;
   background-color:rgba(12, 191, 207, 0.371);
   height: 100vh;
