@@ -1,8 +1,10 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, BooleanField
 from models.models import AppUser
 
 
 class AppUserSerializer(ModelSerializer):
+
+    isAdmin = BooleanField(default=False)
 
     class Meta:
         model = AppUser
