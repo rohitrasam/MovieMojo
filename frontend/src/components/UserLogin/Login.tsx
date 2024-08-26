@@ -1,9 +1,12 @@
 import React, { BaseSyntheticEvent,useState } from "react";
 import axios from 'axios';
 import "./Login.css"; 
-const SignInSignUp = () => {
+import { Link, Outlet } from "react-router-dom";
+// import { User } from "../../core/models/User";
+  const SignInSignUp = () => {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
   const [signUpData, setSignUpData] = useState({ name: "", email: "", phone:"", password: "" , cpassword:""});
+  // const [signUpData, setSignUpData] = useState<User>(new User());
   const [signInData, setSignInData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState('');
 
@@ -103,7 +106,8 @@ const SignInSignUp = () => {
       first_name :first_name,
       last_name : last_name,
       phone_no: signUpData.phone,
-      password: signUpData.password
+      password: signUpData.password,
+      isAdmin:false
       
 
     }).then(result=>{
@@ -143,7 +147,7 @@ const SignInSignUp = () => {
             onChange={(e) => setSignInData({ ...signInData, email: e.target.value })}/>
           <input type="password" placeholder="Enter Password" value={signInData.password}
             onChange={(e) => setSignInData({ ...signInData, password: e.target.value })}/>
-              <a href="" className="forgotpassword">Forgot Password?</a>
+              <Link to='/forgotpass' ><p className="forgotpassword">Forgot Password?</p> </Link>
               <button onClick={handleLoginApi}>Login</button>
         </form>
       </div>
@@ -151,19 +155,20 @@ const SignInSignUp = () => {
       <div className="overlay-container">
         <div className="overlay">
           <div className="overlay-left">
-          <img src='./src/components/assets/logo3.png' alt="Logo" className="logo" />
+          <img src='./src/assets/logo3.png' alt="Logo" className="logo" />
             <button className="ghost-button" onClick={handleSignInClick}>
               Sign In
             </button>
           </div>
           <div className="overlay-right">
-          <img src='./src/components/assets/logo3.png' alt="Logo1" className="logo1" />
+          <img src='./src/assets/logo3.png' alt="Logo1" className="logo1" />
             <button className="ghost-button" onClick={handleSignUpClick}>
               Sign Up
             </button>
           </div>
         </div>
       </div>
+      <Outlet />
     </div>
   );
 };
