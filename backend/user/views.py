@@ -23,6 +23,10 @@ def user_signup(request: Request) -> Response:
         
 @api_view(['POST'])
 def user_login(request: Request) -> Response:
+
+    """
+        Simple login function, will further improve to be able to send auth tokens to make it more secure
+    """
     
     try:
         email = request.data['email']
@@ -32,6 +36,28 @@ def user_login(request: Request) -> Response:
             return Response("Email or password is wrong", status=status.HTTP_404_NOT_FOUND)
 
         user = AppUserSerializer(user)
+        # response = Response(data=user.data, status=status.HTTP_200_OK)  # TODO: return JWT token
+        # response.set_cookie(key="details", value=user.data, httponly=True)
         return Response(data=user.data, status=status.HTTP_200_OK)  # TODO: return JWT token
     except:
         return Response("User not found", status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['PATCH'])
+def reset_password(request: Request) -> Response:
+
+    """
+        Simple reset password functionality, will update the function to make it more complex and secure
+    """
+
+    try:
+        user = AppUser.objects.filter(email=request.data['email']).first()
+        if not user:
+            return Response("User not found", status=status.HTTP_404_NOT_FOUND)
+        
+        user.set_password(request.data['password'])
+        user.save()
+        return Response("Password reset successfully", status=status.HTTP_200_OK)
+    except:
+        return Response("Could not reset password", status=status.HTTP_400_BAD_REQUEST)
+
+
