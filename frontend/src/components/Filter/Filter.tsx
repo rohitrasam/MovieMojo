@@ -26,7 +26,7 @@ const Filter = ({title, data, dropDown, setDropDown}: FilterProps) => {
                     }
                 </div>
             </div>
-            {dropDown ? <div className='list'>
+            {dropDown && <div className='list'>
                 <ul>
                     {data.map((item: {name?: string, _type?: string}, index: number) => {                        
                         return (
@@ -38,8 +38,7 @@ const Filter = ({title, data, dropDown, setDropDown}: FilterProps) => {
                         )
                     })}
                 </ul>
-            </div> :
-                null}
+            </div> }
         </div>
     )
 }
