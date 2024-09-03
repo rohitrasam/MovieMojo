@@ -1,166 +1,71 @@
-import React, { BaseSyntheticEvent,useState } from "react";
+import React, { useState } from "react";
 import axios from 'axios';
-import "./Login.css"; 
-const SignInSignUp = () => {
-  const [isRightPanelActive, setIsRightPanelActive] = useState(false);
-  const [signUpData, setSignUpData] = useState({ name: "", email: "", phone:"", password: "" , cpassword:""});
-  const [signInData, setSignInData] = useState({ email: "", password: "" });
+import "./Forgotpass.css"; 
+import { useNavigate } from "react-router-dom";
+
+const ForgotPass = () => {
+  const [formData, setFormData] = useState({ email: "", password: "", cpassword: "" });
   const [errors, setErrors] = useState('');
+  const navigate = useNavigate()
 
-
-  const handleSignUpClick = () => {
-    setIsRightPanelActive(true);
-  };
-  const handleSignInClick = () => {
-    setIsRightPanelActive(false);
-  };
-
-  const validateSignUp = (e: BaseSyntheticEvent) => {
-    if ((!signUpData.name)||(!signUpData.password) || (!signUpData.email)||(!signUpData.cpassword)||(!signUpData.phone)) {
+  const validateForm = () => {
+    if (!formData.email || !formData.password || !formData.cpassword) {
       setErrors("All fields are mandatory!!");
       alert("All fields are mandatory!!")
-      return false;  
-    }
-    else if (!/\S+@\S+\.\S+/.test(signUpData.email)) {
+      return false;
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       setErrors("Invalid email");
-     alert("Invalid email")
       return false;
-    }
-    else if((signUpData.password)&&(signUpData.password.length < 8)){
+    } else if (formData.password.length < 8) {
       setErrors("Password too short");
-      alert("password too short")
       return false;
-    }
-    else if((signUpData.cpassword)!=(signUpData.password)){
-      setErrors("Password does not match");
-      alert("password does not match")
-      return false;
-    }
-    else if((signUpData.phone)&&(signUpData.phone.length != 10)){
-      setErrors("Enter valid phone number");
-      alert("Enter valid phone number")
+    } else if (formData.password !== formData.cpassword) {
+      setErrors("Passwords do not match");
       return false;
     }
     return true;
   };
 
-  const validateSignIn = (e: BaseSyntheticEvent) => {
-    if ((!signInData.password) || (!signInData.email)) {
-      setErrors("All fields are mandatory!!");
-      alert("All fields are mandatory!!")
-      return false;
-    }
-    else if (!/\S+@\S+\.\S+/.test(signInData.email)) {
-      setErrors("Invalid email");
-      alert("Invalid email")
-      return false;
-    }
-    else if (signInData.password.length < 8){
-      setErrors("Password too short");
-      alert("Password too short")
-      return false;
-    }
-  };
-
-  const handleSignUpSubmit = (e: React.BaseSyntheticEvent<object, any, any>) => {
+  const handleSubmit = (e: React.BaseSyntheticEvent) => {
     e.preventDefault();
-    if (validateSignUp(e)) {
-      console.log("Sign Up Data:", signUpData);
+    if (validateForm()) {
+      axios.patch("http://localhost:8000/user/reset_password", {
+        email: formData.email,
+        password: formData.password,
+      })
+        .then(result => {
+          console.log(result);
+          alert("Password reset successfully!");
+          navigate("/");
+        })
+        .catch(error => {
+          console.log(error);
+          setErrors("Failed to reset password. Please try again.");
+        });
     }
   };
-  const handleSignInSubmit = (e: React.BaseSyntheticEvent<object, any, any>) => {
-    e.preventDefault();
-    if (validateSignIn(e)) {
-      setSignInData(e.target.value)
-      console.log("Sign In Data:", signInData);
-    }
-  };
-  const handleLoginApi =() =>{
-    console.log("Sign In Data:", signInData);
-    axios.post("http://localhost:8000/user/login",{
-      email : signInData.email ,
-      password:signInData.password
-
-    }).then(result=>{
-      console.log(result)
-    })
-    .catch(error=>{
-      console.log(error)
-    })
-
-  };
- 
-  
-
-  const handleSignupApi =() =>{
-    const nameParts = signUpData.name.split(" ");
-    const first_name = nameParts[0];
-    const last_name = nameParts[1] || ""; 
-
-    console.log("Sign Up Data:", signUpData);
-    axios.post("http://localhost:8000/user/signup",{
-      email : signUpData.email ,
-      first_name :first_name,
-      last_name : last_name,
-      phone_no: signUpData.phone,
-      password: signUpData.password
-      
-
-    }).then(result=>{
-      console.log(result)
-    })
-    .catch(error=>{
-      console.log(error)
-    })
-
-  };
-
 
   return (
-    <div className={`container ${isRightPanelActive ? "right-panel-active" : ""}`}>
-      <div className="sign-up-container">
-        <form onSubmit={handleSignUpSubmit}>
-          <h1>New User</h1>
-          <input type="text" placeholder="Name" value={signUpData.name}
-            onChange={(e) => setSignUpData({ ...signUpData, name: e.target.value })} />            
-          <input type="email" placeholder="Email" value={signUpData.email}
-            onChange={(e) => setSignUpData({ ...signUpData, email: e.target.value })} />
-            <input type="phone" placeholder="Phone" value={signUpData.phone}
-            onChange={(e) => setSignUpData({ ...signUpData, phone: e.target.value })}/>
-          <input type="password" placeholder="Password" value={signUpData.password}
-            onChange={(e) => setSignUpData({ ...signUpData, password: e.target.value })}/>
-            <input type="password" placeholder="Confirm Password" value={signUpData.cpassword}
-            onChange={(e) => setSignUpData({ ...signUpData, cpassword: e.target.value })}/>
-            
-            <button onClick={handleSignupApi}>Sign Up</button>
+    <div className={"container right-panel-active"}>
+      <div className="form-container">
+        <form onSubmit={handleSubmit}>
+          <h1>Reset Password</h1>
+          <input type="email" placeholder="Email"value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          />
+          <input type="password" placeholder="New Password" value={formData.password} 
+             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          />
+          <input type="password" placeholder="Confirm Password" value={formData.cpassword}
+              onChange={(e) => setFormData({ ...formData, cpassword: e.target.value })}
+          />
+          <button type="submit">Reset</button>
         </form>
       </div>
-
-      <div className="sign-in-container">
-        <form onSubmit={handleSignInSubmit}>
-          <h1>Login</h1>
-          <input type="email" placeholder="Enter Email" value={signInData.email}
-            onChange={(e) => setSignInData({ ...signInData, email: e.target.value })}/>
-          <input type="password" placeholder="Enter Password" value={signInData.password}
-            onChange={(e) => setSignInData({ ...signInData, password: e.target.value })}/>
-              <a href="" className="forgotpassword">Forgot Password?</a>
-              <button onClick={handleLoginApi}>Login</button>
-        </form>
-      </div>
-
       <div className="overlay-container">
         <div className="overlay">
           <div className="overlay-left">
-          <img src='./src/components/assets/logo3.png' alt="Logo" className="logo" />
-            <button className="ghost-button" onClick={handleSignInClick}>
-              Sign In
-            </button>
-          </div>
-          <div className="overlay-right">
-          <img src='./src/components/assets/logo3.png' alt="Logo1" className="logo1" />
-            <button className="ghost-button" onClick={handleSignUpClick}>
-              Sign Up
-            </button>
+            <img src='./src/assets/logo3.png' alt="Logo" className="logo" />
           </div>
         </div>
       </div>
@@ -168,4 +73,4 @@ const SignInSignUp = () => {
   );
 };
 
-export default SignInSignUp;
+export default ForgotPass;

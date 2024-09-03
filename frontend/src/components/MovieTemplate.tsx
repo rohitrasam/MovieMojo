@@ -8,11 +8,11 @@ interface MovieTemplateProps {
 }
 
 const MovieTemplate: React.FC<MovieTemplateProps> = ({ movie }) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  const handleCardClick = () => {
-    navigate('/payment'); // Navigate to the payment page
-  };
+  // const handleCardClick = () => {
+  //   navigate('/payment'); // Navigate to the payment page
+  // };
 
   return (
     <Card
@@ -27,7 +27,7 @@ const MovieTemplate: React.FC<MovieTemplateProps> = ({ movie }) => {
           cursor: 'pointer',
         },
       }}
-      onClick={handleCardClick} // Add onClick event to navigate
+      // onClick={handleCardClick} // Add onClick event to navigate
     >
       <CardMedia
         component="img"
