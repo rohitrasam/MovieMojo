@@ -1,16 +1,13 @@
 import React, { BaseSyntheticEvent,useState } from "react";
 import axios from 'axios';
 import "./Login.css"; 
-import { Link, Outlet } from "react-router-dom";
-// import { User } from "../../core/models/User";
+import { Link, Outlet, useNavigate } from "react-router-dom";
   const SignInSignUp = () => {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
   const [signUpData, setSignUpData] = useState({ name: "", email: "", phone:"", password: "" , cpassword:""});
-  // const [signUpData, setSignUpData] = useState<User>(new User());
   const [signInData, setSignInData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState('');
-
-
+  const navigate = useNavigate()
   const handleSignUpClick = () => {
     setIsRightPanelActive(true);
   };
@@ -84,8 +81,17 @@ import { Link, Outlet } from "react-router-dom";
       email : signInData.email ,
       password:signInData.password
 
-    }).then(result=>{
-      console.log(result)
+    }).then(result => {
+      console.log("Result", result.data);
+      const { isAdmin } = result.data; 
+      console.log(isAdmin) 
+      
+  
+      if (isAdmin) {
+        navigate('/admindashboard');
+      } else {
+        navigate('/home');
+      }
     })
     .catch(error=>{
       console.log(error)
@@ -107,7 +113,7 @@ import { Link, Outlet } from "react-router-dom";
       last_name : last_name,
       phone_no: signUpData.phone,
       password: signUpData.password,
-      isAdmin:false
+     
       
 
     }).then(result=>{
@@ -168,7 +174,7 @@ import { Link, Outlet } from "react-router-dom";
           </div>
         </div>
       </div>
-      <Outlet />
+  
     </div>
   );
 };

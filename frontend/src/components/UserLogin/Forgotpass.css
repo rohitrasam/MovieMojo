@@ -22,7 +22,7 @@ body {
   }
   
   
-  .sign-up-container {
+  .form-container {
     position: absolute;
     top: 0;
     left: 0;
@@ -31,12 +31,12 @@ body {
     transition: all 0.6s ease-in-out;
   }
   
-  .sign-up-container {
+  .form-container {
     opacity: 0;
     z-index: 1;
   }
   
-  .container.right-panel-active .sign-up-container {
+  .container.right-panel-active .form-container {
     transform: translateX(100%);
     opacity: 1;
     z-index: 5;
