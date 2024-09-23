@@ -17,7 +17,20 @@ const MovieTemplate: React.FC<MovieTemplateProps> = ({ movie }) => {
   };
 
   return (
-    <Card onClick={handleClick} sx={{ cursor: 'pointer' }}>
+    <Card
+      sx={{
+        display: 'flex',
+        height: '150px',
+        margin: 2,
+        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+        '&:hover': {
+          transform: 'scale(1.05)',
+          boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
+          cursor: 'pointer',
+        },
+      }}
+      onClick={handleClick} // Add onClick event to navigate
+    >
       <CardMedia
         component="img"
         height="140"

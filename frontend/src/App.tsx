@@ -3,6 +3,8 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { lightTheme } from './theme';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Login from "./components/UserLogin/Login";
+import Forgotpass from "./components/UserLogin/Forgotpass";
 import Home from './components/Home';
 import MovieDetail from './components/MovieDetail'; // Import MovieDetail
 import { Box } from '@mui/material';
