@@ -1,7 +1,8 @@
 import React from 'react';
-import { Box, Card, CardContent, CardMedia, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Movie } from '../core/models/Movie';
+import { Card, CardMedia, CardContent, Typography, Box } from '@mui/material';
+import { getMovieById } from '../core/services/movieService';
 
 interface MovieTemplateProps {
   movie: Movie;
@@ -10,44 +11,27 @@ interface MovieTemplateProps {
 const MovieTemplate: React.FC<MovieTemplateProps> = ({ movie }) => {
   const navigate = useNavigate();
 
-  const handleCardClick = () => {
-    navigate('/payment'); // Navigate to the payment page
+  const handleClick = () => {
+    navigate(`/movie/${movie.id}`); // Navigate to movie detail page
+
   };
 
   return (
-    <Card
-      sx={{
-        display: 'flex',
-        height: '150px',
-        margin: 2,
-        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-        '&:hover': {
-          transform: 'scale(1.05)',
-          boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
-          cursor: 'pointer',
-        },
-      }}
-      onClick={handleCardClick} // Add onClick event to navigate
-    >
+    <Card onClick={handleClick} sx={{ cursor: 'pointer' }}>
       <CardMedia
         component="img"
-        sx={{ width: '100%', height: 200 }}
-        image={movie.posterUrl}
+        height="140"
+        image={movie.posterUrl} // Replace with actual movie poster URL
         alt={movie.name}
       />
-      <Box sx={{ display: 'flex'}}>
-        <CardContent  sx={{display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly'}}>
-          <Typography fontFamily="Rubik" component="div" variant="h5">
-            {movie.name}
-          </Typography>
-          <Typography fontFamily="Rubik" variant="subtitle1" color="text.secondary" component="div">
-            {movie.release_date}
-          </Typography>
-          <Typography fontFamily="Rubik" variant="body2" color="text.secondary" component="div">
-            {movie.desc}
-          </Typography>
-        </CardContent>
-      </Box>
+      <CardContent>
+        <Typography variant="h6" component="div">
+          {movie.name}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {movie.genres.join(', ')}
+        </Typography>
+      </CardContent>
     </Card>
   );
 };
