@@ -30,7 +30,7 @@ def add_theatre(request: Request) -> Response:
         return Response("Couldn't add theatre.", status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(["DELETE"])
-def delete(response: Response, id: int):
+def delete_theatre(response: Response, id: int):
     theatre = Theatre.objects.get(id=id)
 
     if theatre:
