@@ -1,32 +1,30 @@
-<<<<<<< HEAD
-import React from "react";
+import React from 'react';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { lightTheme } from './theme';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from "./components/UserLogin/Login";
 import Forgotpass from "./components/UserLogin/Forgotpass";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-
-
-function App() {
-    return(
-    <>
-     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="forgotpass" element={<Forgotpass />} />        
-      </Routes>
-    </BrowserRouter>
-    </>
-   );
-
-=======
 import Home from './components/Home';
+import MovieDetail from './components/MovieDetail'; // Import MovieDetail
+import { Box } from '@mui/material';
 
-function App() {
-    return (
-        <>
-            <Home />
-        </>
-    );
->>>>>>> da7a21bba5192d3588414580b0eb8e1a03de1dac
-}
+const App: React.FC = () => {
+  return (
+    <ThemeProvider theme={lightTheme}>
+      <CssBaseline />
+      <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ flex: 1, padding: 3 }}>
+          <Router>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/movie/:id" element={<MovieDetail />} /> {/* Movie detail route */}
+            </Routes>
+          </Router>
+        </Box>
+      </Box>
+    </ThemeProvider>
+  );
+};
 
 export default App;
