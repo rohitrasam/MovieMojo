@@ -15,10 +15,10 @@ const AddTheatres: React.FC = () => {
         event.preventDefault();
 
         try {
-            const response = await axios.post('/api/theatres', {  
+            const response = await axios.post("http://localhost:8000/theatre/add_theatre", {  
                 name: tName,
                 address: address,
-                city: city,  
+                city: {name:city},  
             });
 
             if (response.data.success) {

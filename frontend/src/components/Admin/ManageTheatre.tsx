@@ -28,10 +28,10 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 interface Theatre {
-  _id: string;
+  id: number;
   name: string;
   address: string;
-  city: string;
+  city: {id:number ; name:string};
 }
 
 const ManageTheatre: React.FC = () => {
@@ -47,7 +47,7 @@ const ManageTheatre: React.FC = () => {
   // Fetch theatres from the backend
   const fetchTheatres = async () => {
     try {
-      const response = await axios.get('/api/theatres');
+      const response = await axios.get('http://localhost:8000/theatre/get_theatres');
       setTheatres(response.data);
     } catch (err) {
       setError("Failed to fetch theatres. Please try again.");
@@ -55,9 +55,9 @@ const ManageTheatre: React.FC = () => {
   };
 
   // Handle theatre deletion
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     try {
-      await axios.delete(`/api/theatres/${id}`);
+      await axios.delete(`http://localhost:8000/theatre/delete/${id}`);
       setSuccess("Theatre deleted successfully!");
       fetchTheatres(); // Refresh the list
     } catch (err) {
@@ -70,7 +70,7 @@ const ManageTheatre: React.FC = () => {
     setEditingTheatre(theatre);
     setTname(theatre.name);
     setAddress(theatre.address);
-    setCity(theatre.city);
+    setCity(theatre.city.name);
     setDialogOpen(true);
   };
 
@@ -78,7 +78,7 @@ const ManageTheatre: React.FC = () => {
   const handleDialogSubmit = async () => {
     if (editingTheatre) {
       try {
-        await axios.put(`/api/theatres/${editingTheatre._id}`, {
+        await axios.put(`/api/theatres/${editingTheatre.id}`, {
           name: tName,
           address: address,
           city: city,
@@ -133,15 +133,15 @@ const ManageTheatre: React.FC = () => {
                   </TableHead>
                   <TableBody>
                     {theatres.map((theatre) => (
-                      <TableRow key={theatre._id}>
+                      <TableRow key={theatre.id}>
                         <TableCell>{theatre.name}</TableCell>
                         <TableCell>{theatre.address}</TableCell>
-                        <TableCell>{theatre.city}</TableCell>
+                        <TableCell>{theatre.city.name}</TableCell>
                         <TableCell>
                           <IconButton onClick={() => handleEdit(theatre)}>
                             <EditIcon />
                           </IconButton>
-                          <IconButton onClick={() => handleDelete(theatre._id)}>
+                          <IconButton onClick={() => handleDelete(theatre.id)}>
                             <DeleteIcon />
                           </IconButton>
                         </TableCell>

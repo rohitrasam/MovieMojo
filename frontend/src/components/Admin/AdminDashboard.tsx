@@ -7,6 +7,8 @@ import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
   const [totalMovies, setTotalMovies] = useState(0);
+  const [totalTheatres, setTotalTheatres] = useState(0);
+
 
   useEffect(() => {
     const fetchTotalMovies = async () => {
@@ -21,6 +23,21 @@ const AdminDashboard = () => {
     fetchTotalMovies();
   }, []);
 
+
+  useEffect(() => {
+    const fetchTotalTheatres = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/theatre/get_theatres');
+        setTotalTheatres(response.data.length);
+        console.log(response);
+      } catch (error) {
+        console.error("Error fetching total Theatres:", error);
+      }
+    };
+    fetchTotalTheatres();
+  }, []);
+
+
   return (
     <div className="container-scroller">
       <div className="container-fluid page-body-wrapper">
@@ -34,7 +51,7 @@ const AdminDashboard = () => {
                     <Typography variant="h5" component="div" className="report-title">
                       Total Theatres
                     </Typography>
-                    {/* <Typography variant="h4">{totalTheatres}</Typography> */}
+                    <Typography variant="h4">{totalTheatres}</Typography> 
                     <MUILink href="" className="report-count">
                       View Theatres
                     </MUILink>

@@ -21,6 +21,7 @@ def add_theatre(request: Request) -> Response:
 
     try:
         theatre = request.data
+        print(theatre)
         if Theatre.objects.filter(address=theatre['address']).exists():
             return Response("Theatre with same address cannot exist.", status=status.HTTP_409_CONFLICT)
         

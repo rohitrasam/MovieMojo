@@ -60,7 +60,7 @@ const handleDelete = async (id: number) => {
   
     if (window.confirm("Do you really want to delete this movie?")) {
       try {
-        await axios.delete(`http://localhost:8000/movies/${id}/delete`);
+        await axios.delete(`http://localhost:8000/movies/delete/${id}`);
         alert("Movie deleted successfully");
         fetchMovies(); 
       } catch (error) {

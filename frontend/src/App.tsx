@@ -26,14 +26,15 @@ const App: React.FC = () => {
               
               <Route path="/movie/:id" element={<MovieDetail />} /> {/* Movie detail route */}
               <Route path="/" element={<Login />} />
-        <Route path="/forgotpass" element={<Forgotpass />} /> 
-        <Route path="/home" element={<Home />} /> 
-         <Route path="/admindashboard" element={<AdminDashboard />} />
-         <Route path="/addtheatres" element={<AddTheatres />} />
-         <Route path="/addmovie" element={<AddMovie />} />      
-         <Route path="/viewmovies" element={<ViewMovies />} />  
-         <Route path="/managemovies" element={<ManageMovie />} /> 
-         <Route path="/managetheatres" element={<ManageTheatre />} /> 
+              <Route path="/forgotpass" element={<Forgotpass />} /> 
+              <Route path="/home" element={<Home />} /> 
+              <Route path="/admindashboard" element={<AdminDashboard />} />
+              <Route path="/addtheatres" element={<AddTheatres />} />
+              <Route path="/addmovie" element={<AddMovie />} />      
+              <Route path="/viewmovies" element={<ViewMovies />} />  
+              <Route path="/managemovies" element={<ManageMovie />} /> 
+              <Route path="/managetheatres" element={<ManageTheatre />} /> 
+              
             </Routes>
           </Router>
         </Box>
