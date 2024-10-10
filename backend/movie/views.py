@@ -36,6 +36,16 @@ def post_movie(request: Request) -> Response:
     request.data["release_date"]  = release_date
     movie = MovieSerializer(data=request.data)
 
+@api_view(["DELETE"])
+def delete_movie(request: Request, id: int) -> Response:
+    try:
+        movie = Movie.objects.get(id=id)
+        movie.delete()
+        return Response("Movie deleted successfully", status=status.HTTP_200_OK)
+    except Movie.DoesNotExist:
+        return Response("Movie not found", status=status.HTTP_404_NOT_FOUND)
+
+
     def save_data(data_list: list[Language | Genre | Format], data_obj: Language | Genre | Format):
 
         obj: MovieLanguage | MovieGenre | MovieFormat = None

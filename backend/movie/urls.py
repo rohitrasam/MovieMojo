@@ -8,5 +8,6 @@ urlpatterns =[
     path('genres', view=get_genres, name="get-genres"),
     path('languages', view=get_languages, name="get-languages"),
     path('formats', view=get_formats, name="get-formats"),
+    path('movies/<int:id>/delete', delete_movie, name='delete_movie'),
 
 ]
