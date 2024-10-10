@@ -15,7 +15,6 @@ def get_theatres(request: Request) -> Response:
     theatres = TheatreSerializer(theatres, many=True)
     return Response(theatres.data, status=status.HTTP_200_OK)
 
-
 @api_view(["POST"])
 def add_theatre(request: Request) -> Response:
 
@@ -30,5 +29,14 @@ def add_theatre(request: Request) -> Response:
         return Response("Theatre added successfully!", status=status.HTTP_200_OK)
     except:
         return Response("Couldn't add theatre.", status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(["DELETE"])
+def delete_theatre(response: Response, id: int):
+    theatre = Theatre.objects.get(id=id)
+
+    if theatre:
+        theatre.delete()
+        return Response("Theatre deleted successfully", status=status.HTTP_200_OK)
+    return Response("Couldn't delete theatre", status=status.HTTP_400_BAD_REQUEST)
 
     
