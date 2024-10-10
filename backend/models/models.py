@@ -64,6 +64,7 @@ class Movie(models.Model):
     duration = models.FloatField(default=0.0)
     release_date = models.DateField(null=True)
     rating = models.FloatField(default=5.0)
+    poster_url = models.TextField(blank=True, null=True)
 
     def __str__(self) -> str:
         return self.name
@@ -104,15 +105,15 @@ class Genre(models.Model):
 
 class City(models.Model):
 
-    class CITIES(models.TextChoices):
-        PUNE = "Pune"
-        MUMBAI = "Mumbai"
-        DELHI = "Delhi"
-        BENGALURU = "Bengaluru"
-        AHMEDABAD = "Ahmedabad"
-        KOLKATA = "Kolkata"
+    # class CITIES(models.TextChoices):
+    #     PUNE = "Pune"
+    #     MUMBAI = "Mumbai"
+    #     DELHI = "Delhi"
+    #     BENGALURU = "Bengaluru"
+    #     AHMEDABAD = "Ahmedabad"
+    #     KOLKATA = "Kolkata"
 
-    name = models.CharField(max_length=25, choices=CITIES, default=None)
+    name = models.CharField(max_length=25, default=None, unique=True)
 
     def __str__(self) -> str:
         return self.name
@@ -152,3 +153,68 @@ class MovieGenre(models.Model):
 
     def __str__(self) -> str:
         return f'{self.movie}, {self.genre}'
+    
+
+class Theatre(models.Model):
+
+    name = models.CharField(max_length=50)
+    address = models.TextField()
+    city = models.ForeignKey(City, related_name="theatre_city", on_delete=models.CASCADE)
+    # screen_count = models.IntegerField(default=0)
+
+    def __str__(self) -> str:
+        return f'{self.name}, {self.city}'
+    
+    @property
+    def screen_count(self):
+        return len(self.screen_theatre.all())
+
+
+class Screen(models.Model):
+
+    name = models.CharField(max_length=30)
+    rows = models.IntegerField()
+    cols = models.IntegerField()
+    theatre = models.ForeignKey(Theatre, related_name='screen_theatre', on_delete=models.CASCADE)
+    # isFull = models.BooleanField(default=False)
+
+    def __str__(self) -> str:
+        return f'{self.name}, {self.rows}, {self.cols}'
+
+
+class Seat(models.Model):
+
+    _type = models.CharField(max_length=30)
+    seat_num = models.CharField(max_length=10)
+    price = models.FloatField(default=0.0)
+    screen = models.ForeignKey(Screen, related_name='seat_screen', on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return f'{self.seat_num}, {self._type}'
+
+
+class Show(models.Model):
+
+    screen = models.ForeignKey(Screen, related_name='show_screen', on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, related_name='show_movie', on_delete=models.CASCADE)
+    time = models.DateTimeField()
+
+    def __str__(self) -> str:
+        return f'{self.movie}, {self.screen}, {self.time}'
+
+
+class Booking(models.Model):
+
+    """ Not working as expected. Make changes. """
+
+    show = models.ForeignKey(Show, related_name='booking_show', on_delete=models.CASCADE)     
+    date = models.DateField()
+    user = models.ForeignKey(AppUser, related_name='booking_user', on_delete=models.CASCADE)
+    seat = models.ForeignKey(Seat, related_name='booking_seat', on_delete=models.CASCADE)
+    
+    @property
+    def price(self):
+        return sum(map(lambda booking: booking.seat.price, Booking.objects.filter(seat=self.seat)))
+
+    def __str__(self) -> str:
+        return f"{self.user}, {self.show}, {self.seat}"

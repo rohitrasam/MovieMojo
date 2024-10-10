@@ -1,22 +1,27 @@
-import axios from 'axios';
-import { Movie } from '../models/Movie';
+import axios from "axios";
+import { Movie } from "../models/Movie";
 
-const API_KEY = 'your_api_key';
-const BASE_URL = 'https://api.themoviedb.org/3';
+// API base URL
+const API_URL = "http://127.0.0.1:8000/movies"; // Your backend API URL
 
-export const searchMovies = async (query: string): Promise<Movie[]> => {
-  const response = await axios.get(`${BASE_URL}/search/movie`, {
-    params: {
-      api_key: API_KEY,
-      query,
-    },
-  });
+// Fetch all movies
+export const getMovies = async (): Promise<Movie[]> => {
+  try {
+    const response = await axios.get<Movie[]>(`${API_URL}/get_movies`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+    throw error;
+  }
+};
 
-  return response.data.results.map((movie: any) => ({
-    id: movie.id,
-    title: movie.title,
-    posterUrl: `https://image.tmdb.org/t/p/w500/${movie.poster_path}`,
-    releaseDate: movie.release_date,
-    overview: movie.overview,
-  }));
+// Fetch a single movie by ID
+export const getMovieById = async (id: number): Promise<Movie> => {
+  try {
+    const response = await axios.get<Movie>(`${API_URL}/get_movie/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching movie with id ${id}:`, error);
+    throw error;
+  }
 };

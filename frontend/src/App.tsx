@@ -1,22 +1,31 @@
-import React from "react";
+import React from 'react';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { lightTheme } from './theme';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from "./components/UserLogin/Login";
 import Forgotpass from "./components/UserLogin/Forgotpass";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./components/Home";
-import AdminDashboard from "./components/Admin/AdminDashboard";
-import AddTheatres from "./components/Admin/AddTheatres";
-import AddMovie from "./components/Admin/AddMovie";
-import ViewMovies from "./components/Admin/ViewMovies";
-import ManageMovie from "./components/Admin/ManageMovie";
-import ManageTheatre from "./components/Admin/ManageTheatre";
+import Home from './components/Home';
+import MovieDetail from './components/MovieDetail'; // Import MovieDetail
+import { Box } from '@mui/material';
+import AddMovie from './components/Admin/AddMovie';
+import AddTheatres from './components/Admin/AddTheatres';
+import AdminDashboard from './components/Admin/AdminDashboard';
+import ManageMovie from './components/Admin/ManageMovie';
+import ManageTheatre from './components/Admin/ManageTheatre';
+import ViewMovies from './components/Admin/ViewMovies';
 
-
-function App() {
-    return(
-    <>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
+const App: React.FC = () => {
+  return (
+    <ThemeProvider theme={lightTheme}>
+      <CssBaseline />
+      <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ flex: 1, padding: 3 }}>
+          <Router>
+            <Routes>
+              
+              <Route path="/movie/:id" element={<MovieDetail />} /> {/* Movie detail route */}
+              <Route path="/" element={<Login />} />
         <Route path="/forgotpass" element={<Forgotpass />} /> 
         <Route path="/home" element={<Home />} /> 
          <Route path="/admindashboard" element={<AdminDashboard />} />
@@ -24,12 +33,13 @@ function App() {
          <Route path="/addmovie" element={<AddMovie />} />      
          <Route path="/viewmovies" element={<ViewMovies />} />  
          <Route path="/managemovies" element={<ManageMovie />} /> 
-         <Route path="/managetheatres" element={<ManageTheatre />} />      
-      </Routes>
-    </BrowserRouter>
-    </>
-   );
-
-}
+         <Route path="/managetheatres" element={<ManageTheatre />} /> 
+            </Routes>
+          </Router>
+        </Box>
+      </Box>
+    </ThemeProvider>
+  );
+};
 
 export default App;
