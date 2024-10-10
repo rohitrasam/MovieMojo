@@ -33,7 +33,7 @@ def post_movie(request: Request) -> Response:
         return Response("Movie already exists", status=status.HTTP_409_CONFLICT)
     
     release_date = datetime.date.fromisoformat(request.data["release_date"])
-    request.data["release_date"]  = release_date
+    request.data["release_date"] = release_date
     movie = MovieSerializer(data=request.data)
 
     def save_data(data_list: list[Language | Genre | Format], data_obj: Language | Genre | Format):
