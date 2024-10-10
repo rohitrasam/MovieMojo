@@ -57,7 +57,7 @@ const AdminBar=()=>{
                  <Link className="nav-link" to="/addtheatres">Add Theatres</Link>
                 </li>
               <li className="nav-item"> 
-                <Link className="nav-link" to="/manage-theatres">Manage Theatres</Link>
+                <Link className="nav-link" to="/managetheatres">Manage Theatres</Link>
               </li>
             </ul>
           )}
@@ -73,7 +73,7 @@ const AdminBar=()=>{
                 <Link className="nav-link" to="/addmovie">Add Movies</Link>
                 </li>
               <li className="nav-item"> 
-                <Link className="nav-link" to="/manage-movies">Manage Movies</Link>
+                <Link className="nav-link" to="/managemovies">Manage Movies</Link>
                 </li>
             </ul>
           )}

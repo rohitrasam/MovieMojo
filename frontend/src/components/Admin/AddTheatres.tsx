@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import axios from 'axios';
-import "./AdminDashboard.css";
-import AdminBar from "./AdminBar";
-import { Link } from "react-router-dom";
+import { TextField, Button, Container, Grid, Card, CardContent, Typography, Alert, Breadcrumbs, Link } from '@mui/material';
+// import AdminBar from "./AdminBar";
+import { Link as RouterLink } from "react-router-dom";
 
 const AddTheatres: React.FC = () => {
     const [tName, setTname] = useState('');
+    const [address, setAddress] = useState('');
+    const [city, setCity] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
@@ -13,13 +15,17 @@ const AddTheatres: React.FC = () => {
         event.preventDefault();
 
         try {
-            const response = await axios.post('', { 
+            const response = await axios.post("http://localhost:8000/theatre/add_theatre", {  
                 name: tName,
+                address: address,
+                city: {name:city},  
             });
 
             if (response.data.success) {
-                setSuccess("Theatre has been added!!");
+                setSuccess("Theatre has been added!");
                 setTname('');
+                setCity('');
+                setAddress('');  
             } else {
                 setError("Something went wrong");
             }
@@ -29,74 +35,65 @@ const AddTheatres: React.FC = () => {
     };
 
     return (
-        <div className="container-scroller">
-            <div className="container-fluid page-body-wrapper">
-                <AdminBar />
-                <div className="main-panel">
-                    <div className="content-wrapper">
-                        <div className="page-header">
-                            <h3 className="page-title">Add Theatre</h3>
-                            <nav aria-label="breadcrumb">
-                                <ol className="breadcrumb">
-                                    <li className="breadcrumb-item"><Link to="/admindashboard">Dashboard</Link></li>
-                                </ol>
-                            </nav>
-                        </div>
-                       
-                            <div className="row">
-                                <div className="col-12 grid-margin stretch-card">
-                                    <div className="card">
-                                        <div className="card-body">
-                                            <h4 className="card-title" style={{ textAlign: 'center' }}>Add Theatre</h4>
-                                            <form onSubmit={handleSubmit}>
-                                            <div className="form-group">
-                                                <label htmlFor="exampleInputName1">Theatre Name</label>
-                                                <input
-                                                    type="text"
-                                                    id="tName"
-                                                    value={tName}
-                                                    onChange={(e) => setTname(e.target.value)}
-                                                    className="form-control"
-                                                />
-                                            </div>
-
-                                            <div className="form-group">
-                                                <label htmlFor="tName">Theatre Address</label>
-                                                <input
-                                                    type="text"
-                                                    id="tName"
-                                                    value={tName}
-                                                    onChange={(e) => setTname(e.target.value)}
-                                                    className="form-control"
-                                                />
-                                            </div>
-
-                                            <div className="form-group">
-                                                <label htmlFor="tName">Theatre Name</label>
-                                                <input
-                                                    type="text"
-                                                    id="tName"
-                                                    value={tName}
-                                                    onChange={(e) => setTname(e.target.value)}
-                                                    className="form-control"
-                                                />
-                                            </div>
-
-
-
-
-                                            <button type="submit" className="btn btn-primary">Add</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {success && <p className="alert alert-success">{success}</p>}
-                        {error && <p className="alert alert-danger">{error}</p>}
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Container maxWidth="lg">
+            <Grid container spacing={3}>
+                <Grid item xs={12}>
+                </Grid>
+                <Grid item xs={12}>
+                    <Breadcrumbs aria-label="breadcrumb">
+                        <Link component={RouterLink} to="/admindashboard">Dashboard</Link>
+                        <Typography color="textPrimary">Add Theatre</Typography>
+                    </Breadcrumbs>
+                </Grid>
+                <Grid item xs={12}>
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h4" component="h2" align="center">
+                                Add Theatre
+                            </Typography>
+                            <form onSubmit={handleSubmit}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            label="Theatre Name"
+                                            fullWidth
+                                            value={tName}
+                                            onChange={(e) => setTname(e.target.value)}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            label="Address"
+                                            fullWidth
+                                            value={address}
+                                            onChange={(e) => setAddress(e.target.value)}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            label="City"
+                                            fullWidth
+                                            value={city}
+                                            onChange={(e) => setCity(e.target.value)}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} container justifyContent="center">
+                                        <Button type="submit" variant="contained" color="primary">
+                                            Add Theatre
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </form>
+                            {success && <Alert severity="success">{success}</Alert>}
+                            {error && <Alert severity="error">{error}</Alert>}
+                        </CardContent>
+                    </Card>
+                </Grid>
+            </Grid>
+        </Container>
     );
 };
 

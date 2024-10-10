@@ -68,6 +68,16 @@ def post_movie(request: Request) -> Response:
         return Response("Movie added successfully", status=status.HTTP_200_OK)
     return Response("Failed to enter movie details", status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(["DELETE"])
+def delete_movie(request: Request, id: int) -> Response:
+    try:
+        movie = Movie.objects.get(id=id)
+        movie.delete()
+        return Response("Movie deleted successfully", status=status.HTTP_200_OK)
+    except Movie.DoesNotExist:
+        return Response("Movie not found", status=status.HTTP_404_NOT_FOUND)
+
+
 @api_view(["PATCH"])
 def update_movie(request: Request) -> Response:
     pass

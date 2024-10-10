@@ -8,6 +8,12 @@ import Forgotpass from "./components/UserLogin/Forgotpass";
 import Home from './components/Home';
 import MovieDetail from './components/MovieDetail'; // Import MovieDetail
 import { Box } from '@mui/material';
+import AddMovie from './components/Admin/AddMovie';
+import AddTheatres from './components/Admin/AddTheatres';
+import AdminDashboard from './components/Admin/AdminDashboard';
+import ManageMovie from './components/Admin/ManageMovie';
+import ManageTheatre from './components/Admin/ManageTheatre';
+import ViewMovies from './components/Admin/ViewMovies';
 
 const App: React.FC = () => {
   return (
@@ -17,8 +23,18 @@ const App: React.FC = () => {
         <Box sx={{ flex: 1, padding: 3 }}>
           <Router>
             <Routes>
-              <Route path="/" element={<Home />} />
+              
               <Route path="/movie/:id" element={<MovieDetail />} /> {/* Movie detail route */}
+              <Route path="/" element={<Login />} />
+              <Route path="/forgotpass" element={<Forgotpass />} /> 
+              <Route path="/home" element={<Home />} /> 
+              <Route path="/admindashboard" element={<AdminDashboard />} />
+              <Route path="/addtheatres" element={<AddTheatres />} />
+              <Route path="/addmovie" element={<AddMovie />} />      
+              <Route path="/viewmovies" element={<ViewMovies />} />  
+              <Route path="/managemovies" element={<ManageMovie />} /> 
+              <Route path="/managetheatres" element={<ManageTheatre />} /> 
+              
             </Routes>
           </Router>
         </Box>
