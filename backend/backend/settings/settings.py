@@ -29,7 +29,8 @@ INSTALLED_APPS = [
     'rest_framework',
     "models",
     "user",
-    "movie"
+    "movie",
+    "theatre"
 ]
 
 MIDDLEWARE = [
