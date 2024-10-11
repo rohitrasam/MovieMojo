@@ -1,5 +1,4 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
-from rest_framework import fields
 from models.models import *
 
 
@@ -31,38 +30,6 @@ class LanguageSerializer(ModelSerializer):
         exclude = ['id']
 
 
-class CastSerializer(ModelSerializer):
-
-    actor = ActorSerializer()
-    class Meta:
-        model = Cast
-        fields = '__all__'
-
-
-class MovieFormatSerializer(ModelSerializer):
-
-    _format = FormatSerializer()
-
-    class Meta:
-        model = MovieFormat
-        fields = '__all__'
-
-
-class MovieGenreSerializer(ModelSerializer):
-
-    genre = GenreSerializer()
-    class Meta:
-        model = MovieGenre
-        fields = '__all__'
-
-
-class MovieLanguageSerializer(ModelSerializer):
-
-    language = LanguageSerializer(read_only=True)
-    class Meta:
-        model = MovieLanguage
-        fields = '__all__'
-
 class MovieSerializer(ModelSerializer):
 
     cast = SerializerMethodField()
@@ -72,7 +39,7 @@ class MovieSerializer(ModelSerializer):
 
     class Meta:
         model = Movie
-        fields = ['id', 'name', 'desc', 'rating', 'release_date', 'duration', 'languages','genres', 'cast', 'formats']
+        fields = ['id', 'name', 'desc', 'rating', 'release_date', 'duration', 'poster_url', 'languages','genres', 'cast', 'formats']
 
     def create(self, validated_data: dict):
         return self.Meta.model.objects.create(**validated_data)
