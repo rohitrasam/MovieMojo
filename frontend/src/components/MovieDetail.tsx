@@ -28,7 +28,7 @@ const MovieDetail: React.FC = () => {
       sx={{
         position: 'relative',
         height: '100vh',
-        backgroundImage: `url(${movie.posterUrl})`,
+        backgroundImage: `url(${movie.poster_url})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         display: 'flex',
