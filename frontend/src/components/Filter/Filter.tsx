@@ -10,9 +10,16 @@ type FilterProps ={
     data: Language[] | Format[] | Genre[]
     dropDown: boolean
     setDropDown: (arg: boolean) => void
+    handleDataFilter: (data: string[]) => void
 }
 
-const Filter = ({title, data, dropDown, setDropDown}: FilterProps) => {
+const Filter = ({title, data, dropDown, setDropDown, handleDataFilter}: FilterProps) => {
+
+    const handleFilter = (item: {name?: string, _type?: string, isSelected: boolean}) => {
+        item.isSelected = !item.isSelected
+        const filteredData = data.filter((datum) => datum.isSelected).map((datum) => datum.name? datum.name : datum._type)  
+        handleDataFilter(filteredData);
+    }
     
     return (
         <div>
@@ -28,10 +35,10 @@ const Filter = ({title, data, dropDown, setDropDown}: FilterProps) => {
             </div>
             {dropDown && <div className='list'>
                 <ul>
-                    {data.map((item: {name?: string, _type?: string}, index: number) => {                        
+                    {data.map((item: {name?: string, _type?: string, isSelected: boolean}, index: number) => {                        
                         return (
-                            <div key={index}>
-                                <p>
+                            <div key={index} onClick={() => handleFilter(item)}>
+                                <p className={item.isSelected ? 'selected': ""}>
                                     {item.name ? item.name : item._type}
                                 </p>
                             </div>
