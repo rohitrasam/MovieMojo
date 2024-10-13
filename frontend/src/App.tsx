@@ -22,8 +22,7 @@ const App: React.FC = () => {
       <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Box sx={{ flex: 1, padding: 3 }}>
           <Router>
-            <Routes>
-              
+            <Routes>     
               <Route path="/movie/:id" element={<MovieDetail />} /> {/* Movie detail route */}
               <Route path="/" element={<Login />} />
               <Route path="/forgotpass" element={<Forgotpass />} /> 
@@ -34,7 +33,6 @@ const App: React.FC = () => {
               <Route path="/viewmovies" element={<ViewMovies />} />  
               <Route path="/managemovies" element={<ManageMovie />} /> 
               <Route path="/managetheatres" element={<ManageTheatre />} /> 
-              
             </Routes>
           </Router>
         </Box>
