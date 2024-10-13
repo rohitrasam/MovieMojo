@@ -19,8 +19,6 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={lightTheme}>
       <CssBaseline />
-      <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <Box sx={{ flex: 1, padding: 3 }}>
           <Router>
             <Routes>     
               <Route path="/movie/:id" element={<MovieDetail />} /> {/* Movie detail route */}
@@ -35,8 +33,6 @@ const App: React.FC = () => {
               <Route path="/managetheatres" element={<ManageTheatre />} /> 
             </Routes>
           </Router>
-        </Box>
-      </Box>
     </ThemeProvider>
   );
 };
