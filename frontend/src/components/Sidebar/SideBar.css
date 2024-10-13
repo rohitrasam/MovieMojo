@@ -2,15 +2,21 @@
 
 .side-bar-body{
     user-select: none;
-    padding: 10px 10px 10px 40px;
+    padding: 10px 10px 30px 20px;
     color:rgb(13, 67, 137);
     display:flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: start;
     width: 300px;
+    overflow-y: scroll;
+    height: 100vh;
+}
+
+.side-bar-body::-webkit-scrollbar{
+    display: none;
 }
 
 .side-bar-body div{
-    width: 300px;
+    width: 250px;
 }
