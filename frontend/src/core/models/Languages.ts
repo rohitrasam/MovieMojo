@@ -3,4 +3,4 @@ class Language{
     name!: string
 }
 
-export default Language
+export default Language;

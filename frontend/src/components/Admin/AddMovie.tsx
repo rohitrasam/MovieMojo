@@ -1,204 +1,237 @@
 import React, { BaseSyntheticEvent, useState } from "react";
-import axios from 'axios';
+import axios from "axios";
+import { Link as RouterLink } from "react-router-dom";
+import { Button, TextField, Container, Typography, Grid, Card, CardContent, Link, Breadcrumbs } from "@mui/material";
+// import AdminBar from "./AdminBar";
 import "./AdminDashboard.css";
-import AdminBar from "./AdminBar";
-import { Link } from "react-router-dom";
 
-const AddMovie =()=>{
-    const[movie,setMovie]=useState({
-        name:"", posterUrl:"", desc:"",rating: 0,
-        release_date: "", duration: 0,languages: "",
-        genres: "", cast: "", formats:"",
-    });
-    const [errors, setErrors] = useState('');
-   const handleChange=(e)=>{
-    const{name,value}=e.target;
-    setMovie((prevMovie)=>({
-        ...prevMovie,[name]:value,
+const AddMovie = () => {
+  const [movie, setMovie] = useState({
+    name: "", posterUrl: "", desc: "", rating: 0,
+    release_date: "", duration: 0, languages: "",
+    genres: "", cast: "", formats: "", theatreName: "", cityName: ""
+  });
+  const [errors, setErrors] = useState('');
+
+  const handleChange = (e: BaseSyntheticEvent) => {
+    const { name, value } = e.target;
+    setMovie((prevMovie) => ({
+      ...prevMovie, [name]: value
     }));
-   } ;
-   const validatedata = (e: BaseSyntheticEvent) => {
-    if((!movie.name)||(!movie.cast)){
-        setErrors("required");
-        alert("required")
-        return true;
-    }
-   };
-
-   const handleSubmit = (e: React.BaseSyntheticEvent<object, any, any>) => {
-    e.preventDefault();
-    if (validatedata(e)) {
-      console.log("Sign Up Data:", movie);
-    }
   };
 
-   const handleSubmitApi =()=>{
-    console.log("Movie Details :", movie);
-    // console.log(movie.languages.split(","));
-    
-    axios.post("http://localhost:8000/movies/post_movie",{
-    name : movie.name ,
-    posterUrl:movie.posterUrl,
-    desc: movie.desc,
-    rating: movie.rating,
-    release_date: movie.release_date,
-    duration:movie.duration,
-    languages:movie.languages.split(","),
-    genres:movie.genres.split(","),
-    cast:movie.cast.split(","),
-    formats:movie.formats.split(",")
-      })
+  const validateData = () => {
+    const { name, desc, rating, release_date, duration, languages, genres, cast, formats, theatreName, cityName } = movie;
+    if (!name || !desc || !rating || !release_date || !duration || !languages || !genres || !cast || !formats || !theatreName || !cityName) {
+      setErrors("All fields are required");
+      return true;
+    }
+    if (rating < 1 || rating > 10) {
+      setErrors("Rating must be between 1 and 10");
+      return true;
+    }
+    return false;
+  };
 
-        .then(result =>{
-          console.log(result);
-          alert(result);
-        })
+  const handleSubmit = async (e: React.BaseSyntheticEvent) => {
+    e.preventDefault();
+    if (validateData()) {
+      return;
+    }
 
-        .catch((error) => {
-          console.error(error.response.data);
-        })
+    const movieExists = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/movies/${movie.name}`);
+        return response.data.exists;
+      } catch (error) {
+        return false;
+      }
     };
 
-    return (
-        <div className="container-scroller">
-            <div className="container-fluid page-body-wrapper">
-                <AdminBar />
-                <div className="main-panel">
-                    <div className="content-wrapper">
-                        <div className="page-header">
-                            <h3 className="page-title">Add Movie</h3>
-                            <nav aria-label="breadcrumb">
-                                <ol className="breadcrumb">
-                                    <li className="breadcrumb-item"><Link to="/admindashboard">Dashboard</Link></li>
-                                </ol>
-                            </nav>
-                        </div>
-                        <form onSubmit={handleSubmit}>
-                            <div className="row">
-                                <div className="col-12 grid-margin stretch-card">
-                                    <div className="card">
-                                        <div className="card-body">
-                                            <h4 className="card-title" style={{ textAlign: 'center' }}>Add Movie</h4>
-                                            <div className="form-group">
-                                                <label htmlFor="tName">Movie Name</label>
-                                                <input
-                                                    type="text"
-                                                    name="name"
-                                                    value={movie.name}
-                                                    onChange={handleChange}
-                                                    placeholder="Movie Name"
-                                                />
-                                            </div>
+    const exists = await movieExists();
+    if (exists) {
+      alert("Movie already exists");
+      return;
+    }
+    handleSubmitApi();
+  };
 
-                                            {/* <div className="form-group">
-                                                <label htmlFor="tName">Poster URL</label>
-                                                <input
-                                                        type="text"
-                                                        name="posterUrl"
-                                                        value={movie.posterUrl}
-                                                        onChange={handleChange}
-                                                        placeholder="Poster URL"
-                                                        />
-                                            </div> */}
+  const handleSubmitApi = () => {
+    console.log("Movie Details:", movie);
 
-                                            <div className="form-group">
-                                                <label htmlFor="tName">Movie Descrition</label>
-                                                <textarea
-                                                name="desc"
-                                                value={movie.desc}
-                                                onChange={handleChange}
-                                                placeholder="Description"
-                                            />
-                                            </div>
+    const languagesArray = movie.languages.split(",").map((lang) => ({ name: lang.trim() }));
+    const genresArray = movie.genres.split(",").map((genre) => ({ _type: genre.trim() }));
+    const castArray = movie.cast.split(",").map((castMember) => ({ _type: castMember.trim() }));
+    const formatsArray = movie.formats.split(",").map((format) => ({ _type: format.trim() }));
 
-                                            <div className="form-group">
-                                            <label htmlFor="tName"> Duration</label>
-                                            <input
-                                                type="number"
-                                                name="duration"
-                                                value={movie.duration}
-                                                onChange={handleChange}
-                                                placeholder="Duration (minutes)"
-                                            />
-                                            </div>
-                                            
-                                            <div className="form-group">
-                                            <label htmlFor="tName">Release Date</label>
-                                            <input
-                                                type="date"
-                                                name="release_date"
-                                                value={movie.release_date}
-                                                onChange={handleChange}
-                                                placeholder="Release Date"
-                                            />
-                                            </div>
-                                            <div className="form-group">
-                                            <label htmlFor="tName">Movie Rating</label>
-                                            <input
-                                                type="number"
-                                                name="rating"
-                                                value={movie.rating}
-                                                onChange={handleChange}
-                                                placeholder="Rating"
-                                            />
-                                            </div>
-                                            
+    axios.post("http://localhost:8000/movies/post_movie", {
+      ...movie,
+      languages: languagesArray,
+      genres: genresArray,
+      cast: castArray,
+      formats: formatsArray
+    })
+      .then((result) => {
+        console.log(result);
+        alert("Movie added successfully");
+        setMovie({
+          name: "", posterUrl: "", desc: "", rating: 0,
+          release_date: "", duration: 0, languages: "",
+          genres: "", cast: "", formats: "", theatreName: "", cityName: ""
+        });
+      })
+      .catch(() => {
+        alert("Failed to add");
+      });
+  };
 
-                                            <div className="form-group">
-                                                <label htmlFor="tName">Languages</label>
-                                                <input
-                                                        type="text"
-                                                        name="languages"
-                                                        value={movie.languages}
-                                                        onChange={handleChange}
-                                                        placeholder="Languages"
-                                                        />
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="tName">Genres</label>
-                                                <input
-                                                        type="text"
-                                                        name="genres"
-                                                        value={movie.genres}
-                                                        onChange={handleChange}
-                                                        placeholder="Genres"
-                                                        />
-                                            </div>
-
-                                            <div className="form-group">
-                                            <label htmlFor="tName">Cast</label>
-                                            <input
-                                                type="text"
-                                                name="cast"
-                                                value={movie.cast}
-                                                onChange={handleChange}
-                                                placeholder="Cast"
-                                            />
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="tName">Formats</label>
-                                                <input
-                                                        type="text"
-                                                        name="formats"
-                                                        value={movie.formats }
-                                                        onChange={handleChange}
-                                                        placeholder="Formats"
-                                                        />
-                                            </div>
-
-                                            </div>
-                                            </div>
-                                            </div>
-                                            </div>
-                                            <button onClick={handleSubmitApi} className="btn btn-primary">Add</button>
-                                            </form>
-
-                                           
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-    );
+  return (
+    <Container maxWidth="md">
+      <Breadcrumbs aria-label="breadcrumb">
+                        <Link component={RouterLink} to="/admindashboard">Dashboard</Link>
+                        <Typography color="textPrimary">Add Movie</Typography>
+                    </Breadcrumbs>
+      <Card className="card-style">
+        
+        <CardContent>
+          <Typography variant="h4" align="center" gutterBottom>
+            Add Movie
+          </Typography>
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  label="Movie Name"
+                  name="name"
+                  fullWidth
+                  value={movie.name}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Movie Description"
+                  name="desc"
+                  fullWidth
+                  multiline
+                  rows={3}
+                  value={movie.desc}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label="Duration (minutes)"
+                  type="number"
+                  name="duration"
+                  fullWidth
+                  value={movie.duration}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label="Release Date"
+                  type="date"
+                  name="release_date"
+                  fullWidth
+                  InputLabelProps={{ shrink: true }}
+                  value={movie.release_date}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label="Rating"
+                  type="number"
+                  name="rating"
+                  fullWidth
+                  inputProps={{ min: 1, max: 10 }}
+                  value={movie.rating}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label="Languages (comma-separated)"
+                  name="languages"
+                  fullWidth
+                  value={movie.languages}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label="Genres (comma-separated)"
+                  name="genres"
+                  fullWidth
+                  value={movie.genres}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label="Cast (comma-separated)"
+                  name="cast"
+                  fullWidth
+                  value={movie.cast}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label="Formats (comma-separated)"
+                  name="formats"
+                  fullWidth
+                  value={movie.formats}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label="Theatre Name"
+                  name="theatreName"
+                  fullWidth
+                  value={movie.theatreName}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label="City Name"
+                  name="cityName"
+                  fullWidth
+                  value={movie.cityName}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+            </Grid>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              style={{ marginTop: "20px" }}
+            >
+              Add Movie
+            </Button>
+          </form>
+          {errors && <Typography color="error" align="center">{errors}</Typography>}
+        </CardContent>
+      </Card>
+    </Container>
+  );
 };
 
 export default AddMovie;

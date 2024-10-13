@@ -42,7 +42,7 @@ const MovieTemplate: React.FC<MovieTemplateProps> = ({ movie }) => {
           {movie.name}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {movie.genres.join(', ')}
+         Genres: {movie.genres.map((g) => g._type).join(', ')}
         </Typography>
       </CardContent>
     </Card>

@@ -11,8 +11,7 @@ const MovieDetail: React.FC = () => {
   useEffect(() => {
     const fetchMovie = async () => {
       if (id) {
-        const fetchedMovie = await getMovieById(Number(id));
-        console.log(fetchMovie);
+        const fetchedMovie = await getMovieById(id);
         setMovie(fetchedMovie);
       }
     };
@@ -25,21 +24,52 @@ const MovieDetail: React.FC = () => {
   }
 
   return (
-    <Box sx={{ padding: '20px', maxWidth: '900px', margin: '0 auto' }}>
-      <Paper sx={{ padding: '20px' }}>
-        <Typography variant="h4">{movie.name}</Typography>
-        <Typography variant="subtitle1" sx={{ marginBottom: '10px' }}>
-          {movie.genres.join(', ')}
+    <Box
+      sx={{
+        position: 'relative',
+        height: '100vh',
+        backgroundImage: `url(${movie.posterUrl})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          width: '90%', // Increase the width to make the box larger
+          maxWidth: '1200px', // Allow the box to grow more on large screens
+          padding: '40px', // Increase padding for better spacing
+          backgroundColor: 'rgba(255, 255, 255, 0.85)',
+          borderRadius: '15px', // Increase border radius for a more prominent effect
+        }}
+      >
+        <Typography variant="h3" gutterBottom sx={{ fontSize: '2.5rem', fontWeight: 'bold' }}>
+          {movie.name}
         </Typography>
-        <Typography variant="body1" sx={{ marginBottom: '10px' }}>
+        <Typography variant="h5" gutterBottom sx={{ fontSize: '1.5rem', color: '#555' }}>
+          Genres: {movie.genres.map((g) => g._type).join(', ')}
+        </Typography>
+        <Typography variant="body1" gutterBottom sx={{ fontSize: '1.2rem' }}>
           {movie.desc}
         </Typography>
-        <Typography variant="body2">Rating: {movie.rating}</Typography>
-        <Typography variant="body2">Release Date: {movie.release_date}</Typography>
-        <Typography variant="body2">Duration: {movie.duration}</Typography>
-        <Typography variant="body2">Languages: {movie.languages.join(', ')}</Typography>
-        <Typography variant="body2">Cast: {movie.cast.join(', ')}</Typography>
-        <Typography variant="body2">Formats: {movie.formats.join(', ')}</Typography>
+        <Typography variant="h6" gutterBottom sx={{ fontSize: '1.2rem', fontWeight: '500' }}>
+          Rating: {movie.rating}
+        </Typography>
+        <Typography variant="h6" gutterBottom sx={{ fontSize: '1.2rem', fontWeight: '500' }}>
+          Release Date: {movie.release_date}
+        </Typography>
+        <Typography variant="h6" gutterBottom sx={{ fontSize: '1.2rem', fontWeight: '500' }}>
+          Duration: {movie.duration}
+        </Typography>
+        <Typography variant="h6" gutterBottom sx={{ fontSize: '1.2rem', fontWeight: '500' }}>
+          Languages: {movie.languages.map((lang) => lang.name).join(', ')}
+        </Typography>
+        <Typography variant="h6" gutterBottom sx={{ fontSize: '1.2rem', fontWeight: '500' }}>
+          Formats: {movie.formats.map((format) => format._type).join(', ')}
+        </Typography>
       </Paper>
     </Box>
   );

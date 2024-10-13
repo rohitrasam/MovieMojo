@@ -1,75 +1,95 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
+import { Card, CardContent, Typography, Grid, Link as MUILink } from "@mui/material";
 import AdminBar from "./AdminBar";
+import { Link } from "react-router-dom";
 import "./AdminDashboard.css";
 
-const AdminDashboard =() =>{
-    const[totalTheatres,setTotalTheatres]=useState(0);
-    const[totalMovies,setTotalMovies]=useState(0);
-    const[totalUsers,setTotalUsers]=useState(0);
+const AdminDashboard = () => {
+  const [totalMovies, setTotalMovies] = useState(0);
+  const [totalTheatres, setTotalTheatres] = useState(0);
 
-    useEffect(() =>{
-        axios.get('')
-        .then(response=>{
-            setTotalTheatres(response.data.total);
-        })
-        .catch(error=>console.error("Could not load data",error));
 
-        axios.get('')
-        .then(response=>{
-            setTotalMovies(response.data.total);
-        })
-        .catch(error=>console.error("Could not load data",error));
+  useEffect(() => {
+    const fetchTotalMovies = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/movies/get_movies');
+        setTotalMovies(response.data.length);
+        console.log(response);
+      } catch (error) {
+        console.error("Error fetching total movies:", error);
+      }
+    };
+    fetchTotalMovies();
+  }, []);
 
-        axios.get('')
-        .then(response=>{
-            setTotalUsers(response.data.total);
-        })
-        .catch(error=>console.error("Could not load data",error));
-    },[]
-);
 
-return(
+  useEffect(() => {
+    const fetchTotalTheatres = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/theatre/get_theatres');
+        setTotalTheatres(response.data.length);
+        console.log(response);
+      } catch (error) {
+        console.error("Error fetching total Theatres:", error);
+      }
+    };
+    fetchTotalTheatres();
+  }, []);
+
+
+  return (
     <div className="container-scroller">
       <div className="container-fluid page-body-wrapper">
-        <AdminBar />    
+        <AdminBar />
         <div className="main-panel">
           <div className="content-wrapper">
-            <div className="row">
-              <div className="col-md-12 grid-margin">
-                <div className="card">
-                  <div className="card-body">
-                    <div className="row report-inner-cards-wrapper">
-                      <div className="col-md-6 col-xl report-inner-card">
-                        <div className="inner-card-text">
-                          <span className="report-title">Total Theatres</span>
-                          <h4>{totalTheatres}</h4>
-                          <a href=""><span className="report-count">View Theatres</span></a>
-                        </div>
-                      </div>
-                      <div className="col-md-6 col-xl report-inner-card">
-                        <div className="inner-card-text">
-                          <span className="report-title">Total Movies</span>
-                          <h4>{totalMovies}</h4>
-                          <a href=""><span className="report-count">View Movies</span></a>
-                        </div>
-                      </div>
-                      <div className="col-md-6 col-xl report-inner-card">
-                        <div className="inner-card-text">
-                          <span className="report-title">Total Users</span>
-                          <h4>{totalUsers}</h4>
-                          <a href=""><span className="report-count">View Users</span></a>
-                        </div>
-                      </div>
-                    </div>    
-                  </div>
-                </div>
-              </div>
-            </div>         
-          </div>         
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={4}>
+                <Card className="dashboard-card">
+                  <CardContent>
+                    <Typography variant="h5" component="div" className="report-title">
+                      Total Theatres
+                    </Typography>
+                    <Typography variant="h4">{totalTheatres}</Typography> 
+                    <MUILink href="" className="report-count">
+                      View Theatres
+                    </MUILink>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Card className="dashboard-card">
+                  <CardContent>
+                    <Typography variant="h5" component="div" className="report-title">
+                      Total Movies
+                    </Typography>
+                    <Typography variant="h4">{totalMovies}</Typography>
+                    <Link to="/viewmovies" className="report-count">
+                      View Movies
+                    </Link>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Card className="dashboard-card">
+                  <CardContent>
+                    <Typography variant="h5" component="div" className="report-title">
+                      Total Users
+                    </Typography>
+                    {/* <Typography variant="h4">{totalUsers}</Typography> */}
+                    <MUILink href="" className="report-count">
+                      View Users
+                    </MUILink>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+          </div>
         </div>
       </div>
     </div>
   );
 };
+
 export default AdminDashboard;
