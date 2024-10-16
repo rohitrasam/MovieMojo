@@ -7,11 +7,8 @@ import "./AdminDashboard.css";
 const AdminBar=()=>{
   const [isTheatresOpen, setTheatresOpen] = useState(false);
   const [isMoviesOpen, setMoviesOpen] = useState(false);
-  const [isUsersOpen,setUsersOpen] =useState(false);
-
   const toggleTheatres = () => setTheatresOpen(!isTheatresOpen);
   const toggleMovies = () => setMoviesOpen(!isMoviesOpen);
-  const toggleUsers = () => setUsersOpen(!isUsersOpen);
     const[adminName,setAdminName]=useState('');
 
     useEffect(()=>{
@@ -41,7 +38,7 @@ const AdminBar=()=>{
           <span className="nav-link">Dashboard</span>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/dashboard">
+          <Link className="nav-link" to="/admindashboard">
             <span className="menu-title">Dashboard</span>
             <i className="icon-screen-desktop menu-icon"></i>
           </Link>
@@ -80,23 +77,7 @@ const AdminBar=()=>{
         </li>
         
         <li className="nav-item">
-          <a className="nav-link" onClick={toggleUsers}>
-            <span className="menu-title">Users</span>
-          </a>
-          {isUsersOpen &&( 
-            <ul className="nav flex-column sub-menu">
-              <li className="nav-item"> 
-                <Link className="nav-link" to="/add-user">Add Users</Link>
-                </li>
-              <li className="nav-item"> 
-                <Link className="nav-link" to="/manage-user">Manage Users</Link>
-                </li>
-            </ul>
-          )}
-        </li>
-        
-        <li className="nav-item">
-          <Link className="nav-link" to="/logout">
+          <Link className="nav-link" to="/login">
             <span className="menu-title">Logout</span>
           </Link>
         </li>

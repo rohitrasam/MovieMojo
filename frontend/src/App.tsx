@@ -6,14 +6,14 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from "./components/UserLogin/Login";
 import Forgotpass from "./components/UserLogin/Forgotpass";
 import Home from './components/Home';
-import MovieDetail from './components/MovieDetail'; // Import MovieDetail
-import { Box } from '@mui/material';
+import MovieDetail from './components/MovieDetail'; 
 import AddMovie from './components/Admin/AddMovie';
 import AddTheatres from './components/Admin/AddTheatres';
 import AdminDashboard from './components/Admin/AdminDashboard';
 import ManageMovie from './components/Admin/ManageMovie';
 import ManageTheatre from './components/Admin/ManageTheatre';
 import ViewMovies from './components/Admin/ViewMovies';
+import ViewTheatres from './components/Admin/ViewTheatres';
 
 const App: React.FC = () => {
   return (
@@ -28,9 +28,14 @@ const App: React.FC = () => {
               <Route path="/admindashboard" element={<AdminDashboard />} />
               <Route path="/addtheatres" element={<AddTheatres />} />
               <Route path="/addmovie" element={<AddMovie />} />      
-              <Route path="/viewmovies" element={<ViewMovies />} />  
+              <Route path="/viewmovies" element={<ViewMovies />} /> 
+              <Route path="/viewtheatres" element={<ViewTheatres />} />  
               <Route path="/managemovies" element={<ManageMovie />} /> 
               <Route path="/managetheatres" element={<ManageTheatre />} /> 
+              <Route path="/login" element={<Login />} /> 
+              
+              
+              
             </Routes>
           </Router>
     </ThemeProvider>

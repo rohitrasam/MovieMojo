@@ -77,13 +77,21 @@ const handleDelete = async (id: number) => {
   };
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="lg" sx={{ height: '100vh', overflow: 'scroll', padding: 2 ,
+      '&::-webkit-scrollbar': {
+      display: 'none',
+    }
+  }}>
       <Breadcrumbs aria-label="breadcrumb" sx={{ marginBottom: 3 }}>
         <Link component={RouterLink} to="/admindashboard">Dashboard</Link>
         <Typography color="textPrimary">Manage Movies</Typography>
       </Breadcrumbs>
 
-      <Card>
+      <Card sx={{ height: '100vh', overflow: 'scroll', padding: 2 ,
+      '&::-webkit-scrollbar': {
+      display: 'none',
+    }
+  }}>
         <CardContent>
           <Typography variant="h4" align="center" gutterBottom>
             Manage Movies
@@ -99,8 +107,6 @@ const handleDelete = async (id: number) => {
                   <TableCell>Duration</TableCell>
                   <TableCell>Rating</TableCell>
                   <TableCell>Release Date</TableCell>
-                  <TableCell>Theatre Name</TableCell>
-                  <TableCell>City Name</TableCell>
                   <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
@@ -113,8 +119,8 @@ const handleDelete = async (id: number) => {
                     <TableCell>{movie.duration}</TableCell>
                     <TableCell>{movie.rating}</TableCell>
                     <TableCell>{new Date(movie.release_date).toLocaleDateString()}</TableCell>
-                    <TableCell>{movie.theatreName}</TableCell>
-                    <TableCell>{movie.cityName}</TableCell>
+                    {/* <TableCell>{movie.theatreName}</TableCell>
+                    <TableCell>{movie.cityName}</TableCell> */}
                     <TableCell>
                       <IconButton onClick={() => handleEdit(movie.id)} color="primary">
                         <EditIcon />
