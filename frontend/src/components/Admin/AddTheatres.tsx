@@ -41,8 +41,8 @@ const AddTheatres: React.FC = () => {
                 </Grid>
                 <Grid item xs={12}>
                     <Breadcrumbs aria-label="breadcrumb">
-                        <Link component={RouterLink} to="/admindashboard">Dashboard</Link>
-                        <Typography color="textPrimary">Add Theatre</Typography>
+                        <Link variant="h6" component={RouterLink} to="/admindashboard">Dashboard</Link>
+                        <Typography variant="h6" color="textPrimary">Add Theatre</Typography>
                     </Breadcrumbs>
                 </Grid>
                 <Grid item xs={12}>
@@ -53,7 +53,7 @@ const AddTheatres: React.FC = () => {
                             </Typography>
                             <form onSubmit={handleSubmit}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={12}>
+                                    <Grid item xs={12} >
                                         <TextField
                                             label="Theatre Name"
                                             fullWidth

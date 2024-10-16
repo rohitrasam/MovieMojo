@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import { Card, CardContent, Typography, Grid, Link as MUILink } from "@mui/material";
+import { Card, CardContent, Typography, Grid,  } from "@mui/material";
 import AdminBar from "./AdminBar";
 import { Link } from "react-router-dom";
 import "./AdminDashboard.css";
@@ -39,10 +39,10 @@ const AdminDashboard = () => {
 
 
   return (
-    <div className="container-scroller">
+    <div className="container-scroller" >
       <div className="container-fluid page-body-wrapper">
         <AdminBar />
-        <div className="main-panel">
+        <div className="main-panel" >
           <div className="content-wrapper">
             <Grid container spacing={3}>
               <Grid item xs={12} sm={4}>
@@ -52,9 +52,9 @@ const AdminDashboard = () => {
                       Total Theatres
                     </Typography>
                     <Typography variant="h4">{totalTheatres}</Typography> 
-                    <MUILink href="" className="report-count">
+                    <Link to ="/viewtheatres" className="report-count">
                       View Theatres
-                    </MUILink>
+                    </Link>
                   </CardContent>
                 </Card>
               </Grid>
@@ -78,9 +78,6 @@ const AdminDashboard = () => {
                       Total Users
                     </Typography>
                     {/* <Typography variant="h4">{totalUsers}</Typography> */}
-                    <MUILink href="" className="report-count">
-                      View Users
-                    </MUILink>
                   </CardContent>
                 </Card>
               </Grid>

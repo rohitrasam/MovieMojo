@@ -1,7 +1,7 @@
 import React, { BaseSyntheticEvent,useState } from "react";
 import axios from 'axios';
 import "./Login.css"; 
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
   const SignInSignUp = () => {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
   const [signUpData, setSignUpData] = useState({ name: "", email: "", phone:"", password: "" , cpassword:""});
@@ -16,7 +16,8 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
   };
 
   const validateSignUp = (e: BaseSyntheticEvent) => {
-    if ((!signUpData.name)||(!signUpData.password) || (!signUpData.email)||(!signUpData.cpassword)||(!signUpData.phone)) {
+    if ((!signUpData.name)||(!signUpData.password) || (!signUpData.email)||(!signUpData.cpassword)
+      ||(!signUpData.phone)) {
       setErrors("All fields are mandatory!!");
       alert("All fields are mandatory!!")
       return false;  
@@ -55,20 +56,15 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
       alert("Invalid email")
       return false;
     }
-    else if (signInData.password.length < 8){
-      setErrors("Password too short");
-      alert("Password too short")
-      return false;
-    }
   };
 
-  const handleSignUpSubmit = (e: React.BaseSyntheticEvent<object, any, any>) => {
+  const handleSignUpSubmit = (e: React.BaseSyntheticEvent) => {
     e.preventDefault();
     if (validateSignUp(e)) {
       console.log("Sign Up Data:", signUpData);
     }
   };
-  const handleSignInSubmit = (e: React.BaseSyntheticEvent<object, any, any>) => {
+  const handleSignInSubmit = (e: React.BaseSyntheticEvent) => {
     e.preventDefault();
     if (validateSignIn(e)) {
       setSignInData(e.target.value)
@@ -83,6 +79,8 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 
     }).then(result => {
       console.log("Result", result.data);
+      console.log("Result", result.status);
+
       const { isAdmin } = result.data; 
       console.log(isAdmin) 
       
@@ -94,13 +92,11 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
       }
     })
     .catch(error=>{
-      console.log(error)
+      alert(error.response.data)
+      console.log(error);
     })
 
   };
- 
-  
-
   const handleSignupApi =() =>{
     const nameParts = signUpData.name.split(" ");
     const first_name = nameParts[0];
@@ -113,9 +109,6 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
       last_name : last_name,
       phone_no: signUpData.phone,
       password: signUpData.password,
-     
-      
-
     }).then(result=>{
       console.log(result)
     })
@@ -124,7 +117,6 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
     })
 
   };
-
 
   return (
     <div className={`container ${isRightPanelActive ? "right-panel-active" : ""}`}>
@@ -173,8 +165,7 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
             </button>
           </div>
         </div>
-      </div>
-  
+      </div>  
     </div>
   );
 };
