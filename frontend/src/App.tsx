@@ -6,8 +6,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from "./components/UserLogin/Login";
 import Forgotpass from "./components/UserLogin/Forgotpass";
 import Home from './components/Home';
-import MovieDetail from './components/MovieDetail'; // Import MovieDetail
-import { Box } from '@mui/material';
+import MovieDetail from './components/MovieDetail'; 
 import AddMovie from './components/Admin/AddMovie';
 import AddTheatres from './components/Admin/AddTheatres';
 import AdminDashboard from './components/Admin/AdminDashboard';
@@ -20,11 +19,8 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={lightTheme}>
       <CssBaseline />
-      <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <Box sx={{ flex: 1, padding: 3 }}>
           <Router>
-            <Routes>
-              
+            <Routes>     
               <Route path="/movie/:id" element={<MovieDetail />} /> {/* Movie detail route */}
               <Route path="/" element={<Login />} />
               <Route path="/forgotpass" element={<Forgotpass />} /> 
@@ -42,8 +38,6 @@ const App: React.FC = () => {
               
             </Routes>
           </Router>
-        </Box>
-      </Box>
     </ThemeProvider>
   );
 };
