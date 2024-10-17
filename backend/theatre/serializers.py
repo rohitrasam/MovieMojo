@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from movie.serializers import MovieSerializer
 from models.models import *
 
 
@@ -23,3 +24,14 @@ class TheatreSerializer(serializers.ModelSerializer):
     
     # def get_city(self, obj: Theatre):
     #     return CitySerializer(obj.city).data
+
+class ShowSerializer(serializers.ModelSerializer):
+    movie = MovieSerializer()
+    theatre = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Show
+        fields = ['id','movie', 'theatre']
+    
+    def get_theatre(self, obj: Show):
+        return TheatreSerializer(obj.screen.theatre).data
