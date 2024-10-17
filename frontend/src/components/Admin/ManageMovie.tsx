@@ -37,20 +37,6 @@ const ManageMovie = () => {
     }
   };
 
-//   const handleDelete = async (id: number) => {
-//     if (window.confirm("Do you really want to delete this movie?")) {
-//       try {
-//         await axios.delete(`http://localhost:8000/movies/${id}/delete`);
-//         alert("Movie deleted successfully");
-//         fetchMovies();
-//       } catch (error) {
-//         console.error("Error deleting movie:", error);
-//       }
-//     }
-//   };
-
-
-  
 const handleDelete = async (id: number) => {
     console.log("Deleting movie with id:", id); 
     if (!id) {

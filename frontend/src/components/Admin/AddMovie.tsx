@@ -8,7 +8,7 @@ const AddMovie = () => {
   const [movie, setMovie] = useState({
     name: "", posterUrl: "", desc: "", rating: 0,
     release_date: "", duration: 0, languages: "",
-    genres: "", cast: "", formats: "", posterURL:""
+    genres: "", cast: "", formats: "", poster_url:""
   });
   const [errors, setErrors] = useState('');
 
@@ -20,8 +20,8 @@ const AddMovie = () => {
   };
 
   const validateData = () => {
-    const { name, desc, rating, release_date, duration, languages, genres, cast, formats, posterURL } = movie;
-    if (!name || !desc || !rating || !release_date || !duration || !languages || !genres || !cast || !formats || !posterURL) {
+    const { name, desc, rating, release_date, duration, languages, genres, cast, formats, poster_url } = movie;
+    if (!name || !desc || !rating || !release_date || !duration || !languages || !genres || !cast || !formats || !poster_url) {
       setErrors("All fields are required");
       return true;
     }
@@ -76,7 +76,7 @@ const AddMovie = () => {
         setMovie({
           name: "", posterUrl: "", desc: "", rating: 0,
           release_date: "", duration: 0, languages: "",
-          genres: "", cast: "", formats: "", posterURL: "",
+          genres: "", cast: "", formats: "", poster_url: "",
         });
       })
       .catch(() => {
@@ -225,9 +225,9 @@ const AddMovie = () => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   label="Poster URL"
-                  name="posterURL"
+                  name="poster_url"
                   fullWidth
-                  value={movie.posterURL}
+                  value={movie.poster_url}
                   onChange={handleChange}
                   required
                 />
