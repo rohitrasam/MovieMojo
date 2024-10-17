@@ -2,14 +2,13 @@ import React, { BaseSyntheticEvent, useState } from "react";
 import axios from "axios";
 import { Link as RouterLink } from "react-router-dom";
 import { Button, TextField, Container, Typography, Grid, Card, CardContent, Link, Breadcrumbs } from "@mui/material";
-// import AdminBar from "./AdminBar";
 import "./AdminDashboard.css";
 
 const AddMovie = () => {
   const [movie, setMovie] = useState({
     name: "", posterUrl: "", desc: "", rating: 0,
     release_date: "", duration: 0, languages: "",
-    genres: "", cast: "", formats: "", theatreName: "", cityName: ""
+    genres: "", cast: "", formats: "", poster_url:""
   });
   const [errors, setErrors] = useState('');
 
@@ -21,8 +20,8 @@ const AddMovie = () => {
   };
 
   const validateData = () => {
-    const { name, desc, rating, release_date, duration, languages, genres, cast, formats, theatreName, cityName } = movie;
-    if (!name || !desc || !rating || !release_date || !duration || !languages || !genres || !cast || !formats || !theatreName || !cityName) {
+    const { name, desc, rating, release_date, duration, languages, genres, cast, formats, poster_url } = movie;
+    if (!name || !desc || !rating || !release_date || !duration || !languages || !genres || !cast || !formats || !poster_url) {
       setErrors("All fields are required");
       return true;
     }
@@ -77,7 +76,7 @@ const AddMovie = () => {
         setMovie({
           name: "", posterUrl: "", desc: "", rating: 0,
           release_date: "", duration: 0, languages: "",
-          genres: "", cast: "", formats: "", theatreName: "", cityName: ""
+          genres: "", cast: "", formats: "", poster_url: "",
         });
       })
       .catch(() => {
@@ -86,20 +85,27 @@ const AddMovie = () => {
   };
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" sx={{ height: '100vh', overflow: 'scroll', padding: 2 ,
+      '&::-webkit-scrollbar': {
+      display: 'none',
+    }
+  }}>
       <Breadcrumbs aria-label="breadcrumb">
-                        <Link component={RouterLink} to="/admindashboard">Dashboard</Link>
-                        <Typography color="textPrimary">Add Movie</Typography>
-                    </Breadcrumbs>
-      <Card className="card-style">
-        
+        <Link component={RouterLink} to="/admindashboard">Dashboard</Link>
+        <Typography color="textPrimary">Add Movie</Typography>
+      </Breadcrumbs>
+      <Card className="card-style" sx={{ height: '85vh', overflow: 'scroll', padding: 2 ,
+      '&::-webkit-scrollbar': {
+        display: 'none',
+      }
+    }}>
         <CardContent>
           <Typography variant="h4" align="center" gutterBottom>
             Add Movie
           </Typography>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   label="Movie Name"
                   name="name"
@@ -121,7 +127,7 @@ const AddMovie = () => {
                   required
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   label="Duration (minutes)"
                   type="number"
@@ -132,7 +138,7 @@ const AddMovie = () => {
                   required
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   label="Release Date"
                   type="date"
@@ -144,7 +150,7 @@ const AddMovie = () => {
                   required
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   label="Rating"
                   type="number"
@@ -156,7 +162,7 @@ const AddMovie = () => {
                   required
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   label="Languages (comma-separated)"
                   name="languages"
@@ -166,7 +172,7 @@ const AddMovie = () => {
                   required
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   label="Genres (comma-separated)"
                   name="genres"
@@ -176,7 +182,7 @@ const AddMovie = () => {
                   required
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   label="Cast (comma-separated)"
                   name="cast"
@@ -186,7 +192,7 @@ const AddMovie = () => {
                   required
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   label="Formats (comma-separated)"
                   name="formats"
@@ -196,7 +202,7 @@ const AddMovie = () => {
                   required
                 />
               </Grid>
-              <Grid item xs={6}>
+              {/* <Grid item xs={12} sm={6}>
                 <TextField
                   label="Theatre Name"
                   name="theatreName"
@@ -206,12 +212,22 @@ const AddMovie = () => {
                   required
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   label="City Name"
                   name="cityName"
                   fullWidth
                   value={movie.cityName}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid> */}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Poster URL"
+                  name="poster_url"
+                  fullWidth
+                  value={movie.poster_url}
                   onChange={handleChange}
                   required
                 />
@@ -222,7 +238,7 @@ const AddMovie = () => {
               variant="contained"
               color="primary"
               fullWidth
-              style={{ marginTop: "20px" }}
+              sx={{ marginTop: 2 }}
             >
               Add Movie
             </Button>

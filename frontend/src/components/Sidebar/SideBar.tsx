@@ -6,9 +6,13 @@ import Genre from '../../core/models/Genre';
 import Format from '../../core/models/Format';
 import Filter from '../Filter/Filter';
 
+type SideBarprops = {
+    setLangFilter: (data: string[]) => void 
+    setGenreFilter: (data: string[]) => void 
+    setFormatFilter: (data: string[]) => void 
+}
 
-
-const SideBar = () => {
+const SideBar = ({setLangFilter, setFormatFilter, setGenreFilter}: SideBarprops) => {
     const [langDropDown, setLangDropDown] = useState(false);
     const [genreDropDown, setGenreDropDown] = useState(false);
     const [formatDropDown, setFormatDropDown] = useState(false);
@@ -17,25 +21,62 @@ const SideBar = () => {
     const [genres, setGenres] = useState<Genre[]>([])
     const [formats, setFormats] = useState<Format[]>([])
 
-    const getInfo = async () => {
+    const getFormats = async () => {
         await axios.get<Format[]>("http://127.0.0.1:8000/movies/formats").
             then(response => setFormats(response.data))
 
+        }
+    const getLanguages = async () => {
+        
         await axios.get<Language[]>("http://127.0.0.1:8000/movies/languages")
-            .then(response => setLanguages(response.data))
-
+        .then(response => setLanguages(response.data))
+    }
+    
+    const getGenres = async () => {
         await axios.get<Genre[]>("http://127.0.0.1:8000/movies/genres").
             then(response => setGenres(response.data))
     }
-
+    
     useEffect(() => {
         try {
-            getInfo()
+            getLanguages()
         }
         catch (error) {
             alert(error)
         }
-    }, [langDropDown, genreDropDown, formatDropDown])
+    }, [langDropDown])
+
+    useEffect(() => {
+        try {
+            getGenres()
+        }
+        catch (error) {
+            alert(error)
+        }
+    }, [genreDropDown])
+
+    useEffect(() => {
+        try {
+            getFormats()
+        }
+        catch (error) {
+            alert(error)
+        }
+    }, [formatDropDown])
+
+
+    const handleLangFilter = (filterdata: string[]) => {
+
+        setLangFilter(filterdata)
+    }
+    
+    const handleFormatFilter = (filterdata: string[]) => {
+        setFormatFilter(filterdata)
+    }
+    
+    const handleGenreFilter = (filterdata: string[]) => {
+        setGenreFilter(filterdata)
+    }
 
     return (
         <div className="side-bar-body">
@@ -49,18 +90,21 @@ const SideBar = () => {
                 data={languages}
                 dropDown={langDropDown}
                 setDropDown={setLangDropDown}
+                handleDataFilter={handleLangFilter}
             />
             <Filter
                 title={"Formats"}
                 data={formats}
                 dropDown={formatDropDown}
                 setDropDown={setFormatDropDown}
+                handleDataFilter={handleFormatFilter}
             />
             <Filter
                 title={"Genres"}
                 data={genres}
                 dropDown={genreDropDown}
                 setDropDown={setGenreDropDown}
+                handleDataFilter={handleGenreFilter}
             />
         </div>
     )

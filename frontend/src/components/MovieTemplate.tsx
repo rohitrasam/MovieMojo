@@ -9,6 +9,9 @@ interface MovieTemplateProps {
 }
 
 const MovieTemplate: React.FC<MovieTemplateProps> = ({ movie }) => {
+
+  console.log(movie);
+  
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -33,8 +36,8 @@ const MovieTemplate: React.FC<MovieTemplateProps> = ({ movie }) => {
     >
       <CardMedia
         component="img"
-        height="140"
-        image={movie.posterUrl} // Replace with actual movie poster URL
+        height="150"
+        image={movie.poster_url} // Replace with actual movie poster URL
         alt={movie.name}
       />
       <CardContent>
@@ -42,7 +45,7 @@ const MovieTemplate: React.FC<MovieTemplateProps> = ({ movie }) => {
           {movie.name}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-         Genres: {movie.genres.map((g) => g._type).join(', ')}
+         {movie.genres.map((g) => g._type).join(', ')}
         </Typography>
       </CardContent>
     </Card>

@@ -13,6 +13,10 @@ const Home: React.FC = () => {
   const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  
+  const [langFilter, setLangFilter] = useState<string[]>([])
+  const [formatFilter, setFormatFilter] = useState<string[]>([])
+  const [genreFilter, setGenreFilter] = useState<string[]>([])
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -29,6 +33,21 @@ const Home: React.FC = () => {
 
     fetchMovies();
   }, []);
+
+  useEffect(() => {
+    
+    const filteredMovies = movies.filter(movie => {
+      
+      const langMatch = movie.languages.length !== 0 && movie.languages.some(language =>  langFilter.includes(language.name))
+      const formatMatch = movie.formats.length !== 0 && movie.formats.some(format => formatFilter.includes(format._type))
+      const genreMatch = movie.genres.length !== 0 && movie.genres.some(genre => genreFilter.includes(genre._type))
+
+      return langMatch || formatMatch || genreMatch
+    })
+
+    setFilteredMovies(filteredMovies.length === 0 ? movies : filteredMovies)
+
+  }, [langFilter, formatFilter, genreFilter, movies])
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -50,10 +69,13 @@ const Home: React.FC = () => {
     );
   }
 
+
   return (
     <Box display={"flex"} sx={{ flex: 1 }}>
-      <SideBar />
-      <Box sx={{ overflowY: "scroll", height: "100vh", marginLeft: "10px", paddingLeft: "20px", width: "100%" }}>
+      <div>
+        <SideBar setLangFilter={setLangFilter} setFormatFilter={setFormatFilter} setGenreFilter={setGenreFilter}/>
+      </div>
+      <div style={{ overflowY: "scroll", height: "100vh", marginLeft:"10px", paddingLeft: "20px", width: "100%"}}>
         <Box display="flex" alignItems="center">
           <SearchBar onSearch={handleSearch} />
           <IconButton
@@ -87,7 +109,7 @@ const Home: React.FC = () => {
             ))}
           </Grid>
         )}
-      </Box>
+      </div>
     </Box>
   );
 };

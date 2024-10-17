@@ -5,7 +5,7 @@ import Language from "./Languages";
 export interface Movie {
   id: number;
   name: string;
-  posterUrl: string;
+  poster_url: string;
   desc: string;
   rating: number;
   release_date: string;

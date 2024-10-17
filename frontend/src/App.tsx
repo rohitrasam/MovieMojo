@@ -8,7 +8,6 @@ import Forgotpass from "./components/UserLogin/Forgotpass";
 import Home from './components/Home';
 import MovieDetail from './components/MovieDetail'; // Import MovieDetail
 import Profile from './components/Profile'; // Import Profile
-import { Box } from '@mui/material';
 import AddMovie from './components/Admin/AddMovie';
 import AddTheatres from './components/Admin/AddTheatres';
 import AdminDashboard from './components/Admin/AdminDashboard';
@@ -16,13 +15,12 @@ import ManageMovie from './components/Admin/ManageMovie';
 import ManageTheatre from './components/Admin/ManageTheatre';
 import ViewMovies from './components/Admin/ViewMovies';
 import SelectSeat from './components/SelectSeat';  // Import SelectSeat for seat selection
+import ViewTheatres from './components/Admin/ViewTheatres';
 
 const App: React.FC = () => {
   return (
     <ThemeProvider theme={lightTheme}>
       <CssBaseline />
-      <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <Box sx={{ flex: 1, padding: 3 }}>
           <Router>
             <Routes>
               <Route path="/" element={<Login />} />  {/* Login Page */}
@@ -37,10 +35,14 @@ const App: React.FC = () => {
               <Route path="/managemovies" element={<ManageMovie />} />  {/* Manage Movies */}
               <Route path="/managetheatres" element={<ManageTheatre />} />  {/* Manage Theatres */}
               <Route path="/profile" element={<Profile />} />  {/* Profile route */}
+        
+              <Route path="/viewtheatres" element={<ViewTheatres />} />  
+              <Route path="/login" element={<Login />} /> 
+              
+              
+              
             </Routes>
           </Router>
-        </Box>
-      </Box>
     </ThemeProvider>
   );
 };
