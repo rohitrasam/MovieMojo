@@ -1,7 +1,7 @@
-@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap");
+/* @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap");
 :root {
   --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; } */
 
 *,
 *::before,
@@ -5248,7 +5248,8 @@ button.bg-dark:focus {
   background-color: rgba(0, 0, 0, 0); }
 
 .text-monospace {
-  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important; }
+  /* font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;  */
+}
 
 .text-justify {
   text-align: justify !important; }
@@ -5581,14 +5582,14 @@ input:focus {
 /* Typography */
 body {
   font-size: 1rem;
-  font-family: "Open Sans", sans-serif;
+  /* font-family: "Open Sans", sans-serif; */
   font-weight: initial;
   line-height: normal;
   -webkit-font-smoothing: antialiased; }
 
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family: "Open Sans", sans-serif;
+  /* font-family: "Open Sans", sans-serif; */
   font-weight: 600; }
 
 p {
@@ -5792,23 +5793,23 @@ pre {
   flex-grow: 1; }
 
 .font-weight-light {
-  font-family: "Open Sans", sans-serif;
+  /* font-family: "Open Sans", sans-serif; */
   font-weight: 300; }
 
 .font-weight-medium {
-  font-family: "Open Sans", sans-serif;
+  /* font-family: "Open Sans", sans-serif; */
   font-weight: 600; }
 
 .font-weight-semibold {
-  font-family: "Open Sans", sans-serif;
+  /* font-family: "Open Sans", sans-serif; */
   font-weight: 700; }
 
 .font-weight-bold {
-  font-family: "Open Sans", sans-serif;
+  /* font-family: "Open Sans", sans-serif; */
   font-weight: bold; }
 
 .font-weight-normal {
-  font-family: "Open Sans", sans-serif;
+  /* font-family: "Open Sans", sans-serif; */
   font-weight: 400; }
 
 /* Demo Styles */
@@ -5903,7 +5904,7 @@ pre {
 .btn {
   font-size: 0.875rem;
   line-height: 1;
-  font-family: "Open Sans", sans-serif;
+  /* font-family: "Open Sans", sans-serif; */
   font-weight: 600;
   /* Buttons with only icons */
   /* Buttons with icon and text */ }
@@ -6223,17 +6224,18 @@ pre {
     color: #343a40;
     margin-bottom: .75rem;
     text-transform: capitalize;
-    font-family: "Open Sans", sans-serif;
+    /* font-family: "Open Sans", sans-serif; */
     font-weight: 600;
     font-size: 1.125rem; }
   .card .card-subtitle {
-    font-family: "Open Sans", sans-serif;
+    /* font-family: "Open Sans", sans-serif; */
     margin-top: 0.625rem;
     margin-bottom: 0.625rem; }
   .card .card-description {
     color: #76838f;
     margin-bottom: 1.5rem;
-    font-family: "Open Sans", sans-serif; }
+    /* font-family: "Open Sans", sans-serif;  */
+  }
   .card.card-outline-success {
     border: 1px solid #38ce3c; }
   .card.card-outline-primary {
@@ -6318,7 +6320,7 @@ pre {
 .tt-query,
 .tt-hint {
   border: 1px solid #e8ecf1;
-  font-family: "Open Sans", sans-serif;
+  /* font-family: "Open Sans", sans-serif; */
   font-size: 0.8125rem; }
 
 select.form-control, .select2-container--default select.select2-selection--single, .select2-container--default .select2-selection--single select.select2-search__field, select.typeahead,
@@ -6434,7 +6436,7 @@ select.tt-hint {
     -ms-flex-align: center;
     align-items: center;
     padding: 15px 15px;
-    font-family: "Open Sans", sans-serif;
+    /* font-family: "Open Sans", sans-serif; */
     font-size: 0.875rem; }
     .icons-list > div i {
       display: inline-block;
@@ -6466,7 +6468,7 @@ dl {
     .list-ticked li:before,
     .list-arrow li:before,
     .list-star li:before {
-      font-family: "simple-line-icons";
+      /* font-family: "simple-line-icons"; */
       margin-left: -1.5rem;
       width: 1.5rem;
       margin-right: .5rem; }
@@ -6526,7 +6528,7 @@ dl {
   .table thead th {
     border-top: 0;
     border-bottom-width: 1px;
-    font-family: "Open Sans", sans-serif;
+    /* font-family: "Open Sans", sans-serif; */
     font-weight: 600;
     font-weight: initial; }
     .table thead th i {
@@ -6614,7 +6616,7 @@ dl {
     .preview-list .preview-item .preview-item-content p {
       margin-bottom: 10px; }
       .preview-list .preview-item .preview-item-content p .content-category {
-        font-family: 'source-sans-pro-semibold', sans-serif;
+        /* font-family: 'source-sans-pro-semibold', sans-serif; */
         padding-right: 15px;
         border-right: 1px solid #e8ecf1; }
     .rtl .preview-list .preview-item .preview-item-content {
@@ -6790,7 +6792,7 @@ de
   border-radius: 3px;
   padding: 6px;
   font-size: .625rem;
-  font-family: inherit;
+  /* font-family: inherit; */
   line-height: 1; }
   .select2-container--default .select2-selection--multiple .select2-selection__choice .select2-selection__choice__remove {
     color: #ffffff; }
@@ -6809,7 +6811,7 @@ de
 .sidebar {
   min-height: calc(100vh - 0px);
   background: #097969;
-  font-family: "Open Sans", sans-serif;
+  /* font-family: "Open Sans", sans-serif; */
   padding: 0;
   width: 240px;
   z-index: 11;
@@ -6874,7 +6876,7 @@ de
         background: #282828; }
         .sidebar .nav .nav-item.active:not(.navbar-brand-mini-wrapper) > .nav-link .menu-title {
           color: #b3b3b3;
-          font-family: "Open Sans", sans-serif;
+          /* font-family: "Open Sans", sans-serif; */
           font-weight: 600; }
         .sidebar .nav .nav-item.active:not(.navbar-brand-mini-wrapper) > .nav-link i {
           color: #38ce3c; }
@@ -6988,7 +6990,7 @@ de
           border-top: 0; }
           .sidebar .nav.sub-menu .nav-item .nav-link:before {
             content: "\203A";
-            font-family: "simple-line-icons";
+            /* font-family: "simple-line-icons"; */
             display: block;
             position: absolute;
             left: 0px;

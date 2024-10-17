@@ -75,7 +75,7 @@ const Home: React.FC = () => {
       </div>
       <div style={{ overflowY: "scroll", height: "100vh", marginLeft:"10px", paddingLeft: "20px", width: "100%"}}>
         <SearchBar onSearch={handleSearch} />
-        <Typography variant="h4" sx={{ padding: "10px 0px 0px 10px", mb: 2 }}>
+        <Typography variant="h4" sx={{ padding: "10px 0px 0px 10px", mb: 2, color: "rgb(13, 67, 137)"}}>
           Latest Releases
         </Typography>
         

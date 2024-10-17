@@ -1,6 +1,6 @@
 import React from 'react';
 import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
+// import CssBaseline from '@mui/material/CssBaseline';
 import { lightTheme } from './theme';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from "./components/UserLogin/Login";
@@ -17,8 +17,9 @@ import ViewTheatres from './components/Admin/ViewTheatres';
 
 const App: React.FC = () => {
   return (
+    <>
     <ThemeProvider theme={lightTheme}>
-      <CssBaseline />
+    {/* <CssBaseline /> */}
           <Router>
             <Routes>     
               <Route path="/movie/:id" element={<MovieDetail />} /> {/* Movie detail route */}
@@ -39,6 +40,7 @@ const App: React.FC = () => {
             </Routes>
           </Router>
     </ThemeProvider>
+      </>
   );
 };
 
