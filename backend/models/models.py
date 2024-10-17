@@ -197,7 +197,7 @@ class Show(models.Model):
 
     screen = models.ForeignKey(Screen, related_name='show_screen', on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, related_name='show_movie', on_delete=models.CASCADE)
-    time = models.DateTimeField()
+    time = models.DateTimeField(null=True)  # null for time being
 
     def __str__(self) -> str:
         return f'{self.movie}, {self.screen}, {self.time}'
