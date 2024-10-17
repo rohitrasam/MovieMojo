@@ -93,7 +93,7 @@ const Home: React.FC = () => {
             <Avatar sx={{ bgcolor: "#fff", color: "#1976d2" }}>P</Avatar>
           </IconButton>
         </Box>
-        <Typography variant="h4" sx={{ padding: "10px 0px 0px 10px", mb: 2 }}>
+        <Typography variant="h4" sx={{ padding: "10px 0px 0px 10px", mb: 2, color: "rgb(13, 67, 137)"}}>
           Latest Releases
         </Typography>
         {filteredMovies.length === 0 && searchQuery ? (
