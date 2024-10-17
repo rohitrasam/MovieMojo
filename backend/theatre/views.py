@@ -39,4 +39,16 @@ def delete_theatre(response: Response, id: int):
         return Response("Theatre deleted successfully", status=status.HTTP_200_OK)
     return Response("Couldn't delete theatre", status=status.HTTP_400_BAD_REQUEST)
 
-    
+@api_view(["PUT"])
+def update_theatre(request: Request, id: int):
+    try:
+        theatre = Theatre.objects.get(id=id)
+    except Theatre.DoesNotExist:
+        return Response({"error": "Theatre not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = TheatreSerializer(theatre, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
