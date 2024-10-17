@@ -57,11 +57,13 @@ def update_theatre(request: Request, id: int):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(["POST"])
 def assign_movie_to_theatre(request: Request) -> Response:
     
     try:
         data = request.data
+        print(data)
         city = City.objects.get(name=data["city"])
         theatres = Theatre.objects.filter(name=data["theatre"], city=city)
         movie = Movie.objects.get(name=data["movie"])
