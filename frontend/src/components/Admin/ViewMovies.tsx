@@ -23,7 +23,7 @@ interface Movie {
 interface Theatre {
   id: number;
   name: string;
-  city: string;
+  city: City;
 }
 interface City {
   id: number;
@@ -40,16 +40,24 @@ const ViewMovies = () => {
   const [selectedMovie, setSelectedMovie] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const[filteredTheatres,setfilteredTheatres]=useState<Theatre[]>([]);
+  const[shows,setShows]=useState<[]>([]);
+  const[filteredShows,setfilteredShows]=useState<[]>([])
 
   useEffect(() => {
     const fetchCitiesAndTheatres = async () => {
       try {
-        const citiesResponse = await axios.get("http://localhost:8000/cities");
+        const citiesResponse = await axios.get("http://localhost:8000/theatre/get_cities");
         const theatresResponse = await axios.get("http://localhost:8000/theatre/get_theatres");
         const moviesResponse = await axios.get("http://localhost:8000/movies/get_movies");
+        const response = await axios.get("http://localhost:8000/theatre/get_shows");
+        console.log(response.data);
         
         setCities(citiesResponse.data);
-        setTheatres(theatresResponse.data.theatres);
+        setTheatres(theatresResponse.data);
+        console.log(theatresResponse);
+        setShows(response.data);
+        
         setAllMovies(moviesResponse.data); 
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -63,11 +71,13 @@ const ViewMovies = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedCity && selectedTheatre) {
+    if (selectedCity) {
+      console.log("Line 70");
+      
       const fetchMovies = async () => {
         try {
-          const response = await axios.get(`http://localhost:8000/movies/get_movies?city=${selectedCity}&theatre=${selectedTheatre}`);
-          setMovies(response.data);
+          setfilteredTheatres(theatres.filter((theatre) => theatre.city.name === selectedCity))
+          setfilteredShows(shows.filter((show)=>(show.theatre.name==selectedTheatre && show.theatre.city.name==selectedCity)))
         } catch (error) {
           console.error("Error fetching movies:", error);
           setError("Failed to fetch movies. Please try again later.");
@@ -76,7 +86,7 @@ const ViewMovies = () => {
 
       fetchMovies();
     }
-  }, [selectedCity, selectedTheatre]);
+  }, [selectedCity,theatres,selectedTheatre,shows]);
 
   const handleAddMovie = async () => {
     if (!selectedMovie || !selectedCity || !selectedTheatre) {
@@ -85,10 +95,10 @@ const ViewMovies = () => {
     }
 
     try {
-      await axios.post("http://localhost:8000/movies/add_movie_to_theatre", {
-        movieId: selectedMovie,
-        cityName: selectedCity,
-        theatreName: selectedTheatre,
+      await axios.post("http://localhost:8000/theatre/add_show", {
+        movie: selectedMovie,
+        city: selectedCity,
+        theatre: selectedTheatre,
       });
       alert("Movie added successfully to the theatre.");
     } catch (error) {
@@ -96,24 +106,24 @@ const ViewMovies = () => {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!id) {
-      alert("Invalid movie ID.");
-      return;
-    }
+  // const handleDelete = async (id: number) => {
+  //   if (!id) {
+  //     alert("Invalid movie ID.");
+  //     return;
+  //   }
 
-    if (window.confirm("Do you really want to delete this movie?")) {
-      try {
-        await axios.delete(`http://localhost:8000/movies/delete/${id}`);
-        alert("Movie deleted successfully");
-        setMovies(movies.filter((movie) => movie.id !== id));
-      } catch (error) {
-        console.error("Error deleting movie:", error);
-      }
-    }
-  };
+  //   if (window.confirm("Do you really want to delete this movie?")) {
+  //     try {
+  //       await axios.delete(`http://localhost:8000/movies/delete/${id}`);
+  //       alert("Movie deleted successfully");
+  //       setMovies(movies.filter((movie) => movie.id !== id));
+  //     } catch (error) {
+  //       console.error("Error deleting movie:", error);
+  //     }
+  //   }
+  // };
 
-  const filteredTheatres = theatres.filter((theatre) => theatre.city === selectedCity);
+  
 
   return (
     <Container maxWidth="lg">
@@ -187,7 +197,7 @@ const ViewMovies = () => {
                   </MenuItem>
                   {allMovies.length > 0 &&
                     allMovies.map((movie) => (
-                      <MenuItem key={movie.id} value={movie.id}>
+                      <MenuItem key={movie.id} value={movie.name}>
                         {movie.name}
                       </MenuItem>
                     ))}
@@ -205,12 +215,16 @@ const ViewMovies = () => {
             Add Movie to Theatre
           </Button>
 
-          {movies.length === 0 && !loading && (
+          {filteredShows.length === 0 && !loading && (
             <Typography variant="body1">No movies available for the selected filters.</Typography>
           )}
 
-          {movies.length > 0 && (
-            <TableContainer component={Paper}>
+          {filteredShows.length > 0 && (
+            <TableContainer component={Paper} maxWidth="md" sx={{ height: '100vh', overflow: 'scroll', padding: 2 ,
+              '&::-webkit-scrollbar': {
+              display: 'none',
+            }
+            }}>
               <Table>
                 <TableHead>
                   <TableRow>
@@ -222,27 +236,29 @@ const ViewMovies = () => {
                     <TableCell>Release Date</TableCell>
                     <TableCell>Theatre Name</TableCell>
                     <TableCell>City Name</TableCell>
-                    <TableCell>Actions</TableCell>
+                    <TableCell>Address</TableCell>
+                    {/* <TableCell>Actions</TableCell> */}
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {movies.map((movie, index) => (
-                    <TableRow key={movie.id}>
+                  {filteredShows.map((show, index) => (
+                    <TableRow key={show.movie.id}>
                       <TableCell>{index + 1}</TableCell>
-                      <TableCell>{movie.name}</TableCell>
-                      <TableCell>{movie.desc}</TableCell>
-                      <TableCell>{movie.duration}</TableCell>
-                      <TableCell>{movie.rating}</TableCell>
-                      <TableCell>{new Date(movie.release_date).toLocaleDateString()}</TableCell>
-                      <TableCell>{movie.theatreName}</TableCell>
-                      <TableCell>{movie.cityName}</TableCell>
+                      <TableCell>{show.movie.name}</TableCell>
+                      <TableCell>{show.movie.desc}</TableCell>
+                      <TableCell>{show.movie.duration}</TableCell>
+                      <TableCell>{show.movie.rating}</TableCell>
+                      <TableCell>{new Date(show.movie.release_date).toLocaleDateString()}</TableCell>
+                      <TableCell>{show.theatre.name}</TableCell>
+                      <TableCell>{show.theatre.city.name}</TableCell>
+                      <TableCell>{show.theatre.address}</TableCell>
                       <TableCell>
-                        <IconButton onClick={() => window.location.href = `/edit-movie/${movie.id}`} color="primary">
+                        {/* <IconButton onClick={() => window.location.href = `/edit-movie/${show.movie.id}`} color="primary">
                           <EditIcon />
-                        </IconButton>
-                        <IconButton onClick={() => handleDelete(movie.id)} color="secondary">
+                        </IconButton> */}
+                        {/* <IconButton onClick={() => handleDelete(show.movie.id)} color="secondary">
                           <DeleteIcon />
-                        </IconButton>
+                        </IconButton> */}
                       </TableCell>
                     </TableRow>
                   ))}
