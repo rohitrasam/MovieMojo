@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-import{Link as RouterLink } from "react-router-dom"
+import { Link as RouterLink } from "react-router-dom"
 import {
   Container,
   Grid,
@@ -31,7 +31,7 @@ interface Theatre {
   id: number;
   name: string;
   address: string;
-  city: {id:number ; name:string};
+  city: { id: number; name: string };
 }
 
 const ManageTheatre: React.FC = () => {
@@ -105,7 +105,7 @@ const ManageTheatre: React.FC = () => {
 
   return (
     <Container maxWidth="lg">
-        <Breadcrumbs aria-label="breadcrumb" sx={{ marginBottom: 3 }}>
+      <Breadcrumbs aria-label="breadcrumb" sx={{ marginBottom: 3 }}>
         <Link component={RouterLink} to="/admindashboard">Dashboard</Link>
         <Typography color="textPrimary">Manage Theatres</Typography>
       </Breadcrumbs>
@@ -118,7 +118,12 @@ const ManageTheatre: React.FC = () => {
               </Typography>
               {success && <Alert severity="success">{success}</Alert>}
               {error && <Alert severity="error">{error}</Alert>}
-              <TableContainer component={Paper}>
+              <TableContainer component={Paper} sx={{
+                height: '75vh', overflow: 'scroll', padding: 2,
+                '&::-webkit-scrollbar': {
+                  display: 'none',
+                }
+              }}>
                 <Table>
                   <TableHead>
                     <TableRow>
@@ -153,47 +158,47 @@ const ManageTheatre: React.FC = () => {
       </Grid>
 
       <Dialog open={dialogOpen} onClose={handleDialogClose} maxWidth="sm" fullWidth>
-  <DialogTitle>Edit Theatre</DialogTitle>
-  <DialogContent dividers>
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <TextField
-          label="Theatre Name"
-          fullWidth
-          value={tName}
-          onChange={(e) => setTname(e.target.value)}
-          variant="outlined"
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <TextField
-          label="Address"
-          fullWidth
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          variant="outlined"
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <TextField
-          label="City"
-          fullWidth
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          variant="outlined"
-        />
-      </Grid>
-    </Grid>
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={handleDialogClose} color="primary">
-      Cancel
-    </Button>
-    <Button onClick={handleDialogSubmit} color="primary">
-      Update
-    </Button>
-  </DialogActions>
-</Dialog>
+        <DialogTitle>Edit Theatre</DialogTitle>
+        <DialogContent dividers>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                label="Theatre Name"
+                fullWidth
+                value={tName}
+                onChange={(e) => setTname(e.target.value)}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Address"
+                fullWidth
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="City"
+                fullWidth
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                variant="outlined"
+              />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDialogSubmit} color="primary">
+            Update
+          </Button>
+        </DialogActions>
+      </Dialog>
 
     </Container>
   );

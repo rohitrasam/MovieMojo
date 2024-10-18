@@ -52,9 +52,9 @@ const AdminDashboard = () => {
                       Total Theatres
                     </Typography>
                     <Typography variant="h4">{totalTheatres}</Typography> 
-                    <Link to ="/viewtheatres" className="report-count">
+                    {/* <Link to ="/viewtheatres" className="report-count">
                       View Theatres
-                    </Link>
+                    </Link> */}
                   </CardContent>
                 </Card>
               </Grid>

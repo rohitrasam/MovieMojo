@@ -21,7 +21,8 @@ const AddTheatres: React.FC = () => {
                 city: {name:city},  
             });
 
-            if (response.data.success) {
+            if (response.status === 200) {
+                
                 setSuccess("Theatre has been added!");
                 setTname('');
                 setCity('');

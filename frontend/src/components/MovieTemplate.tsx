@@ -24,6 +24,8 @@ const MovieTemplate: React.FC<MovieTemplateProps> = ({ movie }) => {
       sx={{
         display: 'flex',
         height: '150px',
+        alignItems: 'center',
+        justifyContent: 'center',
         margin: 2,
         transition: 'transform 0.3s ease, box-shadow 0.3s ease',
         '&:hover': {
@@ -36,7 +38,7 @@ const MovieTemplate: React.FC<MovieTemplateProps> = ({ movie }) => {
     >
       <CardMedia
         component="img"
-        height="150"
+        height="140"
         image={movie.poster_url} // Replace with actual movie poster URL
         alt={movie.name}
       />
