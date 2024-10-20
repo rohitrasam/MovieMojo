@@ -4,7 +4,7 @@ import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
   const SignInSignUp = () => {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
-  const [signUpData, setSignUpData] = useState({ name: "", email: "", phone:"", password: "" , cpassword:""});
+  const [signUpData, setSignUpData] = useState({ name: "", email: "", phone:"", password: "" , cpassword:"",isAdmin:""});
   const [signInData, setSignInData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState('');
   const navigate = useNavigate()
@@ -17,7 +17,7 @@ import { Link, useNavigate } from "react-router-dom";
 
   const validateSignUp = (e: BaseSyntheticEvent) => {
     if ((!signUpData.name)||(!signUpData.password) || (!signUpData.email)||(!signUpData.cpassword)
-      ||(!signUpData.phone)) {
+      ||(!signUpData.phone)||(!signUpData.isAdmin)) {
       setErrors("All fields are mandatory!!");
       alert("All fields are mandatory!!")
       return false;  
@@ -80,10 +80,11 @@ import { Link, useNavigate } from "react-router-dom";
     }).then(result => {
       console.log("Result", result.data);
       console.log("Result", result.status);
+      
 
       const { isAdmin } = result.data; 
       console.log(isAdmin) 
-      
+     
   
       if (isAdmin) {
         navigate('/admindashboard');
@@ -109,6 +110,7 @@ import { Link, useNavigate } from "react-router-dom";
       last_name : last_name,
       phone_no: signUpData.phone,
       password: signUpData.password,
+      isAdmin: signUpData.isAdmin
     }).then(result=>{
       console.log(result)
     })
@@ -133,6 +135,8 @@ import { Link, useNavigate } from "react-router-dom";
             onChange={(e) => setSignUpData({ ...signUpData, password: e.target.value })}/>
             <input type="password" placeholder="Confirm Password" value={signUpData.cpassword}
             onChange={(e) => setSignUpData({ ...signUpData, cpassword: e.target.value })}/>
+            <input type="text" placeholder="Is Admin(Yes/No)" value={signUpData.isAdmin}
+            onChange={(e) => setSignUpData({ ...signUpData, isAdmin: e.target.value })}/>
             
             <button onClick={handleSignupApi}>Sign Up</button>
         </form>
