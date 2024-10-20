@@ -47,33 +47,55 @@ interface Theatre {
 const ViewTheatres: React.FC = () => {
   const [theatres, setTheatres] = useState<Theatre[]>([]);
   const [cities, setCities] = useState<City[]>([]);
+  const [selectedCity, setSelectedCity] = useState<string>("");
+  const [selectedTheatre, setSelectedTheatre] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [editingTheatre, setEditingTheatre] = useState<Theatre | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [tName, setTname] = useState('');
   const [address, setAddress] = useState('');
+  const[filteredTheatres,setfilteredTheatres]=useState<Theatre[]>([]);
   const [selectedCityId, setSelectedCityId] = useState<number | null>(null);
 
-  // Fetch cities and theatres from the backend
-  const fetchCitiesAndTheatres = async () => {
-    try {
-      const citiesResponse = await axios.get('http://localhost:8000/city/get_cities'); // Adjust the endpoint
-      setCities(citiesResponse.data);
+  useEffect(() => {
+      const fetchCities = async () => {
+        try {
+          const citiesResponse = await axios.get('http://localhost:8000/theatre/get_cities');
+          setCities(citiesResponse.data);
+          console.log(cities);
+          const theatresResponse = await axios.get('http://localhost:8000/theatre/get_theatres');
+          setTheatres(theatresResponse.data);
+        } catch (err) {
+          setError("Failed to fetch data. Please try again.");
+        }
+      };
+      fetchCities();
+  },[theatres,cities]);
 
-      const theatresResponse = await axios.get('http://localhost:8000/theatre/get_theatres');
-      setTheatres(theatresResponse.data);
-    } catch (err) {
-      setError("Failed to fetch data. Please try again.");
+  
+  useEffect(() => {
+    if (selectedCity) {
+      const fetchMovies = async () => {
+        try {
+          setfilteredTheatres(theatres.filter((theatre) => theatre.city.name === selectedCity))
+        } catch (error) {
+          console.error("Error fetching movies:", error);
+          setError("Failed to fetch movies. Please try again later.");
+        }
+      };
+
+      fetchMovies();
     }
-  };
+  }, [selectedCity,theatres,selectedTheatre]);
+
 
   // Handle theatre deletion
   const handleDelete = async (id: number) => {
     try {
       await axios.delete(`http://localhost:8000/theatre/delete/${id}`);
       setSuccess("Theatre deleted successfully!");
-      fetchCitiesAndTheatres(); // Refresh the list
+      // fetchCities(); // Refresh the list
     } catch (err) {
       setError("Failed to delete theatre. Please try again.");
     }
@@ -84,7 +106,7 @@ const ViewTheatres: React.FC = () => {
     setEditingTheatre(theatre);
     setTname(theatre.name);
     setAddress(theatre.address);
-    setSelectedCityId(theatre.city.id); // Store selected city ID
+    setSelectedCityId(theatre.city.id); 
     setDialogOpen(true);
   };
 
@@ -99,7 +121,7 @@ const ViewTheatres: React.FC = () => {
         });
         setSuccess("Theatre updated successfully!");
         setDialogOpen(false);
-        fetchCitiesAndTheatres(); // Refresh the list
+        // fetchCities(); // Refresh the list
       } catch (err) {
         setError("Failed to update theatre. Please try again.");
       }
@@ -115,16 +137,7 @@ const ViewTheatres: React.FC = () => {
     setSelectedCityId(null);
   };
 
-  // Fetch cities and theatres on component mount
-  useEffect(() => {
-    fetchCitiesAndTheatres();
-  }, []);
-
-  // Filter theatres based on selected city
-  const filteredTheatres = selectedCityId
-    ? theatres.filter(theatre => theatre.city.id === selectedCityId)
-    : theatres;
-
+ 
   return (
     <Container maxWidth="lg">
       <Breadcrumbs aria-label="breadcrumb" sx={{ marginBottom: 3 }}>
@@ -136,27 +149,31 @@ const ViewTheatres: React.FC = () => {
           <Card>
             <CardContent>
               <Typography variant="h4" component="h2" align="center">
-                Manage Theatres
+                Manage and View Theatres
               </Typography>
               {success && <Alert severity="success">{success}</Alert>}
               {error && <Alert severity="error">{error}</Alert>}
               
-              <FormControl fullWidth variant="outlined" sx={{ marginBottom: 2 }}>
+                            <FormControl fullWidth variant="outlined">
                 <InputLabel>Select City</InputLabel>
                 <Select
-                  value={selectedCityId || ""}
+                  value={selectedCity}
                   onChange={(e) => {
-                    setSelectedCityId(e.target.value ? Number(e.target.value) : null); // Convert to number
+                    setSelectedCity(e.target.value);
+                    setSelectedTheatre("");
                   }}
+                  label="Select City"
                 >
+                
                   <MenuItem value="">
                     <em>None</em>
                   </MenuItem>
-                  {cities.map((city) => (
-                    <MenuItem key={city.id} value={city.id}>
-                      {city.name}
-                    </MenuItem>
-                  ))}
+                  {cities.length > 0 &&
+                    cities.map((city) => (
+                      <MenuItem key={city.id} value={city.name}>
+                        {city.name}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
 
@@ -212,19 +229,22 @@ const ViewTheatres: React.FC = () => {
             variant="outlined"
           />
           <FormControl fullWidth variant="outlined" sx={{ marginTop: 2 }}>
-            <InputLabel>Select City</InputLabel>
-            <Select
-              value={selectedCityId || ""}
-              onChange={(e) => setSelectedCityId(e.target.value ? Number(e.target.value) : null)}
-            >
+          <InputLabel>Select City</InputLabel>
+                <Select
+                  value={selectedCity}
+                  onChange={(e) => {
+                    setSelectedCity(e.target.value);
+                    // setSelectedTheatre("");
+                  }}>
               <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              {cities.map((city) => (
-                <MenuItem key={city.id} value={city.id}>
-                  {city.name}
-                </MenuItem>
-              ))}
+                    <em>None</em>
+                  </MenuItem>
+                  {cities.length > 0 &&
+                    cities.map((city) => (
+                      <MenuItem key={city.id} value={city.name}>
+                        {city.name}
+                      </MenuItem>
+                    ))}
             </Select>
           </FormControl>
         </DialogContent>

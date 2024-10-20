@@ -143,7 +143,7 @@ const ViewMovies = () => {
 
           <Grid container spacing={3} style={{ marginBottom: "20px" }}>
             <Grid item xs={12} sm={4}>
-              <FormControl fullWidth>
+              <FormControl fullWidth variant="outlined">
                 <InputLabel>Select City</InputLabel>
                 <Select
                   value={selectedCity}
@@ -151,6 +151,7 @@ const ViewMovies = () => {
                     setSelectedCity(e.target.value);
                     setSelectedTheatre("");
                   }}
+                  label="Select City"
                 >
                   <MenuItem value="">
                     <em>None</em>
@@ -171,6 +172,7 @@ const ViewMovies = () => {
                 <Select
                   value={selectedTheatre}
                   onChange={(e) => setSelectedTheatre(e.target.value)}
+                  label="Select Theatre"
                 >
                   <MenuItem value="">
                     <em>None</em>
@@ -191,6 +193,7 @@ const ViewMovies = () => {
                 <Select
                   value={selectedMovie}
                   onChange={(e) => setSelectedMovie(e.target.value)}
+                  label="Select Movie"
                 >
                   <MenuItem value="">
                     <em>None</em>
