@@ -30,7 +30,9 @@ INSTALLED_APPS = [
     "models",
     "user",
     "movie",
-    "theatre"
+    "theatre",
+    "screen",
+    "show",
 ]
 
 MIDDLEWARE = [

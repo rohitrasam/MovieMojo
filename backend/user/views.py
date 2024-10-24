@@ -60,4 +60,10 @@ def reset_password(request: Request) -> Response:
     except:
         return Response("Could not reset password", status=status.HTTP_400_BAD_REQUEST)
 
-
+@api_view(['GET'])
+def get_total_users(request: Request) -> Response:
+    try:
+        total_users = len(AppUser.objects.filter(isAdmin=0))
+        return Response({"total_users": total_users}, status=status.HTTP_200_OK)
+    except:
+        return Response("Unable to get total users.", status=status.HTTP_400_BAD_REQUEST)

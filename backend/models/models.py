@@ -184,7 +184,7 @@ class Screen(models.Model):
 
 class Seat(models.Model):
 
-    _type = models.CharField(max_length=30)
+    _type = models.CharField(max_length=30, null=True)
     seat_num = models.CharField(max_length=10)
     price = models.FloatField(default=0.0)
     screen = models.ForeignKey(Screen, related_name='seat_screen', on_delete=models.CASCADE)
@@ -197,7 +197,7 @@ class Show(models.Model):
 
     screen = models.ForeignKey(Screen, related_name='show_screen', on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, related_name='show_movie', on_delete=models.CASCADE)
-    time = models.DateTimeField(null=True)  # null for time being
+    time = models.DateTimeField()
 
     def __str__(self) -> str:
         return f'{self.movie}, {self.screen}, {self.time}'
