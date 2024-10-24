@@ -63,7 +63,6 @@ const ViewTheatres: React.FC = () => {
         try {
           const citiesResponse = await axios.get('http://localhost:8000/theatre/get_cities');
           setCities(citiesResponse.data);
-          console.log(cities);
           const theatresResponse = await axios.get('http://localhost:8000/theatre/get_theatres');
           setTheatres(theatresResponse.data);
         } catch (err) {
@@ -71,7 +70,7 @@ const ViewTheatres: React.FC = () => {
         }
       };
       fetchCities();
-  },[theatres,cities]);
+  },[]);
 
   
   useEffect(() => {

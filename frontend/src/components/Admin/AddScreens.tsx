@@ -44,7 +44,7 @@ useEffect(()=>{
       };
   
       fetchCitiesAndTheatres();
-    }, [theatre,cities]);
+    }, []);
   
 
     useEffect(() => {
@@ -65,22 +65,26 @@ useEffect(()=>{
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-
+               
         try {
-            const response = await axios.post("http://localhost:8000/theatre/add_screens", {  
+            const response = await axios.post("http://localhost:8000/screen/add_screen", {  
                 name: name,
                 rows: rows,
                 cols: cols,
-                theatre : theatre
+                city: selectedCity,
+                theatre : selectedTheatre
 
             });
 
             if (response.status === 200) {
                 
-                setSuccess("Screen has been added!");
+                // setSuccess("Screen has been added!");
+                setSuccess(response.data);
                 setName('');
                 setRows('');
-                setCols('');  
+                setCols('');
+                setSelectedCity('')  
+                setSelectedTheatre('')  
             } else {
                 setError("Something went wrong");
             }

@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from 'axios';
 import { Card, CardContent, Typography, Grid,  } from "@mui/material";
 import AdminBar from "./AdminBar";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
   const [totalMovies, setTotalMovies] = useState(0);
   const [totalTheatres, setTotalTheatres] = useState(0);
   const [totalUsers, setTotalUsers] = useState(0);
-  const { name } = useParams(); // Get the userId from the URL
 
   useEffect(() => { 
     const fetchTotalMovies = async () => {
@@ -41,8 +40,8 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchTotalUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/user');
-        setTotalUsers(response.data.length);
+        const response = await axios.get('http://localhost:8000/user/total_users');
+        setTotalUsers(response.data.total_users);
         console.log(response);
       } catch (error) {
         console.error("Error fetching total Users:", error);
@@ -56,7 +55,7 @@ const AdminDashboard = () => {
   return (
     <div className="container-scroller" >
       <div className="container-fluid page-body-wrapper">
-        <AdminBar name={name?name : "Admin"} />
+        <AdminBar />
         <div className="main-panel" >
           <div className="content-wrapper">
             <Grid container spacing={3}>
