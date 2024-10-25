@@ -5,11 +5,8 @@ from models.models import *
 
 class ScreenSerializer(serializers.ModelSerializer):
 
-    theatre = serializers.SerializerMethodField()
+    theatre = TheatreSerializer()
 
     class Meta:
         model = Screen
         fields = ['name', 'theatre']
-    
-    def get_theatre(self, obj: Screen) -> str:
-        return TheatreSerializer(obj.theatre).data['name']
