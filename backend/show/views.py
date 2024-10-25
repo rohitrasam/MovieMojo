@@ -13,7 +13,7 @@ def add_show(request: Request):
         address = data['address']
         theatre = Theatre.objects.get(name=data['theatre'], address=address, city=city)
         screen = Screen.objects.get(name=data['screen'], theatre=theatre)
-        time = datetime.datetime.fromisoformat(data['datetime'])
+        time = datetime.datetime.fromisoformat(" ".join(data['datetime'])+":00")
         if Show.objects.filter(screen=screen, time=time).first():
             return Response("Show with given screen and time already exists. Please choose another screen or time.", status=status.HTTP_409_CONFLICT)
         movie = Movie.objects.get(name=data['movie'])

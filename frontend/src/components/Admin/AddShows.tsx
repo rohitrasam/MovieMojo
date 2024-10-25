@@ -5,6 +5,7 @@ import {
   Container,Typography,Card,CardContent,Breadcrumbs,Table,TableBody,TableCell,TableContainer,
   TableHead,TableRow, Paper,IconButton,Link,CircularProgress,FormControl,InputLabel,MenuItem,Select,
   Alert,Grid,Button,
+  TextField,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -24,6 +25,7 @@ interface Theatre {
   id: number;
   name: string;
   city: City;
+  address: string;
 }
 interface City {
   id: number;
@@ -43,15 +45,14 @@ const AddShows = () => {
   const [cities, setCities] = useState<City[]>([]);
   const [screens, setScreens] = useState<Screen[]>([]);
   const [selectedCity, setSelectedCity] = useState<string>("");
-  const [selectedTheatre, setSelectedTheatre] = useState<string>("");
+  const [selectedTheatre, setSelectedTheatre] = useState<Theatre>("");
   const [selectedMovie, setSelectedMovie] = useState<string>("");
   const [selectedScreen, setSelectedScreen] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const[filteredTheatres,setfilteredTheatres]=useState<Theatre[]>([]);
-  const[shows,setShows]=useState<[]>([]);
-  const[filteredShows,setfilteredShows]=useState<[]>([]);
-  const[filteredScreens,setfilteredScreens]=useState<[]>([])
+  const[filteredScreens,setfilteredScreens]=useState<[]>([]);
+  const[selectedDateTime,setSelectedDateTime]=useState<string>("");
 
   useEffect(() => {
     const fetchCitiesAndTheatres = async () => {
@@ -59,9 +60,7 @@ const AddShows = () => {
         const citiesResponse = await axios.get("http://localhost:8000/theatre/get_cities");
         const theatresResponse = await axios.get("http://localhost:8000/theatre/get_theatres");
         const moviesResponse = await axios.get("http://localhost:8000/movies/get_movies");
-        const screenResponse = await axios.get("http://localhost:8000/screen/get_screens")
-        const response = await axios.get("http://localhost:8000/theatre/get_shows");
-        console.log(response.data);
+        const screenResponse = await axios.get("http://localhost:8000/screen/get_screens");
         
         setCities(citiesResponse.data);
         setTheatres(theatresResponse.data);
@@ -69,8 +68,6 @@ const AddShows = () => {
         console.log(screenResponse.data);
         
         console.log(theatresResponse);
-        setShows(response.data);
-        
         setAllMovies(moviesResponse.data); 
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -90,7 +87,7 @@ const AddShows = () => {
       const fetchScreens = async () => {
         try {
           setfilteredTheatres(theatres.filter((theatre) => theatre.city.name === selectedCity))
-          setfilteredScreens(screens.filter((screen)=>(screen.theatre.name==selectedTheatre && screen.theatre.city.name==selectedCity)))
+          setfilteredScreens(screens.filter((screen)=>(screen.theatre.name==selectedTheatre.name && screen.theatre.city.name==selectedCity)))
         } catch (error) {
           console.error("Error fetching screens:", error);
           setError("Failed to fetch movies. Please try again later.");
@@ -108,15 +105,20 @@ const AddShows = () => {
     }
 
     try {
-      await axios.post("http://localhost:8000/theatre/add_show", {
+      await axios.post("http://localhost:8000/show/add_show", {
         city: selectedCity,
-        theatre: selectedTheatre,
+        theatre: selectedTheatre.name,
+        address: selectedTheatre.address,
         screen:selectedScreen,
         movie: selectedMovie,
+        datetime:selectedDateTime.split("T")
+      
+        
       });
-      alert("Movie added successfully to the theatre.");
+      alert("Show Added Successfully");
     } catch (error) {
-      console.error("Error adding movie to theatre:", error);
+      alert("Could not add show")
+      console.error("Error adding show", error);
     }
   };
 
@@ -193,8 +195,8 @@ const AddShows = () => {
                   </MenuItem>
                   {filteredTheatres.length > 0 &&
                     filteredTheatres.map((theatre) => (
-                      <MenuItem key={theatre.id} value={theatre.name}>
-                        {theatre.name}
+                      <MenuItem key={theatre.id} value={theatre}>
+                        {theatre.name + "," +theatre.address}
                       </MenuItem>
                     ))}
                 </Select>
@@ -242,68 +244,33 @@ const AddShows = () => {
                 </Select>
               </FormControl>
             </Grid>
+
+            <Grid item xs={12} sm={4}>
+            <form>
+              <TextField
+                type="datetime-local"
+                variant="outlined"
+                label="Select Date And Time"
+                fullWidth
+                value={selectedDateTime}
+                onChange={(e) => setSelectedDateTime(e.target.value)}
+                disabled={!selectedMovie} 
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </form>
+          </Grid>
           </Grid>
 
           <Button
             variant="contained"
             color="primary"
             onClick={handleAddMovie}
-            disabled={!selectedMovie || !selectedTheatre || !selectedCity}
+            disabled={!selectedMovie || !selectedTheatre || !selectedCity || !selectedDateTime}
           >
-            Add Movie to Theatre
-          </Button>
-
-          {filteredShows.length === 0 && !loading && (
-            <Typography variant="body1">No movies available for the selected filters.</Typography>
-          )}
-
-          {filteredShows.length > 0 && (
-            <TableContainer component={Paper} maxWidth="md" sx={{ height: '100vh', overflow: 'scroll', padding: 2 ,
-              '&::-webkit-scrollbar': {
-              display: 'none',
-            }
-            }}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Sr. No</TableCell>
-                    <TableCell>Movie Name</TableCell>
-                    <TableCell>Description</TableCell>
-                    <TableCell>Duration</TableCell>
-                    <TableCell>Rating</TableCell>
-                    <TableCell>Release Date</TableCell>
-                    <TableCell>Theatre Name</TableCell>
-                    <TableCell>City Name</TableCell>
-                    <TableCell>Address</TableCell>
-                    {/* <TableCell>Actions</TableCell> */}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {filteredShows.map((show, index) => (
-                    <TableRow key={show.movie.id}>
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell>{show.movie.name}</TableCell>
-                      <TableCell>{show.movie.desc}</TableCell>
-                      <TableCell>{show.movie.duration}</TableCell>
-                      <TableCell>{show.movie.rating}</TableCell>
-                      <TableCell>{new Date(show.movie.release_date).toLocaleDateString()}</TableCell>
-                      <TableCell>{show.theatre.name}</TableCell>
-                      <TableCell>{show.theatre.city.name}</TableCell>
-                      <TableCell>{show.theatre.address}</TableCell>
-                      <TableCell>
-                        {/* <IconButton onClick={() => window.location.href = `/edit-movie/${show.movie.id}`} color="primary">
-                          <EditIcon />
-                        </IconButton> */}
-                        {/* <IconButton onClick={() => handleDelete(show.movie.id)} color="secondary">
-                          <DeleteIcon />
-                        </IconButton> */}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          )}
+            Add Show 
+          </Button> 
         </CardContent>
       </Card>
     </Container>
