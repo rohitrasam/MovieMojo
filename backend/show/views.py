@@ -1,3 +1,4 @@
+from .serializers import AdminShowSerializer, HomeShowSerializer
 from models.models import *
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -23,5 +24,19 @@ def add_show(request: Request):
         return Response("Couldn't add show.", status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["GET"])
-def get_shows(request: Request):
-    pass
+def get_admin_shows(request: Request):
+    try:
+        shows = Show.objects.all()
+        shows = AdminShowSerializer(shows, many=True)
+        return Response(shows.data, status=status.HTTP_200_OK)
+    except:
+        return Response("Couldn't fetch shows.", status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(["GET"])
+def get_home_shows(request: Request):
+    try:
+        shows = Show.objects.all().select_related("movie")
+        shows = HomeShowSerializer(shows, many=True)
+        return Response(shows.data, status=status.HTTP_200_OK)
+    except:
+        return Response("Couldn't fetch shows.", status=status.HTTP_400_BAD_REQUEST)
