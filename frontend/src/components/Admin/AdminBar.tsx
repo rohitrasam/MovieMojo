@@ -47,9 +47,7 @@ const AdminBar=()=>{
               <li className="nav-item"> 
                  <Link className="nav-link" to="/addtheatres">Add Theatres</Link>
                 </li>
-              <li className="nav-item"> 
-                <Link className="nav-link" to="/managetheatres">Manage Theatres</Link>
-              </li>
+              
             </ul>
           )}
         </li>
@@ -91,9 +89,9 @@ const AdminBar=()=>{
           </a>
           {isSeatsOpen &&(
             <ul className="nav flex-column sub-menu">
-              <li className="nav-item"> 
+              {/* <li className="nav-item"> 
                  <Link className="nav-link" to="/addseats">Add Seats</Link>
-                </li>
+                </li> */}
               <li className="nav-item"> 
                 <Link className="nav-link" to="/manageseats">Manage Seats</Link>
               </li>
@@ -108,7 +106,7 @@ const AdminBar=()=>{
           {isShowTimingsOpen &&(
             <ul className="nav flex-column sub-menu">
               <li className="nav-item"> 
-                 <Link className="nav-link" to="/addshowtimings">Add Show Timings</Link>
+                 <Link className="nav-link" to="/addshow">Add Show Timings</Link>
                 </li>
               <li className="nav-item"> 
                 <Link className="nav-link" to="/managetheatres">Manage Show Timings</Link>
