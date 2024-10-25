@@ -90,6 +90,8 @@ useEffect(()=>{
             }
         } catch (err) {
             setError("Please try again");
+            console.log(err);
+            
         }
     };
 

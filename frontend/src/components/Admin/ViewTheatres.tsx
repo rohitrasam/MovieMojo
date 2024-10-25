@@ -51,6 +51,7 @@ const ViewTheatres: React.FC = () => {
   const [selectedTheatre, setSelectedTheatre] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const [editingTheatre, setEditingTheatre] = useState<Theatre | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [tName, setTname] = useState('');
@@ -67,6 +68,8 @@ const ViewTheatres: React.FC = () => {
           setTheatres(theatresResponse.data);
         } catch (err) {
           setError("Failed to fetch data. Please try again.");
+        }finally {
+          setLoading(false);
         }
       };
       fetchCities();
@@ -143,17 +146,17 @@ const ViewTheatres: React.FC = () => {
         <Link component={RouterLink} to="/admindashboard">Dashboard</Link>
         <Typography color="textPrimary">Manage Theatres</Typography>
       </Breadcrumbs>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
+       <Card>
+          <CardContent>
               <Typography variant="h4" component="h2" align="center">
                 Manage and View Theatres
               </Typography>
               {success && <Alert severity="success">{success}</Alert>}
               {error && <Alert severity="error">{error}</Alert>}
-              
-                            <FormControl fullWidth variant="outlined">
+        
+              <Grid container spacing={3} style={{ marginBottom: "20px" }}>
+                <Grid item xs={12}>
+                  <FormControl fullWidth variant="outlined">
                 <InputLabel>Select City</InputLabel>
                 <Select
                   value={selectedCity}
@@ -162,8 +165,7 @@ const ViewTheatres: React.FC = () => {
                     setSelectedTheatre("");
                   }}
                   label="Select City"
-                >
-                
+                >             
                   <MenuItem value="">
                     <em>None</em>
                   </MenuItem>
@@ -175,8 +177,18 @@ const ViewTheatres: React.FC = () => {
                     ))}
                 </Select>
               </FormControl>
+              </Grid>
+              </Grid>
+              {filteredTheatres.length === 0 && !loading && (
+            <Typography variant="body1">No theatres available for the selected filters.</Typography>
+          )}
 
-              <TableContainer component={Paper}>
+          {filteredTheatres.length > 0 && (
+            <TableContainer component={Paper} maxWidth="md" sx={{ height: '100vh', overflow: 'scroll', padding: 2 ,
+              '&::-webkit-scrollbar': {
+              display: 'none',
+            }
+            }}>
                 <Table>
                   <TableHead>
                     <TableRow>
@@ -205,10 +217,10 @@ const ViewTheatres: React.FC = () => {
                   </TableBody>
                 </Table>
               </TableContainer>
+          )}
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
+       
 
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
         <DialogTitle>Edit Theatre</DialogTitle>

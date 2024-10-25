@@ -14,12 +14,13 @@ def add_screen(request: Request) -> Response:
         theatres = Theatre.objects.filter(name=screen_data['theatre'], city=city)
         for theatre in theatres:
             screen = Screen.objects.create(name=screen_data['name'], rows=int(screen_data['rows']), cols=int(screen_data['cols']), theatre=theatre)
-            # seats = []
-            # for row in screen.rows:
-            #     start = ord('A')+row
-            #     for col in screen.cols:
-            #         seats.append(Seat(seat_num=f"{chr(start)}{col+1}", screen=screen))
-            # Seat.objects.bulk_create(seats)
+            seats = []
+            for row in range(screen.rows):
+                start = ord('A')+row
+                for col in range(screen.cols):
+                    seats.append(Seat(seat_num=f"{chr(start)}{col+1}", screen=screen))
+            Seat.objects.bulk_create(seats)
+            
 
         return Response(f"{screen.name} added successfully to all {theatre.name} branches in {city}!", status=status.HTTP_200_OK)
     except:

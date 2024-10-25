@@ -3,22 +3,22 @@ import axios from "axios";
 import { Link as RouterLink } from "react-router-dom";
 import {
   Container,Typography,Card,CardContent,Breadcrumbs,Table,TableBody,TableCell,TableContainer,
-  TableHead,TableRow, Paper,Link,CircularProgress,FormControl,InputLabel,MenuItem,Select,
-  Alert,Grid,
+  TableHead,TableRow, Paper,IconButton,Link,CircularProgress,FormControl,InputLabel,MenuItem,Select,
+  Alert,Grid,Button,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-// interface Movie {
-//   id: number;
-//   name: string;
-//   desc: string;
-//   duration: number;
-//   rating: number;
-//   release_date: string;
-//   theatreName: string;
-//   cityName: string;
-// }
+interface Movie {
+  id: number;
+  name: string;
+  desc: string;
+  duration: number;
+  rating: number;
+  release_date: string;
+  theatreName: string;
+  cityName: string;
+}
 
 interface Theatre {
   id: number;
@@ -30,19 +30,28 @@ interface City {
   name: string;
 }
 
-const ViewMovies = () => {
-  // const [movies, setMovies] = useState<Movie[]>([]);
-  // const [allMovies, setAllMovies] = useState<Movie[]>([]);
+interface Screen{
+id:number;
+name:string
+
+}
+
+const AddShows = () => {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [allMovies, setAllMovies] = useState<Movie[]>([]);
   const [theatres, setTheatres] = useState<Theatre[]>([]);
   const [cities, setCities] = useState<City[]>([]);
+  const [screens, setScreens] = useState<Screen[]>([]);
   const [selectedCity, setSelectedCity] = useState<string>("");
   const [selectedTheatre, setSelectedTheatre] = useState<string>("");
-  // const [selectedMovie, setSelectedMovie] = useState<string>("");
+  const [selectedMovie, setSelectedMovie] = useState<string>("");
+  const [selectedScreen, setSelectedScreen] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const[filteredTheatres,setfilteredTheatres]=useState<Theatre[]>([]);
   const[shows,setShows]=useState<[]>([]);
-  const[filteredShows,setfilteredShows]=useState<[]>([])
+  const[filteredShows,setfilteredShows]=useState<[]>([]);
+  const[filteredScreens,setfilteredScreens]=useState<[]>([])
 
   useEffect(() => {
     const fetchCitiesAndTheatres = async () => {
@@ -50,15 +59,19 @@ const ViewMovies = () => {
         const citiesResponse = await axios.get("http://localhost:8000/theatre/get_cities");
         const theatresResponse = await axios.get("http://localhost:8000/theatre/get_theatres");
         const moviesResponse = await axios.get("http://localhost:8000/movies/get_movies");
+        const screenResponse = await axios.get("http://localhost:8000/screen/get_screens")
         const response = await axios.get("http://localhost:8000/theatre/get_shows");
         console.log(response.data);
         
         setCities(citiesResponse.data);
         setTheatres(theatresResponse.data);
+        setScreens(screenResponse.data);
+        console.log(screenResponse.data);
+        
         console.log(theatresResponse);
         setShows(response.data);
         
-        // setAllMovies(moviesResponse.data); 
+        setAllMovies(moviesResponse.data); 
       } catch (error) {
         console.error("Error fetching data:", error);
         setError("Failed to fetch data. Please try again later.");
@@ -74,37 +87,38 @@ const ViewMovies = () => {
     if (selectedCity) {
       console.log("Line 70");
       
-      const fetchMovies = async () => {
+      const fetchScreens = async () => {
         try {
           setfilteredTheatres(theatres.filter((theatre) => theatre.city.name === selectedCity))
-          setfilteredShows(shows.filter((show)=>(show.theatre.name==selectedTheatre && show.theatre.city.name==selectedCity)))
+          setfilteredScreens(screens.filter((screen)=>(screen.theatre.name==selectedTheatre && screen.theatre.city.name==selectedCity)))
         } catch (error) {
-          console.error("Error fetching movies:", error);
+          console.error("Error fetching screens:", error);
           setError("Failed to fetch movies. Please try again later.");
         }
       };
 
-      fetchMovies();
+      fetchScreens();
     }
-  }, [selectedCity,theatres,selectedTheatre,shows]);
+  }, [selectedCity,theatres,selectedTheatre,screens]);
 
-  // const handleAddMovie = async () => {
-  //   if (!selectedMovie || !selectedCity || !selectedTheatre) {
-  //     alert("Please select a movie, city, and theatre.");
-  //     return;
-  //   }
+  const handleAddMovie = async () => {
+    if (!selectedMovie || !selectedCity || !selectedTheatre) {
+      alert("Please select a movie, city, and theatre.");
+      return;
+    }
 
-  //   try {
-  //     await axios.post("http://localhost:8000/theatre/add_show", {
-  //       movie: selectedMovie,
-  //       city: selectedCity,
-  //       theatre: selectedTheatre,
-  //     });
-  //     alert("Movie added successfully to the theatre.");
-  //   } catch (error) {
-  //     console.error("Error adding movie to theatre:", error);
-  //   }
-  // };
+    try {
+      await axios.post("http://localhost:8000/theatre/add_show", {
+        city: selectedCity,
+        theatre: selectedTheatre,
+        screen:selectedScreen,
+        movie: selectedMovie,
+      });
+      alert("Movie added successfully to the theatre.");
+    } catch (error) {
+      console.error("Error adding movie to theatre:", error);
+    }
+  };
 
   // const handleDelete = async (id: number) => {
   //   if (!id) {
@@ -129,20 +143,20 @@ const ViewMovies = () => {
     <Container maxWidth="lg">
       <Breadcrumbs aria-label="breadcrumb" sx={{ marginBottom: 3 }}>
         <Link component={RouterLink} to="/admindashboard">Dashboard</Link>
-        <Typography color="textPrimary">Manage and View Movies</Typography>
+        <Typography color="textPrimary">Add Shows</Typography>
       </Breadcrumbs>
 
       <Card>
         <CardContent>
           <Typography variant="h4" align="center" gutterBottom>
-            Manage and View Movies
+            Add Shows
           </Typography>
 
           {loading && <CircularProgress />}
           {error && <Alert severity="error">{error}</Alert>}
 
           <Grid container spacing={3} style={{ marginBottom: "20px" }}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <FormControl fullWidth variant="outlined">
                 <InputLabel>Select City</InputLabel>
                 <Select
@@ -166,7 +180,7 @@ const ViewMovies = () => {
               </FormControl>
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <FormControl fullWidth disabled={!selectedCity}>
                 <InputLabel>Select Theatre</InputLabel>
                 <Select
@@ -187,8 +201,29 @@ const ViewMovies = () => {
               </FormControl>
             </Grid>
 
-            {/* <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={4}>
               <FormControl fullWidth disabled={!selectedTheatre}>
+                <InputLabel>Select Screen</InputLabel>
+                <Select
+                  value={selectedScreen}
+                  onChange={(e) => setSelectedScreen(e.target.value)}
+                  label="Select Screen"
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  {filteredScreens.length > 0 &&
+                    filteredScreens.map((screen) => (
+                      <MenuItem key={screen.id} value={screen.name}>
+                        {screen.name}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={4}>
+              <FormControl fullWidth disabled={!selectedScreen}>
                 <InputLabel>Select Movie</InputLabel>
                 <Select
                   value={selectedMovie}
@@ -206,17 +241,17 @@ const ViewMovies = () => {
                     ))}
                 </Select>
               </FormControl>
-            </Grid> */}
+            </Grid>
           </Grid>
 
-          {/* <Button
+          <Button
             variant="contained"
             color="primary"
             onClick={handleAddMovie}
             disabled={!selectedMovie || !selectedTheatre || !selectedCity}
           >
             Add Movie to Theatre
-          </Button> */}
+          </Button>
 
           {filteredShows.length === 0 && !loading && (
             <Typography variant="body1">No movies available for the selected filters.</Typography>
@@ -275,4 +310,4 @@ const ViewMovies = () => {
   );
 };
 
-export default ViewMovies;
+export default AddShows;
