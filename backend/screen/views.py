@@ -20,8 +20,6 @@ def add_screen(request: Request) -> Response:
                 for col in range(screen.cols):
                     seats.append(Seat(seat_num=f"{chr(start)}{col+1}", screen=screen))
             Seat.objects.bulk_create(seats)
-            
-
         return Response(f"{screen.name} added successfully to all {theatre.name} branches in {city}!", status=status.HTTP_200_OK)
     except:
         return Response("Could not add screen.", status=status.HTTP_400_BAD_REQUEST)
@@ -35,3 +33,21 @@ def get_screens(request: Request):
         return Response(screens.data, status=status.HTTP_200_OK)
     except:
         return Response("Failed to fetch screens.", status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["PATCH"])
+def update_screen(request: Request, id: int):
+    pass
+
+@api_view(["GET"])
+def get_seats(request: Request):
+    screen = Screen.objects.prefetch_related('seat_screen')
+    return Response(ScreenSeatSerializer(screen, many=True).data, status=status.HTTP_200_OK)
+
+@api_view(["PATCH"])
+def update_seats(request: Request):
+    pass
+
+@api_view(["GET"])
+def get_total_screens(request: Request):
+    total_screens = len(Screen.objects.all())
+    return Response({"total_screens": total_screens}, status=status.HTTP_200_OK)

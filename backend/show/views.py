@@ -23,6 +23,10 @@ def add_show(request: Request):
     except:
         return Response("Couldn't add show.", status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(["PATCH"])
+def update_show(request: Request, id: int):
+    pass
+
 @api_view(["GET"])
 def get_admin_shows(request: Request):
     try:
@@ -40,3 +44,8 @@ def get_home_shows(request: Request):
         return Response(shows.data, status=status.HTTP_200_OK)
     except:
         return Response("Couldn't fetch shows.", status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["GET"])
+def get_total_shows(request: Request):
+    total_shows = len(Show.objects.all())
+    return Response({"total_shows": total_shows}, status=status.HTTP_200_OK)
