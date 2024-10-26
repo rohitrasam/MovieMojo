@@ -3,6 +3,7 @@ import Genre from "./Genre";
 import Language from "./Languages";
 
 export interface Movie {
+  theatre: any;
   id: number;
   name: string;
   poster_url: string;

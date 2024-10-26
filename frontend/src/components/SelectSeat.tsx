@@ -1,118 +1,158 @@
-import React, { useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
-import { Box, Typography, Button } from '@mui/material';
-import EventSeatIcon from '@mui/icons-material/EventSeat'; // Import seat icon
+import React, { useState, useEffect } from 'react';
+import { Grid, Box, Typography, CircularProgress, IconButton, Avatar, Button, Menu, MenuItem } from '@mui/material';
+import SearchBar from './SearchBar';
+import MovieTemplate from './MovieTemplate';
+import { Movie } from '../core/models/Movie';
+import SideBar from './Sidebar/SideBar';
+import { getMovies } from '../core/services/movieService';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
-const totalSeats = 40; // Total seats
-const seatsPerRow = 8; // Seats per row
+const Home: React.FC = () => {
+  const navigate = useNavigate(); // Initialize navigate function
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-const SelectSeat: React.FC = () => {
-  const { id } = useParams<{ id: string }>(); // Get movie ID from URL
-  const location = useLocation();
-  const movieName = location.state?.movieName || "Movie"; // Get movie name from state
+  const [langFilter, setLangFilter] = useState<string[]>([]);
+  const [formatFilter, setFormatFilter] = useState<string[]>([]);
+  const [genreFilter, setGenreFilter] = useState<string[]>([]);
 
-  const [selectedSeats, setSelectedSeats] = useState<number[]>([]);
-  const [showtime, setShowtime] = useState<string | null>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // Menu state
+  const [selectedCity, setSelectedCity] = useState<string>('City'); // City state
 
-  const handleSeatClick = (seatNumber: number) => {
-    if (selectedSeats.includes(seatNumber)) {
-      setSelectedSeats(selectedSeats.filter(seat => seat !== seatNumber));
-    } else {
-      setSelectedSeats([...selectedSeats, seatNumber]);
+  // Handle city selection menu
+  const handleCityClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCityClose = (city?: string) => {
+    setAnchorEl(null);
+    if (city) {
+      setSelectedCity(city);
     }
   };
 
-  const handleShowtimeSelect = (time: string) => {
-    setShowtime(time);
-  };
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const data = await getMovies();
+        setMovies(data);
+        setFilteredMovies(data); // Initially set filtered movies to all movies
+      } catch (error) {
+        console.error('Failed to fetch movies:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleConfirmBooking = () => {
-    if (selectedSeats.length === 0 || !showtime) {
-      alert('Please select seats and a showtime');
+    fetchMovies();
+  }, []);
+
+  useEffect(() => {
+    const filteredMovies = movies.filter(movie => {
+      const langMatch = movie.languages.length !== 0 && movie.languages.some(language => langFilter.includes(language.name));
+      const formatMatch = movie.formats.length !== 0 && movie.formats.some(format => formatFilter.includes(format._type));
+      const genreMatch = movie.genres.length !== 0 && movie.genres.some(genre => genreFilter.includes(genre._type));
+      const cityMatch = movie.city === selectedCity; // Filter movies based on the selected city
+
+      return (langMatch || formatMatch || genreMatch) && cityMatch;
+    });
+
+    setFilteredMovies(filteredMovies.length === 0 ? movies : filteredMovies);
+  }, [langFilter, formatFilter, genreFilter, selectedCity, movies]);
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query) {
+      const filtered = movies.filter(movie =>
+        movie.name.toLowerCase().includes(query.toLowerCase()) && movie.city === selectedCity
+      );
+      setFilteredMovies(filtered);
     } else {
-      alert(`Booking confirmed for ${selectedSeats.length} seats at ${showtime}`);
+      setFilteredMovies(movies.filter(movie => movie.city === selectedCity)); 
+      // Reset to original list filtered by city if query is empty
     }
   };
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100vh',
-        padding: '20px',
-      }}
-    >
-      <Typography variant="h4" sx={{ mb: 3 }}>
-        Select Your Seats for {movieName} 
-      </Typography>
+    <Box display={"flex"} sx={{ flex: 1 }}>
+      <div>
+        <SideBar setLangFilter={setLangFilter} setFormatFilter={setFormatFilter} setGenreFilter={setGenreFilter} />
+      </div>
+      <div style={{ overflowY: "scroll", height: "100vh", marginLeft:"10px", paddingLeft: "20px", width: "100%" }}>
+        <Box display="flex" alignItems="center">
+          {/* Select City Button */}
+          <Button
+            variant="contained"
+            onClick={handleCityClick}
+            sx={{
+              marginRight: "10px",
+              backgroundColor: "#1976d2",
+              color: "#fff",
+              '&:hover': {
+                backgroundColor: "#115293",
+              },
+            }}
+          >
+            {selectedCity}
+          </Button>
 
-      {/* Seat Layout with 40 seats */}
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${seatsPerRow}, 1fr)`, 
-          gap: '10px',
-          mb: 4,
-        }}
-      >
-        {Array.from({ length: totalSeats }, (_, index) => {
-          const seatNumber = index + 1;
-          const isSelected = selectedSeats.includes(seatNumber);
+          {/* City Selection Menu */}
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={() => handleCityClose()}
+          >
+            <MenuItem onClick={() => handleCityClose('PUNE ')}>PUNE</MenuItem>
+            <MenuItem onClick={() => handleCityClose('MUMBAI')}>MUMBAI</MenuItem>
+            <MenuItem onClick={() => handleCityClose('SOLAPUR')}>SOLAPUR</MenuItem>
+            {/* Add more cities as needed */}
+          </Menu>
 
-          return (
-            <EventSeatIcon
-              key={seatNumber}
-              onClick={() => handleSeatClick(seatNumber)}
-              sx={{
-                fontSize: '40px',
-                cursor: 'pointer',
-                color: isSelected ? 'gray' : 'dodgerblue', // Selected or Available colors
-              }}
-            />
-          );
-        })}
-      </Box>
-
-      {/* Showtime selection */}
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        Select a Showtime:
-      </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
-        <Button
-          variant={showtime === '11:00 AM' ? 'contained' : 'outlined'}
-          onClick={() => handleShowtimeSelect('11:00 AM')}
-          sx={{ mr: 1 }}
-        >
-          11:00 AM
-        </Button>
-        <Button
-          variant={showtime === '3:00 PM' ? 'contained' : 'outlined'}
-          onClick={() => handleShowtimeSelect('3:00 PM')}
-          sx={{ mr: 1 }}
-        >
-          3:00 PM
-        </Button>
-        <Button
-          variant={showtime === '6:00 PM' ? 'contained' : 'outlined'}
-          onClick={() => handleShowtimeSelect('6:00 PM')}
-        >
-          6:00 PM
-        </Button>
-      </Box>
-
-      {/* Booking summary */}
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        {selectedSeats.length} Tickets for {showtime || 'No showtime selected'}
-      </Typography>
-
-      <Button variant="contained" color="primary" onClick={handleConfirmBooking}>
-        Confirm Booking
-      </Button>
+          <SearchBar onSearch={handleSearch} />
+          <IconButton
+            sx={{
+              marginLeft: "20px",
+              backgroundColor: "#1976d2",
+              color: "#fff",
+              borderRadius: "50%", // Make the button round
+              '&:hover': {
+                backgroundColor: "#115293",
+              }
+            }}
+            onClick={() => navigate('/profile')} // Navigate to Profile page
+          >
+            <Avatar sx={{ bgcolor: "#fff", color: "#1976d2" }}>P</Avatar>
+          </IconButton>
+        </Box>
+        <Typography variant="h4" sx={{ padding: "10px 0px 0px 10px", mb: 2, color: "rgb(13, 67, 137)" }}>
+          Latest Releases
+        </Typography>
+        {filteredMovies.length === 0 && searchQuery ? (
+          <Typography variant="h6" sx={{ padding: "10px" }}>
+            No results found for "{searchQuery}".
+          </Typography>
+        ) : (
+          <Grid container spacing={0.1}>
+            {filteredMovies.map((movie) => (
+              <Grid item xs={12} sm={6} md={4} key={movie.id}>
+                <MovieTemplate movie={movie} />
+              </Grid>
+            ))}
+          </Grid>
+        )}
+      </div>
     </Box>
   );
 };
 
-export default SelectSeat;
+export default Home;
