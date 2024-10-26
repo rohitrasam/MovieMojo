@@ -20,7 +20,7 @@ def add_screen(request: Request) -> Response:
                 for col in range(screen.cols):
                     seats.append(Seat(seat_num=f"{chr(start)}{col+1}", screen=screen))
             Seat.objects.bulk_create(seats)
-        return Response(f"{screen.name} added successfully to all {theatre.name} branches in {city}!", status=status.HTTP_200_OK)
+        return Response(f"{screen.name} added successfully to {theatre.name} {theatre.address} branch in {city}!", status=status.HTTP_200_OK)
     except:
         return Response("Could not add screen.", status=status.HTTP_400_BAD_REQUEST)
 
