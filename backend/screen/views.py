@@ -11,7 +11,7 @@ def add_screen(request: Request) -> Response:
     try:
         screen_data = request.data
         city = City.objects.get(name=screen_data['city'])
-        theatres = Theatre.objects.filter(name=screen_data['theatre'], city=city)
+        theatres = Theatre.objects.filter(name=screen_data['theatre'], address=screen_data['address'], city=city)
         for theatre in theatres:
             screen = Screen.objects.create(name=screen_data['name'], rows=int(screen_data['rows']), cols=int(screen_data['cols']), theatre=theatre)
             seats = []
