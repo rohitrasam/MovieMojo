@@ -45,7 +45,7 @@ const AddShows = () => {
   const [cities, setCities] = useState<City[]>([]);
   const [screens, setScreens] = useState<Screen[]>([]);
   const [selectedCity, setSelectedCity] = useState<string>("");
-  const [selectedTheatre, setSelectedTheatre] = useState<Theatre>("");
+  const [selectedTheatre, setSelectedTheatre] = useState<Theatre>();
   const [selectedMovie, setSelectedMovie] = useState<string>("");
   const [selectedScreen, setSelectedScreen] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
@@ -87,7 +87,9 @@ const AddShows = () => {
       const fetchScreens = async () => {
         try {
           setfilteredTheatres(theatres.filter((theatre) => theatre.city.name === selectedCity))
-          setfilteredScreens(screens.filter((screen)=>(screen.theatre.name==selectedTheatre.name && screen.theatre.city.name==selectedCity)))
+          setfilteredScreens(screens.filter((screen)=>(screen.theatre.name==selectedTheatre.name && 
+                                                        screen.theatre.city.name==selectedCity && 
+                                                        screen.theatre.address === selectedTheatre.address)))
         } catch (error) {
           console.error("Error fetching screens:", error);
           setError("Failed to fetch movies. Please try again later.");
