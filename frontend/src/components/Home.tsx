@@ -1,29 +1,57 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Box, Typography, CircularProgress, IconButton, Avatar } from '@mui/material';
+import { Grid, Box, Typography, CircularProgress, IconButton, Avatar, Button, Menu, MenuItem } from '@mui/material';
 import SearchBar from './SearchBar';
 import MovieTemplate from './MovieTemplate';
 import { Movie } from '../core/models/Movie';
 import SideBar from './Sidebar/SideBar';
 import { getMovies } from '../core/services/movieService';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
+import { City } from '../core/models/City';
+import { getCities } from '../core/services/theatreService';
 
 const Home: React.FC = () => {
-  const navigate = useNavigate(); // Initialize navigate function
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]);
+  const navigate = useNavigate();
+  const [shows, setShows] = useState<[]>([]);
+  const [movies,setMovies]=useState<Movie[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
+  const [filteredMovies, setFilteredMovies] = useState<[]>([]);
+  const [cityfilteredMovies, setCityFilteredMovies] = useState<[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [langFilter, setLangFilter] = useState<string[]>([]);
+  const [formatFilter, setFormatFilter] = useState<string[]>([]);
+  const [genreFilter, setGenreFilter] = useState<string[]>([]);
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedCity, setSelectedCity] = useState<string>('City');
+
+  // Handle city selection menu
+  const handleCityClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCityClose = (city?: string) => {
+    setAnchorEl(null);
+    if (city) {
+      setSelectedCity(city);
+    }
+  };
+  useEffect(()=>{
+    const data=shows.filter((show)=>show.theatre.city.name=== selectedCity)
+    setCityFilteredMovies(data)
+    setFilteredMovies(data );
+    },[selectedCity])
   
-  const [langFilter, setLangFilter] = useState<string[]>([])
-  const [formatFilter, setFormatFilter] = useState<string[]>([])
-  const [genreFilter, setGenreFilter] = useState<string[]>([])
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
         const data = await getMovies();
-        setMovies(data);
-        setFilteredMovies(data); // Initially set filtered movies to all movies
+        console.log(data);
+        setShows(data);
+        setCityFilteredMovies(data);
+        setFilteredMovies(data );
+        
       } catch (error) {
         console.error('Failed to fetch movies:', error);
       } finally {
@@ -31,23 +59,28 @@ const Home: React.FC = () => {
       }
     };
 
+    const fetchCities = async () => {
+      try {
+        const data = await getCities();
+        setCities(data);
+      } catch (error) {
+        console.error('Failed to fetch cities:', error);
+      }
+    };
+
     fetchMovies();
+    fetchCities();
   }, []);
+useEffect(() => {
+    const filteredData = cityfilteredMovies.filter(show => {
+      const langMatch = show.movie.languages.length !== 0 && show.movie.languages.some(language => langFilter.includes(language.name));
+      const formatMatch = show.movie.formats.length !== 0 && show.movie.formats.some(format => formatFilter.includes(format._type));
+      const genreMatch = show.movie.genres.length !== 0 && show.movie.genres.some(genre => genreFilter.includes(genre._type));
+      return  (langMatch || formatMatch || genreMatch);
+    });
 
-  useEffect(() => {
-    
-    const filteredMovies = movies.filter(movie => {
-      
-      const langMatch = movie.languages.length !== 0 && movie.languages.some(language =>  langFilter.includes(language.name))
-      const formatMatch = movie.formats.length !== 0 && movie.formats.some(format => formatFilter.includes(format._type))
-      const genreMatch = movie.genres.length !== 0 && movie.genres.some(genre => genreFilter.includes(genre._type))
-
-      return langMatch || formatMatch || genreMatch
-    })
-
-    setFilteredMovies(filteredMovies.length === 0 ? movies : filteredMovies)
-
-  }, [langFilter, formatFilter, genreFilter, movies])
+    setFilteredMovies(filteredData.length === 0 ? cityfilteredMovies : filteredData);
+  }, [langFilter, formatFilter, genreFilter]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -57,11 +90,10 @@ const Home: React.FC = () => {
       );
       setFilteredMovies(filtered);
     } else {
-      setFilteredMovies(movies); // Reset to original list if query is empty
+      setFilteredMovies(shows);
     }
-  };
-
-  if (loading) {
+   };
+if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
         <CircularProgress />
@@ -69,31 +101,59 @@ const Home: React.FC = () => {
     );
   }
 
-
   return (
     <Box display={"flex"} sx={{ flex: 1 }}>
       <div>
-        <SideBar setLangFilter={setLangFilter} setFormatFilter={setFormatFilter} setGenreFilter={setGenreFilter}/>
+        <SideBar setLangFilter={setLangFilter} setFormatFilter={setFormatFilter} setGenreFilter={setGenreFilter} />
       </div>
-      <div style={{ overflowY: "scroll", height: "100vh", marginLeft:"10px", paddingLeft: "20px", width: "100%"}}>
+      <div style={{ overflowY: "scroll", height: "100vh", marginLeft: "10px", paddingLeft: "20px", width: "100%" }}>
         <Box display="flex" alignItems="center">
-          <SearchBar onSearch={handleSearch} />
+          {/* Select City Button */}
+          <Button
+            variant="contained"
+            onClick={handleCityClick}
+            sx={{
+              marginRight: "10px",
+              backgroundColor: "#1976d2",
+              color: "#fff",
+              '&:hover': {
+                backgroundColor: "#115293",
+              },
+            }}
+          >
+            {selectedCity}
+          </Button>
+
+          {/* City Selection Menu */}
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={() => handleCityClose()}
+          >
+            {cities.map((city) => (
+              <MenuItem key={city.id} onClick={() => handleCityClose(city.name)}>
+                {city.name}
+              </MenuItem>
+            ))}
+          </Menu>
+
+          {/* <SearchBar onSearch={handleSearch} /> */}
           <IconButton
             sx={{
               marginLeft: "20px",
               backgroundColor: "#1976d2",
               color: "#fff",
-              borderRadius: "50%", // Make the button round
+              borderRadius: "50%",
               '&:hover': {
                 backgroundColor: "#115293",
               }
             }}
-            onClick={() => navigate('/profile')} // Navigate to Profile page
+            onClick={() => navigate('/profile')}
           >
             <Avatar sx={{ bgcolor: "#fff", color: "#1976d2" }}>P</Avatar>
           </IconButton>
         </Box>
-        <Typography variant="h4" sx={{ padding: "10px 0px 0px 10px", mb: 2, color: "rgb(13, 67, 137)"}}>
+        <Typography variant="h4" sx={{ padding: "10px 0px 0px 10px", mb: 2, color: "rgb(13, 67, 137)" }}>
           Latest Releases
         </Typography>
         {filteredMovies.length === 0 && searchQuery ? (
@@ -103,8 +163,8 @@ const Home: React.FC = () => {
         ) : (
           <Grid container spacing={0.1}>
             {filteredMovies.map((movie) => (
-              <Grid item xs={12} sm={6} md={4} key={movie.id}>
-                <MovieTemplate movie={movie} />
+              <Grid item xs={12} sm={6} md={4} key={movie.movie.id}>
+                <MovieTemplate movie={movie.movie} />
               </Grid>
             ))}
           </Grid>

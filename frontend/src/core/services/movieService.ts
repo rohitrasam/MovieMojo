@@ -2,12 +2,12 @@ import axios from "axios";
 import { Movie } from "../models/Movie";
 
 // API base URL
-const API_URL = "http://127.0.0.1:8000/movies"; // Your backend API URL
+const API_URL = "http://127.0.0.1:8000/show"; // Your backend API URL
 
 // Fetch all movies
-export const getMovies = async (): Promise<Movie[]> => {
+export const getMovies = async (): Promise => {
   try {
-    const response = await axios.get<Movie[]>(`${API_URL}/get_movies`);
+    const response = await axios.get(`${API_URL}/get_home_shows`);
     return response.data;
   } catch (error) {
     console.error("Error fetching movies:", error);
