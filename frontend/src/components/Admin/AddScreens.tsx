@@ -24,10 +24,10 @@ const AddScreens: React.FC = () => {
     const [success, setSuccess] = useState<string | null>(null);
     const[theatre,setTheatres]=useState<Theatre[]>([]);
     const[cities,setCities]=useState<City[]>([]);
-    const[selectedTheatre,setSelectedTheatre]=useState<string>("");
+    const[selectedTheatre,setSelectedTheatre]=useState<Theatre>(null);
     const[filteredTheatres,setfilteredTheatres]=useState<Theatre[]>([]);
     const[selectedCity,setSelectedCity]=useState<string>("");
-
+    
 useEffect(()=>{
     const fetchCitiesAndTheatres = async () => {
         try {
@@ -72,7 +72,8 @@ useEffect(()=>{
                 rows: rows,
                 cols: cols,
                 city: selectedCity,
-                theatre : selectedTheatre
+                theatre : selectedTheatre.name,
+                address : selectedTheatre.address
 
             });
 
@@ -173,8 +174,8 @@ useEffect(()=>{
                                         label="Select Theatre"
                                         >
                                        { filteredTheatres.map((theatre)=>(
-                                        <MenuItem key={theatre.id} value={theatre.name}>
-                                            {theatre.name}
+                                        <MenuItem key={theatre.id} value={theatre}>
+                                            {theatre.name+", " +theatre.address}
                                         </MenuItem>
                                        ))}
                                         </Select>
