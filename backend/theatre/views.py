@@ -44,16 +44,12 @@ def get_cities(request: Request) -> Response:
     cities = CitySerializer(cities, many=True)
     return Response(cities.data, status=status.HTTP_200_OK)
 
-@api_view(["PUT"])
+@api_view(["PATCH"])
 def update_theatre(request: Request, id: int):
     try:
-        theatre = Theatre.objects.get(id=id)
-    except Theatre.DoesNotExist:
-        return Response({"error": "Theatre not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    serializer = TheatreSerializer(theatre, data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        city = City.objects.get(name=request.data["city"])
+        request.data['city'] = city
+        theatre = Theatre.objects.filter(id=id).update(**request.data)
+        return Response("Theatre updated.", status=status.HTTP_200_OK)
+    except:
+        return Response("Could not update theatre. Try again.", status=status.HTTP_404_NOT_FOUND)
