@@ -12,11 +12,12 @@ import { getCities } from '../core/services/theatreService';
 const Home: React.FC = () => {
   const navigate = useNavigate();
   const [shows, setShows] = useState<[]>([]);
+  const [movies,setMovies]=useState<Movie[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [filteredMovies, setFilteredMovies] = useState<[]>([]);
+  const [cityfilteredMovies, setCityFilteredMovies] = useState<[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
-
   const [langFilter, setLangFilter] = useState<string[]>([]);
   const [formatFilter, setFormatFilter] = useState<string[]>([]);
   const [genreFilter, setGenreFilter] = useState<string[]>([]);
@@ -36,7 +37,9 @@ const Home: React.FC = () => {
     }
   };
   useEffect(()=>{
-    setFilteredMovies( shows.filter((show)=>show.theatre.city.name=== selectedCity))
+    const data=shows.filter((show)=>show.theatre.city.name=== selectedCity)
+    setCityFilteredMovies(data)
+    setFilteredMovies(data );
     },[selectedCity])
   
 
@@ -46,7 +49,9 @@ const Home: React.FC = () => {
         const data = await getMovies();
         console.log(data);
         setShows(data);
-        setFilteredMovies(data);
+        setCityFilteredMovies(data);
+        setFilteredMovies(data );
+        
       } catch (error) {
         console.error('Failed to fetch movies:', error);
       } finally {
@@ -66,30 +71,28 @@ const Home: React.FC = () => {
     fetchMovies();
     fetchCities();
   }, []);
-// useEffect(() => {
-  //   const filteredMovies = shows.filter(movie => {
-  //     const langMatch = movie.languages.length !== 0 && movie.languages.some(language => langFilter.includes(language.name));
-  //     const formatMatch = movie.formats.length !== 0 && movie.formats.some(format => formatFilter.includes(format._type));
-  //     const genreMatch = movie.genres.length !== 0 && movie.genres.some(genre => genreFilter.includes(genre._type));
-  //     const cityMatch = movie.city === selectedCity;
+useEffect(() => {
+    const filteredData = cityfilteredMovies.filter(show => {
+      const langMatch = show.movie.languages.length !== 0 && show.movie.languages.some(language => langFilter.includes(language.name));
+      const formatMatch = show.movie.formats.length !== 0 && show.movie.formats.some(format => formatFilter.includes(format._type));
+      const genreMatch = show.movie.genres.length !== 0 && show.movie.genres.some(genre => genreFilter.includes(genre._type));
+      return  (langMatch || formatMatch || genreMatch);
+    });
 
-  //     return (langMatch || formatMatch || genreMatch) && cityMatch;
-  //   });
+    setFilteredMovies(filteredData.length === 0 ? cityfilteredMovies : filteredData);
+  }, [langFilter, formatFilter, genreFilter]);
 
-  //   setFilteredMovies(filteredMovies.length === 0 ? movies : filteredMovies);
-  // }, [langFilter, formatFilter, genreFilter, selectedCity, movies]);
-
-  // const handleSearch = (query: string) => {
-  //   setSearchQuery(query);
-  //   if (query) {
-  //     const filtered = movies.filter(movie =>
-  //       movie.name.toLowerCase().includes(query.toLowerCase()) && movie.city === selectedCity
-  //     );
-  //     setFilteredMovies(filtered);
-  //   } else {
-  //     setFilteredMovies(movies.filter(movie => movie.city === selectedCity));
-  //   }
-  //  };
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query) {
+      const filtered = movies.filter(movie =>
+        movie.name.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredMovies(filtered);
+    } else {
+      setFilteredMovies(shows);
+    }
+   };
 if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
