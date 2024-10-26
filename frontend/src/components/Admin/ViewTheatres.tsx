@@ -41,7 +41,7 @@ interface Theatre {
   id: number;
   name: string;
   address: string;
-  city: City; // Assuming city has an id and name
+  city: City;
 }
 
 const ViewTheatres: React.FC = () => {
@@ -92,18 +92,16 @@ const ViewTheatres: React.FC = () => {
   }, [selectedCity,theatres,selectedTheatre]);
 
 
-  // Handle theatre deletion
+ 
   const handleDelete = async (id: number) => {
     try {
       await axios.delete(`http://localhost:8000/theatre/delete/${id}`);
       setSuccess("Theatre deleted successfully!");
-      // fetchCities(); // Refresh the list
     } catch (err) {
       setError("Failed to delete theatre. Please try again.");
     }
   };
 
-  // Handle editing theatre
   const handleEdit = (theatre: Theatre) => {
     setEditingTheatre(theatre);
     setTname(theatre.name);
@@ -112,25 +110,24 @@ const ViewTheatres: React.FC = () => {
     setDialogOpen(true);
   };
 
-  // Handle dialog submission
-  const handleDialogSubmit = async () => {
+  const handleDialogSubmit = async (id:number) => {
     if (editingTheatre) {
       try {
-        await axios.put(`/api/theatres/${editingTheatre.id}`, {
+  await axios.put(`http://localhost:8000/theatre/edit/${id}`, {
           name: tName,
           address: address,
           city: selectedCityId,
+         
         });
+          
         setSuccess("Theatre updated successfully!");
         setDialogOpen(false);
-        // fetchCities(); // Refresh the list
       } catch (err) {
         setError("Failed to update theatre. Please try again.");
       }
     }
   };
 
-  // Close dialog
   const handleDialogClose = () => {
     setDialogOpen(false);
     setEditingTheatre(null);
@@ -230,7 +227,7 @@ const ViewTheatres: React.FC = () => {
             fullWidth
             value={tName}
             onChange={(e) => setTname(e.target.value)}
-            variant="outlined"
+            margin="normal"
           />
           <TextField
             label="Address"
@@ -239,14 +236,14 @@ const ViewTheatres: React.FC = () => {
             onChange={(e) => setAddress(e.target.value)}
             variant="outlined"
           />
-          <FormControl fullWidth variant="outlined" sx={{ marginTop: 2 }}>
+          <FormControl fullWidth margin="normal">
           <InputLabel>Select City</InputLabel>
                 <Select
                   value={selectedCity}
                   onChange={(e) => {
                     setSelectedCity(e.target.value);
-                    // setSelectedTheatre("");
-                  }}>
+                  }}
+                  label="Select City">
               <MenuItem value="">
                     <em>None</em>
                   </MenuItem>
@@ -263,7 +260,7 @@ const ViewTheatres: React.FC = () => {
           <Button onClick={handleDialogClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleDialogSubmit} color="primary">
+          <Button onClick={() => handleDialogSubmit(editingTheatre.id)}>
             Update
           </Button>
         </DialogActions>
