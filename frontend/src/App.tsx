@@ -17,6 +17,8 @@ import SelectSeat from './components/SelectSeat';  // Import SelectSeat for seat
 import ViewTheatres from './components/Admin/ViewTheatres';
 import AddScreens from './components/Admin/AddScreens';
 import AddShows from './components/Admin/AddShows';
+import AddSeats from './components/Admin/AddSeats';
+// import AddShowTimings from './components/Admin/AddShowTimings';   
 // import ViewBookings from './components/Admin/ViewBookings';
 
 
