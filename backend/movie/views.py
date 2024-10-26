@@ -26,6 +26,33 @@ def get_movie(request: Request, id: int) -> Response:
     except:
         return Response("No movie of this name exists", status=status.HTTP_404_NOT_FOUND)
 
+def save_data(data_list: list[Language | Genre | Format], data_obj: Language | Genre | Format, movie: Movie):
+
+        obj: MovieLanguage | MovieGenre | MovieFormat = None
+        in_data: list[MovieLanguage | MovieGenre | MovieFormat] = []
+
+        for data in data_list:
+            data, created = data_obj.objects.get_or_create(**data)
+            if type(data) == Language:
+                obj = MovieLanguage
+                data = {"movie": movie, "language": data}
+                # if obj.objects.filter(**data).exists():
+                #     continue
+            elif type(data) == Genre:
+                obj = MovieGenre
+                data = {"movie": movie, "genre": data}
+                # if obj.objects.filter(**data).exists():
+                #     continue
+            elif type(data) == Format:
+                obj = MovieFormat
+                data = {"movie": movie, "format": data}
+            if obj.objects.filter(**data).exists():
+                continue
+            in_data.append(obj(**data))
+
+        if in_data:
+            obj.objects.bulk_create(in_data)
+
 @api_view(["POST"])
 def post_movie(request: Request) -> Response:
 
@@ -36,34 +63,15 @@ def post_movie(request: Request) -> Response:
     request.data["release_date"] = release_date
     movie = MovieSerializer(data=request.data)
 
-    def save_data(data_list: list[Language | Genre | Format], data_obj: Language | Genre | Format):
-
-        obj: MovieLanguage | MovieGenre | MovieFormat = None
-        in_data: list[MovieLanguage | MovieGenre | MovieFormat] = []
-
-        for data in data_list:
-            data, created = data_obj.objects.get_or_create(**data)
-            if type(data) == Language:
-                obj = MovieLanguage
-                in_data.append(obj(**{"movie": movie, "language": data}))
-            if type(data) == Genre:
-                obj = MovieGenre
-                in_data.append(obj(**{"movie": movie, "genre": data}))
-            if type(data) == Format:
-                obj = MovieFormat
-                in_data.append(obj(**{"movie": movie, "_format": data}))
-
-        obj.objects.bulk_create(in_data)
-
     if movie.is_valid():
         movie = movie.save()
         languages = request.data["languages"]
         formats = request.data["formats"]
         genres = request.data["genres"]
 
-        save_data(languages, Language)
-        save_data(genres, Genre)
-        save_data(formats, Format)
+        save_data(languages, Language, movie)
+        save_data(genres, Genre, movie)
+        save_data(formats, Format, movie)
 
         return Response("Movie added successfully", status=status.HTTP_200_OK)
     return Response("Failed to enter movie details", status=status.HTTP_400_BAD_REQUEST)
@@ -79,8 +87,24 @@ def delete_movie(request: Request, id: int) -> Response:
 
 
 @api_view(["PATCH"])
-def update_movie(request: Request) -> Response:
-    pass
+def update_movie(request: Request, id: int) -> Response:
+    try:
+        languages = request.data.pop("languages")
+        genres = request.data.pop("genres")
+        formats = request.data.pop("formats")
+        cast = request.data.pop("cast")
+        print(request.data)
+        movie = Movie.objects.filter(id=id).update(**request.data)
+        movie = Movie.objects.get(id=id)
+
+        save_data(languages, Language, movie)
+        save_data(genres, Genre, movie)
+        save_data(formats, Format, movie)
+
+        return Response("Movie details updated succesfully!", status=status.HTTP_200_OK)
+    except:
+        return Response("Could not update movie details.", status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(["GET"])
 def get_languages(request: Request):
