@@ -4,9 +4,11 @@ import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
   const SignInSignUp = () => {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);
-  const [signUpData, setSignUpData] = useState({ name: "", email: "", phone:"", password: "" , cpassword:"",isAdmin:""});
+  const [signUpData, setSignUpData] = useState({ name: "", email: "", phone:"", password: "" , cpassword:"", isAdmin:""});
   const [signInData, setSignInData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState('');
+  const [success, setSuccess] = useState(''); 
+
   const navigate = useNavigate()
   const handleSignUpClick = () => {
     setIsRightPanelActive(true);
@@ -68,6 +70,7 @@ import { Link, useNavigate } from "react-router-dom";
     e.preventDefault();
     if (validateSignIn(e)) {
       setSignInData(e.target.value)
+      
       console.log("Sign In Data:", signInData);
     }
   };
@@ -80,17 +83,16 @@ import { Link, useNavigate } from "react-router-dom";
     }).then(result => {
       console.log("Result", result.data);
       console.log("Result", result.status);
-      
-
       const { isAdmin } = result.data; 
       console.log(isAdmin) 
-     
-  
+      alert("Login successful!"); 
+
       if (isAdmin) {
         navigate('/admindashboard');
       } else {
         navigate('/home');
       }
+     
     })
     .catch(error=>{
       alert(error.response.data)
@@ -113,6 +115,8 @@ import { Link, useNavigate } from "react-router-dom";
       isAdmin: signUpData.isAdmin
     }).then(result=>{
       console.log(result)
+      alert("Registration successful!"); 
+      setErrors('');
     })
     .catch(error=>{
       console.log(error)
@@ -122,6 +126,7 @@ import { Link, useNavigate } from "react-router-dom";
 
   return (
     <div className={`container ${isRightPanelActive ? "right-panel-active" : ""}`}>
+      {success&& <div className="success-message">{success}</div>}
       <div className="sign-up-container">
         <form onSubmit={handleSignUpSubmit}>
           <h1>New User</h1>
