@@ -3,25 +3,48 @@ import axios from "axios";
 import { Link as RouterLink } from "react-router-dom";
 import {
   Container, Typography, Card, CardContent, Breadcrumbs,
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Link
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Link,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  TextField
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Language from "../../core/models/Languages";
+import Genre from "../../core/models/Genre";
+import Format from "../../core/models/Format";
 
 interface Movie {
-  id: number;
-  name: string;
-  desc: string;
-  duration: number;
-  rating: number;
-  release_date: string;
   theatreName: string;
   cityName: string;
+  id: number;
+  name: string;
+  poster_url: string;
+  desc: string;
+  rating: number;
+  release_date: string;
+  duration: number;
+  languages: Language[];
+  genres: Genre[];
+  cast: string;
+  formats: Format[];
 }
 
 const ManageMovie = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [description, setDescription] = useState('');
+  const [editingMovie, setEditingMovie] = useState<Movie | null>(null);
+  const [posterURL, setPosterURL] = useState('');
+  const [formats, setFormats] = useState<string[]>([]);
+  const [genres, setGenres] = useState<string[]>([]);
+  const [languages, setLanguages] = useState<string[]>([]);
 
   useEffect(() => {
     fetchMovies();
@@ -37,30 +60,58 @@ const ManageMovie = () => {
     }
   };
 
-const handleDelete = async (id: number) => {
-    console.log("Deleting movie with id:", id); 
-    if (!id) {
-      alert("Invalid movie ID.");
-      return;
+  const handleDelete = async (id: number) => {
+    try {
+      await axios.delete(`http://localhost:8000/movie/delete/${id}`);
+      setSuccess("Theatre deleted successfully!");
+    } catch (err) {
+      setError("Failed to delete theatre. Please try again.");
     }
-  
-    if (window.confirm("Do you really want to delete this movie?")) {
+  };
+
+  const handleEdit = (movie: Movie) => {
+    setEditingMovie(movie);
+    setPosterURL(movie.poster_url);
+    setDescription(movie.desc);
+    setLanguages(movie.languages.map(language=>language.name)); 
+    setFormats(movie.formats.map(format=>format._type));
+    setGenres(movie.genres.map(genre=>genre._type));
+    setDialogOpen(true);
+  };
+
+  const handleDialogSubmit = async (id:number) => {
+    console.log(formats);
+    
+    if (editingMovie) {
       try {
-        await axios.delete(`http://localhost:8000/movies/delete/${id}`);
-        alert("Movie deleted successfully");
-        fetchMovies(); 
-      } catch (error) {
-        console.error("Error deleting movie:", error);
+  await axios.patch(`http://localhost:8000/movies/edit/${id}`, {
+          poster_url: posterURL,
+          desc: description,
+          formats: formats.map(format=>format._type),
+          languages:languages.map(language=>language.name),
+          genres:genres.map(genre=>genre._type)
+         
+        });
+        
+          
+        setSuccess("Movie updated successfully!");
+        setDialogOpen(false);
+      } catch (err) {
+        setError("Failed to update Movie. Please try again.");
       }
     }
   };
-  
 
-
-
-  const handleEdit = (id: number) => {
-    window.location.href = `/edit-movie/${id}`;
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+    setEditingMovie(null);
+    setPosterURL('');
+    setDescription('');
+    setLanguages([]); 
+    setFormats([]);
+    setGenres([]);
   };
+
 
   return (
     <Container maxWidth="lg" sx={{ height: '100vh', overflow: 'scroll', padding: 2 ,
@@ -108,10 +159,10 @@ const handleDelete = async (id: number) => {
                     {/* <TableCell>{movie.theatreName}</TableCell>
                     <TableCell>{movie.cityName}</TableCell> */}
                     <TableCell>
-                      <IconButton onClick={() => handleEdit(movie.id)} color="primary">
+                      <IconButton onClick={() => handleEdit(movie)}>
                         <EditIcon />
                       </IconButton>
-                      <IconButton onClick={() => handleDelete(movie.id)} color="secondary">
+                      <IconButton onClick={() => handleDelete(movie.id)}>
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>
@@ -123,6 +174,68 @@ const handleDelete = async (id: number) => {
           {error && <Typography color="error" align="center">{error}</Typography>}
         </CardContent>
       </Card>
+
+  <Dialog open={dialogOpen} onClose={handleDialogClose} maxWidth="sm" fullWidth>
+        <DialogTitle>Edit Movie</DialogTitle>
+        <DialogContent dividers>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                label="Poster URL"
+                fullWidth
+                value={posterURL}
+                onChange={(e) => setPosterURL(e.target.value)}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Description"
+                fullWidth
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Languages"
+                fullWidth
+                value={languages}
+                onChange={(e) => setLanguages(e.target.value)}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Format"
+                fullWidth
+                value={formats}
+                onChange={(e) => setFormats(e.target.value)}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Genre"
+                fullWidth
+                value={genres}
+                onChange={(e) => setGenres(e.target.value)}
+                variant="outlined"
+              />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={()=>handleDialogSubmit(editingMovie.id)}>
+            Update
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </Container>
   );
 };
