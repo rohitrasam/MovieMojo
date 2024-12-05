@@ -24,9 +24,9 @@ const MovieDetail: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  // Function to handle the book ticket action
-  const handleBookTicket = () => {
-    navigate(`/movie/${id}/select-seat`, { state: { movieName: movie?.name } });
+  // Function to handle the Select Seat action
+  const handleSelectSeat = () => {
+    navigate(`/movie/${movie.id}/select-seat`); // Navigate to the seat selection page
   };
 
   const formattedReleaseDate = new Date(movie.release_date).toLocaleDateString('en-US', {
@@ -83,9 +83,9 @@ const MovieDetail: React.FC = () => {
           Formats: {movie.formats.map((format) => format._type).join(', ')}
         </Typography>
 
-        {/* Book Ticket Button */}
-        <Button variant="contained" color="primary" onClick={handleBookTicket}>
-          Book Ticket
+        {/* Select Seat Button */}
+        <Button variant="contained" color="primary"  sx={{ marginTop: '20px' }}>
+          Select Seat
         </Button>
       </Paper>
     </Box>

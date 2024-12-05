@@ -31,6 +31,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       </Button>
     </Box>
   );
-};
+};     
 
 export default SearchBar;
