@@ -85,7 +85,7 @@ const AddMovie = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{ height: '100vh', overflow: 'scroll', padding: 2 ,
+    <Container maxWidth="md" sx={{ height: '100vh', overflow: 'scrol', padding: 2 ,
       '&::-webkit-scrollbar': {
       display: 'none',
     }

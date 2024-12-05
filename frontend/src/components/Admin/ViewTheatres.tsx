@@ -57,7 +57,8 @@ const ViewTheatres: React.FC = () => {
   const [tName, setTname] = useState('');
   const [address, setAddress] = useState('');
   const[filteredTheatres,setfilteredTheatres]=useState<Theatre[]>([]);
-  const [selectedCityId, setSelectedCityId] = useState<number | null>(null);
+  const [updatedCityName, setUpdatedCityName] = useState<string| null>(null);
+
 
   useEffect(() => {
       const fetchCities = async () => {
@@ -106,17 +107,17 @@ const ViewTheatres: React.FC = () => {
     setEditingTheatre(theatre);
     setTname(theatre.name);
     setAddress(theatre.address);
-    setSelectedCityId(theatre.city.id); 
+    setUpdatedCityName(theatre.city.name); 
     setDialogOpen(true);
   };
 
   const handleDialogSubmit = async (id:number) => {
     if (editingTheatre) {
       try {
-  await axios.put(`http://localhost:8000/theatre/edit/${id}`, {
+  await axios.patch(`http://localhost:8000/theatre/edit/${id}`, {
           name: tName,
           address: address,
-          city: selectedCityId,
+          city: updatedCityName,
          
         });
           
@@ -133,12 +134,16 @@ const ViewTheatres: React.FC = () => {
     setEditingTheatre(null);
     setTname('');
     setAddress('');
-    setSelectedCityId(null);
+    setUpdatedCityName(null);
   };
 
  
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="lg" sx={{ height: '100vh', overflow: 'scroll', padding: 2 ,
+      '&::-webkit-scrollbar': {
+      display: 'none',
+    }
+  }}>
       <Breadcrumbs aria-label="breadcrumb" sx={{ marginBottom: 3 }}>
         <Link component={RouterLink} to="/admindashboard">Dashboard</Link>
         <Typography color="textPrimary">Manage Theatres</Typography>
@@ -239,9 +244,9 @@ const ViewTheatres: React.FC = () => {
           <FormControl fullWidth margin="normal">
           <InputLabel>Select City</InputLabel>
                 <Select
-                  value={selectedCity}
+                  value={updatedCityName}
                   onChange={(e) => {
-                    setSelectedCity(e.target.value);
+                    setUpdatedCityName(e.target.value);
                   }}
                   label="Select City">
               <MenuItem value="">
