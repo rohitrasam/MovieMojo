@@ -35,8 +35,24 @@ def get_screens(request: Request):
         return Response("Failed to fetch screens.", status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["PATCH"])
-def update_screen(request: Request, id: int):
-    pass
+def update_screens(request):
+    data=request.data
+    name=data.get('name')
+    if name:
+        Screen.objects.filter(id=id).update(name=name)
+        return Response({"message": "Screen name updated successfully."}, status=200)
+    return Response({"error": "Invalid data."}, status=400)
+
+@api_view(["DELETE"])
+def delete_screen(request: Request, id: int) -> Response:
+    try:
+        screen = Screen.objects.get(id=id)
+        screen.delete()
+        return Response("Screen deleted successfully", status=status.HTTP_200_OK)
+    except Movie.DoesNotExist:
+        return Response("Screen not found", status=status.HTTP_404_NOT_FOUND)
+
+
 
 @api_view(["GET"])
 def get_seats(request: Request):

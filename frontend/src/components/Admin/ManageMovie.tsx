@@ -63,9 +63,9 @@ const ManageMovie = () => {
   const handleDelete = async (id: number) => {
     try {
       await axios.delete(`http://localhost:8000/movie/delete/${id}`);
-      setSuccess("Theatre deleted successfully!");
+      setSuccess("Movie deleted successfully!");
     } catch (err) {
-      setError("Failed to delete theatre. Please try again.");
+      setError("Failed to delete Movie. Please try again.");
     }
   };
 
