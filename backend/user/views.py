@@ -5,9 +5,6 @@ from models.models import AppUser
 from .serializers import AppUserSerializer
 from rest_framework import status
 from django.contrib.auth import authenticate
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import permission_classes
-
 
 @api_view(['POST'])
 def user_signup(request: Request) -> Response:
@@ -42,8 +39,7 @@ def user_login(request: Request) -> Response:
         # response.set_cookie(key="details", value=user.data, httponly=True)
         return Response(data=user.data, status=status.HTTP_200_OK)  # TODO: return JWT token
     except:
-        return Response("User not found", status=status.HTTP_404_NOT_FOUND)
-        
+        return Response("User not found", status=status.HTTP_404_NOT_FOUND)        
     
 @api_view(['PATCH'])
 def reset_password(request: Request) -> Response:

@@ -35,13 +35,14 @@ def get_screens(request: Request):
         return Response("Failed to fetch screens.", status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["PATCH"])
-def update_screens(request):
-    data=request.data
-    name=data.get('name')
-    if name:
-        Screen.objects.filter(id=id).update(name=name)
-        return Response({"message": "Screen name updated successfully."}, status=200)
-    return Response({"error": "Invalid data."}, status=400)
+def update_screens(request: Request, id: int) -> Response:
+    try:
+        name = request.data["name"]
+        if name:
+            Screen.objects.filter(id=id).update(name=request.data['name'])
+            return Response("Screen name updated successfully.", status=status.HTTP_200_OK)
+    except:
+        return Response("Could not update screen.", status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["DELETE"])
 def delete_screen(request: Request, id: int) -> Response:
