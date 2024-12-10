@@ -38,8 +38,9 @@ def get_screens(request: Request):
 def update_screens(request: Request, id: int) -> Response:
     try:
         name = request.data["name"]
+        print(request.data)
         if name:
-            Screen.objects.filter(id=id).update(name=request.data['name'])
+            print(Screen.objects.filter(id=id).update(name=request.data['name']))
             return Response("Screen name updated successfully.", status=status.HTTP_200_OK)
     except:
         return Response("Could not update screen.", status=status.HTTP_400_BAD_REQUEST)
@@ -54,7 +55,6 @@ def delete_screen(request: Request, id: int) -> Response:
         return Response("Screen not found", status=status.HTTP_404_NOT_FOUND)
 
 
-
 @api_view(["GET"])
 def get_seats(request: Request):
     screen = Screen.objects.prefetch_related('seat_screen')
@@ -62,35 +62,16 @@ def get_seats(request: Request):
 
 @api_view(['PATCH'])
 def update_seats(request):
-    data = request.data
-    seat_numbers = data.get('seat_numbers', [])
-    seat_type = data.get('seat_type')
-
-    if seat_type and seat_numbers:
-        Seat.objects.filter(seat_num__in=seat_numbers).update(_type=seat_type)
-        return Response({"message": "Seat types updated successfully."}, status=200)
-    return Response({"error": "Invalid data."}, status=400)
-
-@api_view(['POST'])
-def assign_seat_type(request):
-    seat_assignments_data = request.data  # This will be a list of dictionaries
-    if isinstance(seat_assignments_data, list):  # Check if it's a list
-        serializer = SeatAssignmentSerializer(data=seat_assignments_data, many=True)  # Pass many=True
-        if serializer.is_valid():
-            serializer.save()  # Save all assignments
-            return Response({"message": "Seat types assigned successfully!"}, status=201)
-        return Response(serializer.errors, status=400)
-    return Response({"error": "Expected a list of seat assignments."}, status=400)  # Handle invalid input
-
-
-@api_view(['GET'])
-def get_seat_assignments(request):
     try:
-        assignments = SeatAssignment.objects.all()
-        serializer = SeatAssignmentSerializer(assignments, many=True)
-        return Response(serializer.data)
-    except Exception as e:
-        return Response({"error": str(e)}, status=500)
+        data = request.data
+        theatre_data = data['theatre']
+        city = City.objects.get(name=data['city'])
+        theatre = Theatre.objects.get(name=theatre_data['name'], address=theatre_data['address'], city=city)
+        screen = Screen.objects.get(name=data['name'], theatre=theatre)
+        Seat.objects.filter(screen=screen).update(**data["seats"])
+        return Response("Seat types updated successfully.", status=status.HTTP_200_OK)
+    except:
+        return Response("Couldn't update seats.", status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["GET"])
 def get_total_screens(request: Request):
