@@ -27,6 +27,10 @@ def add_show(request: Request):
 def update_show(request: Request, id: int):
     pass
 
+@api_view(["DELETE"])
+def delete_show(request: Request, id: int):
+    pass
+
 @api_view(["GET"])
 def get_admin_shows(request: Request):
     try:
