@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link as RouterLink, useLocation } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { Box, MenuItem, Select, Typography, CircularProgress, Alert, Breadcrumbs, Card, 
         CardContent, Container, FormControl, Grid, InputLabel, Link, Button } from '@mui/material';
 import { useParams } from 'react-router-dom';
@@ -37,15 +37,13 @@ const ManageSeats: React.FC = () => {
   const [theatres, setTheatres] = useState<Theatre[]>([]);
   const [screens, setScreens] = useState<Screen[]>([]);
   const [selectedCity, setSelectedCity] = useState<string>('');
-  const [selectedTheatre, setSelectedTheatre] = useState<string>('');
-  const [selectedScreen, setSelectedScreen] = useState();
+  const [selectedTheatre, setSelectedTheatre] = useState<Theatre>(null);
+  const [selectedScreen, setSelectedScreen] = useState<Screen>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const[filteredTheatres,setfilteredTheatres]=useState<Theatre[]>([]);
   const[filteredScreens,setfilteredScreens]=useState<Screen[]>([]);
   const [assignedType, setAssignedType] = useState(null);
-  const { id } = useParams<{ id: string }>(); 
-  const location = useLocation();
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [rows, setRows] = useState<number>(0);
   const [cols, setColumns] = useState<number>(0);
@@ -76,7 +74,9 @@ useEffect(() => {
     const fetchTheatre = async () => {
       try {
         setfilteredTheatres(theatres.filter((theatre) => theatre.city.name === selectedCity))
-        setfilteredScreens(screens.filter((screen)=>(screen.theatre.name==selectedTheatre && screen.theatre.city.name==selectedCity)))
+          setfilteredScreens(screens.filter((screen)=>(screen.theatre.name==selectedTheatre.name && 
+                                                        screen.theatre.city.name==selectedCity && 
+                                                        screen.theatre.address === selectedTheatre.address)))
       } catch (error) {
         console.error("Error fetching movies:", error);
         setError("Failed to fetch movies. Please try again later.");
@@ -126,7 +126,7 @@ const handleSeatClick = (seatNum) => {
   );
 };
 
-const handleAssignType = () => {
+const handleAssignType = async () => {
   if (assignedType) {
     setSeats((prevSeats) =>
       prevSeats.map((seat) =>
@@ -135,7 +135,22 @@ const handleAssignType = () => {
           : seat
       )
     );
-    setSelectedSeats([]); 
+
+    try {
+      for (const seatNum of selectedSeats) {
+        await axios.patch('http://localhost:8000/screen/update_seats', {
+          city: selectedCity,
+          theatre: selectedTheatre.name,
+          name: selectedScreen.name,
+          seat_num: seatNum,
+          _type: assignedType,
+        });
+      }
+
+      console.log('Seats updated successfully');
+    } catch (error) {
+      console.error('Error updating seats');
+    }
   }
 };
 
@@ -199,8 +214,8 @@ const handleAssignType = () => {
                   </MenuItem>
                   {filteredTheatres.length > 0 &&
                     filteredTheatres.map((theatre) => (
-                      <MenuItem key={theatre.id} value={theatre.name}>
-                        {theatre.name}
+                      <MenuItem key={theatre.id} value={theatre}>
+                        {theatre.name},{theatre.address}
                       </MenuItem>
                     ))}
                 </Select>

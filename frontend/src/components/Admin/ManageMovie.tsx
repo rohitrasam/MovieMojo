@@ -141,7 +141,7 @@ const ManageMovie = () => {
                   <TableCell>Sr. No</TableCell>
                   <TableCell>Movie Name</TableCell>
                   <TableCell>Description</TableCell>
-                  <TableCell>Duration</TableCell>
+                  <TableCell>Duration (minutes)</TableCell>
                   <TableCell>Rating</TableCell>
                   <TableCell>Release Date</TableCell>
                   <TableCell>Actions</TableCell>

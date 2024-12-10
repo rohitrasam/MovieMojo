@@ -26,6 +26,7 @@ interface Show {
       release_date: string;
     };
     screen: {
+      id:number;
       name: string;
       theatre: {
         name: string;
@@ -41,6 +42,7 @@ interface Show {
     id: number;
     name: string;
     city: City;
+    address:string;
   }
   interface City {
     id: number;
@@ -50,7 +52,7 @@ interface Show {
 
 const ManageShow = () => {
   const [selectedCity, setSelectedCity] = useState("");
-  const [selectedTheatre, setSelectedTheatre] = useState("");
+  const [selectedTheatre, setSelectedTheatre] = useState<Theatre>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [editingShow, setEditingShow] = useState<Show | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -63,6 +65,8 @@ const ManageShow = () => {
   const [error, setError] = useState<string | null>(null);
   const [filteredTheatres, setFilteredTheatres] = useState<Theatre[]>([]);
   const [filteredShows, setFilteredShows] = useState<Show[]>([]);
+  const [filteredScreens, setFilteredScreens] = useState<Screen[]>([]);
+  const [screenList, setScreenList] = useState([]); 
 
 useEffect(() => {
     fetchShow();
@@ -98,8 +102,9 @@ useEffect(() => {
     if (selectedCity && selectedTheatre) {
       setFilteredShows(shows.filter(
         (show) =>
-          show.screen.theatre.name === selectedTheatre && 
-          show.screen.theatre.city.name === selectedCity
+          show.screen.theatre.name === selectedTheatre.name && 
+          show.screen.theatre.city.name === selectedCity && 
+          show.screen.theatre.address === selectedTheatre.address
       ));
     }
   }, [selectedCity, selectedTheatre, shows]);
@@ -114,18 +119,25 @@ useEffect(() => {
     }
   };
 
-
-  const handleEdit = (show) => {
+const handleEdit = (show: Show) => {
     setEditingShow(show);
     setSelectedDate(new Date(show.time).toISOString().slice(0, 16));
-    setSelectedScreen(show.screen.name);
     setDialogOpen(true);
+    const screensForTheatre = screenList.filter(
+      (screen) => screen.theatre.name === show.screen.theatre.name &&
+                  screen.theatre.city.name === show.screen.theatre.city.name &&
+                  screen.theatre.address === show.screen.theatre.address
+    );
+  
+    setFilteredScreens(screensForTheatre);
+    setSelectedScreen(show.screen.id);
   };
+  
 
   const handleDialogSubmit = async () => {
     if (editingShow) {
       try {
-        await axios.put(`http://localhost:8000/show/edit/${editingShow.id}`, {
+        await axios.patch(`http://localhost:8000/show/edit/${editingShow.id}`, {
           time: selectedDate,
           screen: selectedScreen,
         });
@@ -138,14 +150,29 @@ useEffect(() => {
     }
   };
 
+  useEffect(() => {
+    fetchShow();
+  }, []);
+ 
+  const fetchScreens = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/screen/get_screens');
+      const screens = await response.json();
+      setScreenList(screens);
+    } catch (error) {
+      console.error('Failed to fetch screens:', error);
+    }
+  };
+  useEffect(() => {
+    fetchScreens();
+  }, []);
+
   const handleDialogClose = () => {
     setDialogOpen(false);
     setEditingShow(null);
     setSelectedDate('');
+    setFilteredScreens([]);
   };
-  useEffect(() => {
-    fetchShow();
-  }, []);
 
   return (
     <Container maxWidth="lg" sx={{ height: '100vh', overflow: 'scroll', padding: 2 ,
@@ -200,8 +227,8 @@ useEffect(() => {
                     <em>None</em>
                   </MenuItem>
                   {filteredTheatres.map((theatre) => (
-                    <MenuItem key={theatre.id} value={theatre.name}>
-                      {theatre.name}
+                    <MenuItem key={theatre.id} value={theatre}>
+                      {theatre.name},{theatre.address}
                     </MenuItem>
                   ))}
                 </Select>
@@ -270,24 +297,26 @@ useEffect(() => {
             fullWidth
             margin="normal"
           />
-          <FormControl fullWidth variant="outlined">
-            <InputLabel>Screen</InputLabel>
-            <Select
-              value={selectedScreen}
-              onChange={(e) => {
-                setSelectedScreen(e.target.value)
-              }}
-              label="Select Screen"
-            >
-              {/* {filteredShows.map((show) =>
-                show.screen.map((screen) => (
-                  <MenuItem key={screen.id} value={screen.name}>
-                    {screen.name}
-                  </MenuItem>
-                ))
-              )} */}
-            </Select>
-          </FormControl>
+         <FormControl fullWidth variant="outlined">
+  <InputLabel>Screen</InputLabel>
+  <Select
+    value={selectedScreen}
+    onChange={(e) => setSelectedScreen(e.target.value)}
+    label="Select Screen"
+    displayEmpty
+    fullWidth
+  >
+    <MenuItem value="" disabled>
+      Select a Screen
+    </MenuItem>
+    {filteredScreens.map((screen) => (
+      <MenuItem key={screen.id} value={screen.id}>
+        {screen.name}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
+
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose} color="primary">Cancel</Button>

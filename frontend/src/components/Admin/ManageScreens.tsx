@@ -26,6 +26,7 @@ interface Theatre {
   id: number;
   name: string;
   city: City;
+  address:string;
 }
 
 interface City {
@@ -35,7 +36,7 @@ interface City {
 
 const ManageScreens = () => {
   const [selectedCity, setSelectedCity] = useState("");
-  const [selectedTheatre, setSelectedTheatre] = useState("");
+  const [selectedTheatre, setSelectedTheatre] = useState<Theatre>(null);
   const [filteredScreens, setFilteredScreens] = useState<Screen[]>([]);
   const [editingScreen, setEditingScreen] = useState<Screen | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -74,7 +75,8 @@ const ManageScreens = () => {
   useEffect(() => {
     if (selectedCity && selectedTheatre) {
       const filtered = screens.filter(
-        (screen) => screen.theatre.name === selectedTheatre && screen.theatre.city.name === selectedCity);
+        (screen) => screen.theatre.name === selectedTheatre.name && screen.theatre.city.name === selectedCity&&
+        screen.theatre.address === selectedTheatre.address);
       setFilteredScreens(filtered);
     } else {
       setFilteredScreens([]);
@@ -94,17 +96,21 @@ const ManageScreens = () => {
   const handleEdit = (screen: Screen) => {
     setEditingScreen(screen);
     setName(screen.name);
+   
+    
     setDialogOpen(true);
   };
 
   const handleDialogSubmit = async () => {
     if (editingScreen) {
       try {
-        await axios.put(`http://localhost:8000/screen/edit/${editingScreen.id}`, {
-          name: editingScreen.name
+        await axios.patch(`http://localhost:8000/screen/edit/${editingScreen.id}`, {
+          name: name
+          
         });
         setSuccess("Screen updated successfully!");
         setDialogOpen(false);
+        console.log(name);
         fetchInitialData(); 
       } catch (err) {
         console.error("Error updating screen:", err);
@@ -170,8 +176,8 @@ const ManageScreens = () => {
                     <em>None</em>
                   </MenuItem>
                   {theatres.filter((theatre) => theatre.city.name === selectedCity).map((theatre) => (
-                    <MenuItem key={theatre.id} value={theatre.name}>
-                      {theatre.name}
+                    <MenuItem key={theatre.id} value={theatre}>
+                      {theatre.name},{theatre.address}
                     </MenuItem>
                   ))}
                 </Select>
