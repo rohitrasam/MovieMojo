@@ -78,14 +78,24 @@ import { Link, useNavigate } from "react-router-dom";
     console.log("Sign In Data:", signInData);
     axios.post("http://localhost:8000/user/login",{
       email : signInData.email ,
-      password:signInData.password
+      password:signInData.password,
 
     }).then(result => {
       console.log("Result", result.data);
       console.log("Result", result.status);
-      const { isAdmin } = result.data; 
+      const { isAdmin ,first_name,last_name,email} = result.data; 
       console.log(isAdmin) 
+      const fullName = `${first_name} ${last_name}`;
+      if (first_name && last_name && email) {
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ fullName, email, isAdmin })
+        );
+      } else {
+        alert("Failed to get user details.");
+      }
       alert("Login successful!"); 
+
 
       if (isAdmin) {
         navigate('/admindashboard');

@@ -18,6 +18,8 @@ import AddScreens from './components/Admin/AddScreens';
 import AddShows from './components/Admin/AddShows';
 import ManageShow from './components/Admin/ManageShow';
 import ManageSeats from './components/Admin/ManageSeats';
+import ManageScreens from './components/Admin/ManageScreens';
+import UserProfile from './components/UserLogin/UserProfile';
 // import ViewBookings from './components/Admin/ViewBookings';
 
 
@@ -30,6 +32,7 @@ const App: React.FC = () => {
               <Route path="/" element={<Login />} />  {/* Login Page */}
               <Route path="/forgotpass" element={<Forgotpass />} />  {/* Forgot Password Page */}
               <Route path="/home" element={<Home />} />  {/* Home Page */}
+              <Route path="/profile" element={<UserProfile />} />  {/* Home Page */}
               <Route path="/movie/:id" element={<MovieDetail />} /> {/* Movie detail route */}
               <Route path="/movie/:id/select-seat" element={<SelectSeat />} /> {/* Seat Selection route */}
               <Route path="/admindashboard" element={<AdminDashboard />} />{/* Admin Dashboard */}
@@ -41,6 +44,7 @@ const App: React.FC = () => {
               <Route path="/login" element={<Login />} /> 
               <Route path="/addscreens" element={<AddScreens/>} /> 
               <Route path="/manageseats" element={<ManageSeats/>} />
+              <Route path="/managescreens" element={<ManageScreens/>} />
               <Route path="/addshow" element={<AddShows/>} /> 
               <Route path="/manageshow" element={<ManageShow/>} /> 
               {/* <Route path="/viewbookings" element={<ViewBookings/>} />              */}
