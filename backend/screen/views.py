@@ -54,7 +54,6 @@ def delete_screen(request: Request, id: int) -> Response:
     except Movie.DoesNotExist:
         return Response("Screen not found", status=status.HTTP_404_NOT_FOUND)
 
-
 @api_view(["GET"])
 def get_seats(request: Request):
     screen = Screen.objects.prefetch_related('seat_screen')
@@ -68,7 +67,7 @@ def update_seats(request):
         city = City.objects.get(name=data['city'])
         theatre = Theatre.objects.get(name=theatre_data['name'], address=theatre_data['address'], city=city)
         screen = Screen.objects.get(name=data['name'], theatre=theatre)
-        Seat.objects.filter(screen=screen).update(**data["seats"])
+        Seat.objects.filter(screen=screen, seat_num=data['seats']['seat_num']).update(data["seats"]['_type'])
         return Response("Seat types updated successfully.", status=status.HTTP_200_OK)
     except:
         return Response("Couldn't update seats.", status=status.HTTP_400_BAD_REQUEST)

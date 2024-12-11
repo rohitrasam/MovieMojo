@@ -140,10 +140,12 @@ const handleAssignType = async () => {
       for (const seatNum of selectedSeats) {
         await axios.patch('http://localhost:8000/screen/update_seats', {
           city: selectedCity,
-          theatre: selectedTheatre.name,
+          theatre: selectedTheatre,
           name: selectedScreen.name,
-          seat_num: seatNum,
-          _type: assignedType,
+          seats:{
+            seat_num: seatNum,
+            _type: assignedType
+        }
         });
       }
 
