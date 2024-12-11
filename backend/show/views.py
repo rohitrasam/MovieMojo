@@ -50,9 +50,8 @@ def get_home_shows(request: Request):
         return Response("Couldn't fetch shows.", status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["GET"])
-def get_booking_shows(request: Request):
+def get_booking_shows(request: Request, name: str):
 
-    name=request.data['name']
     movie = Movie.objects.get(name=name)
     shows = Show.objects.filter(movie=movie)
     shows = BookingShowSerializer(shows, many=True)
