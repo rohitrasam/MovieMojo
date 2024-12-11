@@ -1,4 +1,4 @@
-from .serializers import AdminShowSerializer, HomeShowSerializer
+from .serializers import AdminShowSerializer, HomeShowSerializer, BookingShowSerializer
 from models.models import *
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -48,6 +48,15 @@ def get_home_shows(request: Request):
         return Response(shows.data, status=status.HTTP_200_OK)
     except:
         return Response("Couldn't fetch shows.", status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(["GET"])
+def get_booking_shows(request: Request):
+
+    name=request.data['name']
+    movie = Movie.objects.get(name=name)
+    shows = Show.objects.filter(movie=movie)
+    shows = BookingShowSerializer(shows, many=True)
+    return Response(shows.data, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
 def get_total_shows(request: Request):
