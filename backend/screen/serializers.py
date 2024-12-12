@@ -27,13 +27,4 @@ class ScreenSeatSerializer(serializers.ModelSerializer):
 
     def get_seats(self, obj: Screen):
         return SeatSerializer(obj.seat_screen.all(), many=True).data
-
-
-class TheatreScreenSerializer(serializers.ModelSerializer):
-
-    screen_theatre = ScreenSerializer(many=True)
-    city = CitySerializer()
-    class Meta:
-        model = Theatre
-        fields = ['id', 'name', 'address', 'city', 'screen_theatre']
     
