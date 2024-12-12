@@ -67,7 +67,7 @@ def update_seats(request):
         city = City.objects.get(name=data['city'])
         theatre = Theatre.objects.get(name=theatre_data['name'], address=theatre_data['address'], city=city)
         screen = Screen.objects.get(name=data['name'], theatre=theatre)
-        Seat.objects.filter(screen=screen, seat_num=data['seats']['seat_num']).update(data["seats"]['_type'])
+        Seat.objects.filter(screen=screen, seat_num=data['seats']['seat_num']).update(_type=data["seats"]['_type'],price=data["seats"]['price'])
         return Response("Seat types updated successfully.", status=status.HTTP_200_OK)
     except:
         return Response("Couldn't update seats.", status=status.HTTP_400_BAD_REQUEST)
