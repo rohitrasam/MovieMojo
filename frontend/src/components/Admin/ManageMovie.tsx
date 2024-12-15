@@ -87,9 +87,9 @@ const ManageMovie = () => {
   await axios.patch(`http://localhost:8000/movies/edit/${id}`, {
           poster_url: posterURL,
           desc: description,
-          formats: formats,
-          languages:languages,
-          genres:genres
+          formats: formats.map(format => ({_type: format})),
+          languages: languages.map(language => ({name: language})),
+          genres:genres.map(genre => ({_type: genre}))
          
         });
         
