@@ -45,7 +45,7 @@ def save_data(data_list: list[Language | Genre | Format], data_obj: Language | G
                 #     continue
             elif type(data) == Format:
                 obj = MovieFormat
-                data = {"movie": movie, "format": data}
+                data = {"movie": movie, "_format": data}
             if obj.objects.filter(**data).exists():
                 continue
             in_data.append(obj(**data))
@@ -92,11 +92,11 @@ def update_movie(request: Request, id: int) -> Response:
         languages = request.data.pop("languages")
         genres = request.data.pop("genres")
         formats = request.data.pop("formats")
-        cast = request.data.pop("cast")
+        # cast = request.data.pop("cast")
         print(request.data)
         movie = Movie.objects.filter(id=id).update(**request.data)
         movie = Movie.objects.get(id=id)
-
+        print(languages)
         save_data(languages, Language, movie)
         save_data(genres, Genre, movie)
         save_data(formats, Format, movie)
