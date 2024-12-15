@@ -103,8 +103,8 @@ useEffect(()=>{
                 </Grid>
                 <Grid item xs={12}>
                     <Breadcrumbs aria-label="breadcrumb">
-                        <Link variant="h6" component={RouterLink} to="/admindashboard">Dashboard</Link>
-                        <Typography variant="h6" color="textPrimary">Add Screen </Typography>
+                        <Link component={RouterLink} to="/admindashboard">Dashboard</Link>
+                        <Typography  color="textPrimary">Add Screen </Typography>
                     </Breadcrumbs>
                 </Grid>
                 <Grid item xs={12}>

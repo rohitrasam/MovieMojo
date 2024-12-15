@@ -20,6 +20,8 @@ interface Screen {
   id: number;
   name: string;
   theatre: Theatre;
+  rows:number;
+  cols:number;
 }
 
 interface Theatre {
@@ -62,7 +64,7 @@ const ManageScreens = () => {
       setCities(citiesResponse.data);
       setTheatres(theatresResponse.data);
       setScreens(screensResponse.data);
-      console.log(screensResponse.data);
+      console.log("screen:" ,screensResponse.data);
       
     } catch (err) {
       console.error("Error fetching data:", err);
@@ -192,6 +194,7 @@ const ManageScreens = () => {
                   <TableRow>
                     <TableCell>Sr. No</TableCell>
                     <TableCell>Screen Name</TableCell>
+                    <TableCell> Total Seats</TableCell>
                     <TableCell>Actions</TableCell>
                   </TableRow>
                 </TableHead>
@@ -200,6 +203,7 @@ const ManageScreens = () => {
                     <TableRow key={screen.id}>
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>{screen.name}</TableCell>
+                      <TableCell>{screen.rows * screen.cols}</TableCell>
                       <TableCell>
                         <IconButton onClick={() => handleEdit(screen)}>
                           <EditIcon />

@@ -202,26 +202,6 @@ const AddMovie = () => {
                   required
                 />
               </Grid>
-              {/* <Grid item xs={12} sm={6}>
-                <TextField
-                  label="Theatre Name"
-                  name="theatreName"
-                  fullWidth
-                  value={movie.theatreName}
-                  onChange={handleChange}
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label="City Name"
-                  name="cityName"
-                  fullWidth
-                  value={movie.cityName}
-                  onChange={handleChange}
-                  required
-                />
-              </Grid> */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   label="Poster URL"

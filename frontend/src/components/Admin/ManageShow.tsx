@@ -112,41 +112,10 @@ useEffect(() => {
   const handleDelete = async (id: number) => {
     try {
       await axios.delete(`http://localhost:8000/show/delete/${id}`);
-      setSuccess("Theatre deleted successfully!");
+      setSuccess("show deleted successfully!");
       fetchShow(); 
     } catch (err) {
-      setError("Failed to delete theatre. Please try again.");
-    }
-  };
-
-const handleEdit = (show: Show) => {
-    setEditingShow(show);
-    setSelectedDate(new Date(show.time).toISOString().slice(0, 16));
-    setDialogOpen(true);
-    const screensForTheatre = screenList.filter(
-      (screen) => screen.theatre.name === show.screen.theatre.name &&
-                  screen.theatre.city.name === show.screen.theatre.city.name &&
-                  screen.theatre.address === show.screen.theatre.address
-    );
-  
-    setFilteredScreens(screensForTheatre);
-    setSelectedScreen(show.screen.id);
-  };
-  
-
-  const handleDialogSubmit = async () => {
-    if (editingShow) {
-      try {
-        await axios.patch(`http://localhost:8000/show/edit/${editingShow.id}`, {
-          time: selectedDate,
-          screen: selectedScreen,
-        });
-        setSuccess("Show updated successfully!");
-        setDialogOpen(false);
-        fetchShow();
-      } catch (err) {
-        setError("Failed to update show. Please try again.");
-      }
+      setError("Failed to delete show. Please try again.");
     }
   };
 
@@ -167,12 +136,6 @@ const handleEdit = (show: Show) => {
     fetchScreens();
   }, []);
 
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-    setEditingShow(null);
-    setSelectedDate('');
-    setFilteredScreens([]);
-  };
 
   return (
     <Container maxWidth="lg" sx={{ height: '100vh', overflow: 'scroll', padding: 2 ,
@@ -182,13 +145,13 @@ const handleEdit = (show: Show) => {
   }}>
       <Breadcrumbs aria-label="breadcrumb" sx={{ marginBottom: 3 }}>
         <Link component={RouterLink} to="/admindashboard">Dashboard</Link>
-        <Typography color="textPrimary">Manage and View Shows</Typography>
+        <Typography color="textPrimary">View Shows</Typography>
       </Breadcrumbs>
 
       <Card>
         <CardContent>
           <Typography variant="h4" align="center" gutterBottom>
-            Manage and View Shows
+            View Shows
           </Typography>
 
           {loading && <CircularProgress />}
@@ -249,7 +212,6 @@ const handleEdit = (show: Show) => {
                     <TableCell>Movie Name</TableCell>
                     <TableCell>Screen</TableCell>
                     <TableCell>Date-Time</TableCell>
-                    <TableCell>Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -266,16 +228,7 @@ const handleEdit = (show: Show) => {
                             hour: "2-digit",
                             minute: "2-digit",
                             hour12: true,
-                            timeZone: "UTC"
                         })}
-                        </TableCell>
-                        <TableCell>
-                          <IconButton onClick={() => handleEdit(show)}>
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton onClick={() => handleDelete(show.id)}>
-                            <DeleteIcon />
-                          </IconButton>
                         </TableCell>
                     </TableRow>
                   ))}
@@ -285,44 +238,6 @@ const handleEdit = (show: Show) => {
           )}
         </CardContent>
       </Card>
-
-      <Dialog open={dialogOpen} onClose={handleDialogClose}>
-        <DialogTitle>Edit Show</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Date and Time"
-            type="datetime-local"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
-         <FormControl fullWidth variant="outlined">
-  <InputLabel>Screen</InputLabel>
-  <Select
-    value={selectedScreen}
-    onChange={(e) => setSelectedScreen(e.target.value)}
-    label="Select Screen"
-    displayEmpty
-    fullWidth
-  >
-    <MenuItem value="" disabled>
-      Select a Screen
-    </MenuItem>
-    {filteredScreens.map((screen) => (
-      <MenuItem key={screen.id} value={screen.id}>
-        {screen.name}
-      </MenuItem>
-    ))}
-  </Select>
-</FormControl>
-
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">Cancel</Button>
-          <Button onClick={handleDialogSubmit} color="primary">Update </Button>
-        </DialogActions>
-      </Dialog>
     </Container>
   );
 };

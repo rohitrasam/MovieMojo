@@ -1,6 +1,5 @@
 import React from 'react';
 import { ThemeProvider } from '@mui/material/styles';
-// import CssBaseline from '@mui/material/CssBaseline';
 import { lightTheme } from './theme';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from "./components/UserLogin/Login";
@@ -20,6 +19,7 @@ import ManageShow from './components/Admin/ManageShow';
 import ManageSeats from './components/Admin/ManageSeats';
 import ManageScreens from './components/Admin/ManageScreens';
 import UserProfile from './components/UserLogin/UserProfile';
+import ViewBookings from './components/Admin/ViewBookings';
 // import ViewBookings from './components/Admin/ViewBookings';
 
 
@@ -47,7 +47,7 @@ const App: React.FC = () => {
               <Route path="/managescreens" element={<ManageScreens/>} />
               <Route path="/addshow" element={<AddShows/>} /> 
               <Route path="/manageshow" element={<ManageShow/>} /> 
-              {/* <Route path="/viewbookings" element={<ViewBookings/>} />              */}
+              <Route path="/viewbookings" element={<ViewBookings/>} />             
               
               
             </Routes>
