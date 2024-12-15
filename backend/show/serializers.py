@@ -2,17 +2,21 @@ from rest_framework import serializers
 from theatre.serializers import TheatreSerializer
 from movie.serializers import MovieSerializer
 from screen.serializers import ScreenSerializer
-from models.models import Show
+from models.models import Show, Booking
 
 class AdminShowSerializer(serializers.ModelSerializer):
 
     movie = MovieSerializer()
     screen = ScreenSerializer()
+    bookings = serializers.SerializerMethodField()
 
     class Meta:
 
         model = Show
-        fields = '__all__'
+        fields = ['screen', 'movie', 'time', 'bookings']
+
+    def get_bookings(self, obj: Show):
+        return len(Booking.objects.filter(show=obj))    
     
 
 class HomeShowSerializer(serializers.ModelSerializer):

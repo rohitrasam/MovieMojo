@@ -61,3 +61,17 @@ def get_booking_shows(request: Request, name: str):
 def get_total_shows(request: Request):
     total_shows = len(Show.objects.all())
     return Response({"total_shows": total_shows}, status=status.HTTP_200_OK)
+
+@api_view(["POST"])
+def add_booking(request: Request):
+    pass
+
+@api_view(["GET"])
+def get_user_booking(request: Request, user_id: int):
+    pass
+
+@api_view(["GET"])
+def get_total_bookings(request: Request):
+    
+    data = Show.objects.all()
+    shows = AdminShowSerializer(data, many=True)
