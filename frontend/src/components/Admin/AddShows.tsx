@@ -118,6 +118,11 @@ const AddShows = () => {
         
       });
       alert("Show Added Successfully");
+      setSelectedCity("");
+      setSelectedMovie("");
+      setSelectedScreen("");
+      setSelectedDateTime("");
+      setSelectedTheatre("")
     } catch (error) {
       alert("Could not add show")
       console.error("Error adding show", error);

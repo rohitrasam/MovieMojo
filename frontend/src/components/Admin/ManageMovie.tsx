@@ -62,10 +62,11 @@ const ManageMovie = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      await axios.delete(`http://localhost:8000/movie/delete/${id}`);
-      setSuccess("Movie deleted successfully!");
+      await axios.delete(`http://localhost:8000/movies/delete/${id}`);
+      alert("Movie deleted successfully!");
+      fetchMovies();
     } catch (err) {
-      setError("Failed to delete Movie. Please try again.");
+      alert("Failed to delete Movie. Please try again.");
     }
   };
 
@@ -80,7 +81,7 @@ const ManageMovie = () => {
   };
 
   const handleDialogSubmit = async (id:number) => {
-    console.log(formats);
+    console.log(id);
     
     if (editingMovie) {
       try {
@@ -92,12 +93,11 @@ const ManageMovie = () => {
           genres:genres.map(genre => ({_type: genre}))
          
         });
-        
-          
-        setSuccess("Movie updated successfully!");
+        alert("Movie updated successfully!");
         setDialogOpen(false);
       } catch (err) {
-        setError("Failed to update Movie. Please try again.");
+        alert("Failed to update Movie. Please try again.");
+        setDialogOpen(false);
       }
     }
   };
@@ -160,8 +160,6 @@ const ManageMovie = () => {
                     <TableCell>{movie.duration}</TableCell>
                     <TableCell>{movie.rating}</TableCell>
                     <TableCell>{new Date(movie.release_date).toLocaleDateString()}</TableCell>
-                    {/* <TableCell>{movie.theatreName}</TableCell>
-                    <TableCell>{movie.cityName}</TableCell> */}
                     <TableCell>
                       <IconButton onClick={() => handleEdit(movie)}>
                         <EditIcon />

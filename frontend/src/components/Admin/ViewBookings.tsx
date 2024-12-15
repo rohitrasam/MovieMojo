@@ -1,20 +1,44 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import {
-  Container, Typography, Card, CardContent, Breadcrumbs, Table, TableBody, TableCell,
-  TableContainer, TableHead, TableRow, Paper, Link, CircularProgress, FormControl,
-  InputLabel, MenuItem, Select, Alert, Grid,
-  IconButton,
-  Dialog,
-  Button,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField
-} from "@mui/material";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Link as RouterLink } from "react-router-dom";
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import { Box, MenuItem, Select, Typography, CircularProgress, Alert, Breadcrumbs, Card, 
+        CardContent, Container, FormControl, Grid, InputLabel, Link, Button, 
+        TableContainer,
+        IconButton,
+        Paper,
+        Table,
+        TableBody,
+        TableCell,
+        TableHead,
+        TableRow,
+        Dialog,
+        DialogActions,
+        DialogContent,
+        DialogTitle,
+        TextField} from '@mui/material';
+import { useParams } from 'react-router-dom';
+import EventSeatIcon from '@mui/icons-material/EventSeat';
+
+interface City {
+  id: number;
+  name: string;
+}
+
+interface Theatre {
+  id: number;
+  name: string;
+  address: string;
+  city: City;
+}
+
+interface Screen {
+  id: number;
+  name: string;
+  rows: number;
+  cols: number;
+  theatre: Theatre;
+  seats: { seat_num: string, _type: string }[]; 
+}
 
 interface Show {
     id: number;
@@ -28,6 +52,8 @@ interface Show {
     screen: {
       id:number;
       name: string;
+      rows:number;
+      cols:number;
       theatre: {
         name: string;
         city: {
@@ -38,68 +64,59 @@ interface Show {
     time: string;
   }
   
-  interface Theatre {
-    id: number;
-    name: string;
-    city: City;
-    address:string;
-  }
-  interface City {
-    id: number;
-    name: string;
-  }
-  
 
-const ManageShow = () => {
-  const [selectedCity, setSelectedCity] = useState("");
-  const [selectedTheatre, setSelectedTheatre] = useState<Theatre>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [editingShow, setEditingShow] = useState<Show | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedScreen, setSelectedScreen] = useState("");
+const ViewBookings: React.FC = () => {
   const [cities, setCities] = useState<City[]>([]);
-  const [shows, setShows] = useState<Show[]>([]);
   const [theatres, setTheatres] = useState<Theatre[]>([]);
+  const [screens, setScreens] = useState<Screen[]>([]);
+  const [selectedCity, setSelectedCity] = useState<string>('');
+  const [selectedTheatre, setSelectedTheatre] = useState<Theatre | null>(null);
+  const [selectedScreen, setSelectedScreen] = useState<Screen | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filteredTheatres, setFilteredTheatres] = useState<Theatre[]>([]);
-  const [filteredShows, setFilteredShows] = useState<Show[]>([]);
   const [filteredScreens, setFilteredScreens] = useState<Screen[]>([]);
-  const [screenList, setScreenList] = useState([]); 
+  const [shows, setShows] = useState<Show[]>([]);
+  const [filteredShows, setFilteredShows] = useState<Show[]>([]);
 
-useEffect(() => {
-    fetchShow();
-  }, []);
-    const fetchShow = async () => {
+  useEffect(() => {
+    const fetchCities = async () => {
       try {
-        const [citiesResponse, theatresResponse, showsResponse] = await Promise.all([
-          axios.get("http://localhost:8000/theatre/get_cities"),
-          axios.get("http://localhost:8000/theatre/get_theatres"),
-          axios.get("http://localhost:8000/show/get_admin_shows")
-        ]);
-        
+        const citiesResponse = await axios.get('http://localhost:8000/theatre/get_cities');
         setCities(citiesResponse.data);
+        const theatresResponse = await axios.get('http://localhost:8000/theatre/get_theatres');
         setTheatres(theatresResponse.data);
+        const screenResponse = await axios.get('http://localhost:8000/screen/get_screens');
+        setScreens(screenResponse.data);
+        const showsResponse=await  axios.get("http://localhost:8000/show/get_admin_shows");
         setShows(showsResponse.data);
       } catch (err) {
-        console.error("Error fetching data:", err);
-        setError("Failed to fetch data. Please try again later.");
+        setError("Failed to fetch data. Please try again.");
       } finally {
         setLoading(false);
       }
     };
+    fetchCities();
+  }, []);
 
   useEffect(() => {
     if (selectedCity) {
       setFilteredTheatres(theatres.filter((theatre) => theatre.city.name === selectedCity));
-      setFilteredShows([]);
-      setSelectedTheatre(""); 
     }
   }, [selectedCity, theatres]);
 
   useEffect(() => {
     if (selectedCity && selectedTheatre) {
+      setFilteredScreens(screens.filter(
+        (screen) =>
+          screen.theatre.name === selectedTheatre.name &&
+          screen.theatre.city.name === selectedCity
+      ));
+    }
+  }, [selectedCity, selectedTheatre, screens]);
+
+  useEffect(() => {
+    if (selectedCity && selectedTheatre && selectedScreen) {
       setFilteredShows(shows.filter(
         (show) =>
           show.screen.theatre.name === selectedTheatre.name && 
@@ -107,35 +124,7 @@ useEffect(() => {
           show.screen.theatre.address === selectedTheatre.address
       ));
     }
-  }, [selectedCity, selectedTheatre, shows]);
-
-  const handleDelete = async (id: number) => {
-    try {
-      await axios.delete(`http://localhost:8000/show/delete/${id}`);
-      setSuccess("show deleted successfully!");
-      fetchShow(); 
-    } catch (err) {
-      setError("Failed to delete show. Please try again.");
-    }
-  };
-
-  useEffect(() => {
-    fetchShow();
-  }, []);
- 
-  const fetchScreens = async () => {
-    try {
-      const response = await fetch('http://localhost:8000/screen/get_screens');
-      const screens = await response.json();
-      setScreenList(screens);
-    } catch (error) {
-      console.error('Failed to fetch screens:', error);
-    }
-  };
-  useEffect(() => {
-    fetchScreens();
-  }, []);
-
+  }, [selectedCity, selectedTheatre,selectedScreen, shows]);
 
   return (
     <Container maxWidth="lg" sx={{ height: '100vh', overflow: 'scroll', padding: 2 ,
@@ -145,30 +134,36 @@ useEffect(() => {
   }}>
       <Breadcrumbs aria-label="breadcrumb" sx={{ marginBottom: 3 }}>
         <Link component={RouterLink} to="/admindashboard">Dashboard</Link>
-        <Typography color="textPrimary">View Shows</Typography>
+        <Typography color="textPrimary">View Bookings</Typography>
       </Breadcrumbs>
 
-      <Card>
+      <Card sx={{ height: '100vh', overflow: 'scroll', padding: 4 ,
+      '&::-webkit-scrollbar': {
+      display: 'none',
+    }
+  }}>
         <CardContent>
           <Typography variant="h4" align="center" gutterBottom>
-            View Shows
+            View Bookings
           </Typography>
 
           {loading && <CircularProgress />}
           {error && <Alert severity="error">{error}</Alert>}
 
-          <Grid container spacing={3} style={{ marginBottom: "20px" }}>
-            <Grid item xs={12} sm={6}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={4}>
               <FormControl fullWidth variant="outlined">
                 <InputLabel>Select City</InputLabel>
                 <Select
                   value={selectedCity}
-                  onChange={(e) => setSelectedCity(e.target.value)}
+                  onChange={(e) => {
+                    setSelectedCity(e.target.value);
+                    setSelectedTheatre(null);
+                    setSelectedScreen(null);
+                  }}
                   label="Select City"
                 >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
+                  <MenuItem value="">Select a city</MenuItem>
                   {cities.map((city) => (
                     <MenuItem key={city.id} value={city.name}>
                       {city.name}
@@ -178,40 +173,58 @@ useEffect(() => {
               </FormControl>
             </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth variant="outlined" disabled={!selectedCity}>
+            <Grid item xs={12} sm={4}>
+              <FormControl fullWidth disabled={!selectedCity}>
                 <InputLabel>Select Theatre</InputLabel>
                 <Select
                   value={selectedTheatre}
-                  onChange={(e) => setSelectedTheatre(e.target.value)}
+                  onChange={(e) => {
+                    setSelectedTheatre(e.target.value);
+                    setSelectedScreen(null);
+                  }}
                   label="Select Theatre"
                 >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
                   {filteredTheatres.map((theatre) => (
                     <MenuItem key={theatre.id} value={theatre}>
-                      {theatre.name},{theatre.address}
+                      {theatre.name}, {theatre.address}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={4}>
+              <FormControl fullWidth disabled={!selectedTheatre}>
+                <InputLabel>Select Screen</InputLabel>
+                <Select
+                  value={selectedScreen || ""}
+                  onChange={(e) => setSelectedScreen(e.target.value)}
+                  label="Select Screen"
+                >
+                  {filteredScreens.map((screen) => (
+                    <MenuItem key={screen.id} value={screen}>
+                      {screen.name}
                     </MenuItem>
                   ))}
                 </Select>
               </FormControl>
             </Grid>
           </Grid>
-
-          {filteredShows.length === 0 && !loading && selectedTheatre && (
+          {filteredShows.length === 0 && !loading && selectedScreen && (
             <Typography variant="body1">No shows available for the selected filters.</Typography>
           )}
 
-          {filteredShows.length > 0 && (
+            {filteredShows.length > 0 && (
             <TableContainer component={Paper}>
               <Table>
                 <TableHead>
                   <TableRow>
                     <TableCell>Sr. No</TableCell>
                     <TableCell>Movie Name</TableCell>
-                    <TableCell>Screen</TableCell>
                     <TableCell>Date-Time</TableCell>
+                    <TableCell>Total Seats</TableCell>
+                    <TableCell>Booked Seats</TableCell>
+
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -219,7 +232,6 @@ useEffect(() => {
                     <TableRow key={show.id}>
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>{show.movie.name}</TableCell>
-                      <TableCell>{show.screen.name}</TableCell>
                       <TableCell>
                         {new Date(show.time).toLocaleString("en-US", {
                             year: "numeric",
@@ -228,8 +240,10 @@ useEffect(() => {
                             hour: "2-digit",
                             minute: "2-digit",
                             hour12: true,
+                            timeZone: "UTC"
                         })}
                         </TableCell>
+                        <TableCell>{show.screen.rows * show.screen.cols}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -242,4 +256,4 @@ useEffect(() => {
   );
 };
 
-export default ManageShow;
+export default ViewBookings;

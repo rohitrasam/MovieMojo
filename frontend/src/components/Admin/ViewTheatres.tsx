@@ -59,20 +59,19 @@ const ViewTheatres: React.FC = () => {
   const[filteredTheatres,setfilteredTheatres]=useState<Theatre[]>([]);
   const [updatedCityName, setUpdatedCityName] = useState<string| null>(null);
 
-
-  useEffect(() => {
-      const fetchCities = async () => {
-        try {
-          const citiesResponse = await axios.get('http://localhost:8000/theatre/get_cities');
-          setCities(citiesResponse.data);
-          const theatresResponse = await axios.get('http://localhost:8000/theatre/get_theatres');
-          setTheatres(theatresResponse.data);
-        } catch (err) {
-          setError("Failed to fetch data. Please try again.");
-        }finally {
-          setLoading(false);
-        }
-      };
+  const fetchCities = async () => {
+    try {
+      const citiesResponse = await axios.get('http://localhost:8000/theatre/get_cities');
+      setCities(citiesResponse.data);
+      const theatresResponse = await axios.get('http://localhost:8000/theatre/get_theatres');
+      setTheatres(theatresResponse.data);
+    } catch (err) {
+      setError("Failed to fetch data. Please try again.");
+    }finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {     
       fetchCities();
   },[]);
 
@@ -98,6 +97,7 @@ const ViewTheatres: React.FC = () => {
     try {
       await axios.delete(`http://localhost:8000/theatre/delete/${id}`);
       setSuccess("Theatre deleted successfully!");
+      fetchCities();
     } catch (err) {
       setError("Failed to delete theatre. Please try again.");
     }
@@ -123,6 +123,7 @@ const ViewTheatres: React.FC = () => {
           
         setSuccess("Theatre updated successfully!");
         setDialogOpen(false);
+        fetchCities();
       } catch (err) {
         setError("Failed to update theatre. Please try again.");
       }
