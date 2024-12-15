@@ -87,9 +87,9 @@ const ManageMovie = () => {
   await axios.patch(`http://localhost:8000/movies/edit/${id}`, {
           poster_url: posterURL,
           desc: description,
-          formats: formats.map(format=>format._type),
-          languages:languages.map(language=>language.name),
-          genres:genres.map(genre=>genre._type)
+          formats: formats,
+          languages:languages,
+          genres:genres
          
         });
         
@@ -101,6 +101,10 @@ const ManageMovie = () => {
       }
     }
   };
+
+  const dataSplit = (setFunc, data: string) => {
+    setFunc(data.split(","))
+  }
 
   const handleDialogClose = () => {
     setDialogOpen(false);
@@ -202,7 +206,7 @@ const ManageMovie = () => {
                 label="Languages"
                 fullWidth
                 value={languages}
-                onChange={(e) => setLanguages(e.target.value)}
+                onChange={(e) => dataSplit(setLanguages, e.target.value)}
                 variant="outlined"
               />
             </Grid>
@@ -211,7 +215,7 @@ const ManageMovie = () => {
                 label="Format"
                 fullWidth
                 value={formats}
-                onChange={(e) => setFormats(e.target.value)}
+                onChange={(e) => dataSplit(setFormats, e.target.value)}
                 variant="outlined"
               />
             </Grid>
@@ -220,7 +224,7 @@ const ManageMovie = () => {
                 label="Genre"
                 fullWidth
                 value={genres}
-                onChange={(e) => setGenres(e.target.value)}
+                onChange={(e) => dataSplit(setGenres, e.target.value)}
                 variant="outlined"
               />
             </Grid>
