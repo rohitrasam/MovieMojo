@@ -14,7 +14,7 @@ class ScreenSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Screen
-        fields = ['id','name', 'theatre']
+        fields = ['id','name', 'rows', 'cols', 'theatre']
 
 class ScreenSeatSerializer(serializers.ModelSerializer):
 
