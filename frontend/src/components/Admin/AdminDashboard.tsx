@@ -11,6 +11,7 @@ const AdminDashboard = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalScreens, setTotalScreens] = useState(0);
   const [totalShows, setTotalShows] = useState(0);
+  const [totalBookings,setTotalBookings] =useState(0);
 
   useEffect(() => { 
     const fetchTotalMovies = async () => {
@@ -72,7 +73,21 @@ const AdminDashboard = () => {
       }
     };
     fetchTotalShows();
+
+    const fetchTotalBookings = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/show/get_total_booking');
+        setTotalBookings(response.data.total_bookings);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching total Bookings:", error);
+      }
+    };
+    fetchTotalBookings();
+
   }, []);
+
+  
 
 
 
@@ -139,7 +154,7 @@ const AdminDashboard = () => {
                     <Typography variant="h5" component="div" className="report-title">
                       Total Bookings
                     </Typography>
-                    {/* <Typography variant="h4">{totalBookings}</Typography> */}
+                    <Typography variant="h4">{totalBookings}</Typography>
                   </CardContent>
                 </Card>
               </Grid>

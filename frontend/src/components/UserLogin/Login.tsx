@@ -83,13 +83,13 @@ import { Link, useNavigate } from "react-router-dom";
     }).then(result => {
       console.log("Result", result.data);
       console.log("Result", result.status);
-      const { isAdmin ,first_name,last_name,email} = result.data; 
+      const { isAdmin ,first_name,last_name,email,id} = result.data; 
       console.log(isAdmin) 
       const fullName = `${first_name} ${last_name}`;
       if (first_name && last_name && email) {
         localStorage.setItem(
           "user",
-          JSON.stringify({ fullName, email, isAdmin })
+          JSON.stringify({ id,fullName, email, isAdmin })
         );
       }
       alert("Login successful!"); 
