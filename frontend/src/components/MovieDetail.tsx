@@ -25,8 +25,8 @@ const MovieDetail: React.FC = () => {
   }
 
   // Function to handle the Select Seat action
-  const handleSelectSeat = () => {
-    navigate(`/movie/${movie.id}/select-seat`); // Navigate to the seat selection page
+  const handleSelectionFormat = () => {
+    navigate(`/movie/${movie.name}/selection-format`); // Navigate to the seat selection page
   };
 
   const formattedReleaseDate = new Date(movie.release_date).toLocaleDateString('en-US', {
@@ -74,7 +74,7 @@ const MovieDetail: React.FC = () => {
           Release Date: {formattedReleaseDate}
         </Typography>
         <Typography variant="h6" gutterBottom sx={{ fontSize: '1.2rem', fontWeight: '500' }}>
-          Duration: {movie.duration}
+          Duration: {movie.duration} mins
         </Typography>
         <Typography variant="h6" gutterBottom sx={{ fontSize: '1.2rem', fontWeight: '500' }}>
           Languages: {movie.languages.map((lang) => lang.name).join(', ')}
@@ -84,8 +84,8 @@ const MovieDetail: React.FC = () => {
         </Typography>
 
         {/* Select Seat Button */}
-        <Button variant="contained" color="primary"  sx={{ marginTop: '20px' }}>
-          Select Seat
+        <Button variant="contained" color="primary" onClick={handleSelectionFormat}  sx={{ marginTop: '20px' }}>
+          Select Theater
         </Button>
       </Paper>
     </Box>
