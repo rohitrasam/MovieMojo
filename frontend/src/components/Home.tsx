@@ -33,6 +33,7 @@ const Home: React.FC = () => {
     setAnchorEl(null);
     if (city) {
       setSelectedCity(city);
+      localStorage.setItem("city", city);
     }
   };
 
@@ -171,7 +172,11 @@ const Home: React.FC = () => {
         >
           Latest Releases
         </Typography>
-        {filteredMovies.length === 0 && searchQuery ? (
+        {selectedCity === 'City' ? (
+          <Typography variant="h6" sx={{ padding: '10px' }}>
+            Please select a city first.
+          </Typography>
+        ) : filteredMovies.length === 0 && searchQuery ? (
           <Typography variant="h6" sx={{ padding: '10px' }}>
             No results found for "{searchQuery}".
           </Typography>
