@@ -208,7 +208,6 @@ class Booking(models.Model):
     """ Not working as expected. Make changes. """
 
     show = models.ForeignKey(Show, related_name='booking_show', on_delete=models.CASCADE)     
-    date = models.DateField()
     user = models.ForeignKey(AppUser, related_name='booking_user', on_delete=models.CASCADE)
     seat = models.ForeignKey(Seat, related_name='booking_seat', on_delete=models.CASCADE)
     

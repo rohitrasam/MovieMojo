@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from theatre.serializers import TheatreSerializer
 from movie.serializers import MovieSerializer
-from screen.serializers import ScreenSerializer
+from screen.serializers import ScreenSerializer, SeatSerializer
 from models.models import Seat, Show, Booking
 
 class AdminShowSerializer(serializers.ModelSerializer):
@@ -37,22 +37,19 @@ class HomeShowSerializer(serializers.ModelSerializer):
 class UserBookingSerializer(serializers.ModelSerializer):
 
     time = serializers.SerializerMethodField()
-    seats = serializers.SerializerMethodField()
-    # user = serializers.SerializerMethodField()
-    # show = serializers.SerializerMethodField()
+    seat = SeatSerializer()
+    user = serializers.SerializerMethodField()
+    show = serializers.SerializerMethodField()
+
     class Meta:
         model = Booking
         fields = '__all__'
     
     def get_time(self, obj: Booking):
-        print(obj)
         return obj.show.time
-    
-    def get_seats(self, obj: Booking):
-        return [booking.seat.seat_num for booking in Booking.objects.filter(user=obj.user)]
 
-    # def get_user(self, obj: Booking):
-    #     pass
+    def get_user(self, obj: Booking):
+        return f"{obj.user.first_name} {obj.user.last_name}"
 
-    # def get_show(self, obj: Booking):
-    #     pass
+    def get_show(self, obj: Booking):
+        return obj.show.movie.name
