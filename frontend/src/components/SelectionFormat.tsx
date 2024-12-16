@@ -79,11 +79,12 @@ const SelectionFormat: React.FC = () => {
   }, {} as Record<string, { id: string; time: string }[]>);
 
   // Handle click on timing button to navigate to Seat Selection
-  const handleTimingClick = (showId: string) => {
+  const handleTimingClick = (screenId: string,showtime) => {
     // console.log(showId);
-    console.log(showId);
-
-    navigate(`/seat-selection/${showId}`); // Navigate to Seat Selection page with Show ID
+    console.log(screenId);
+    localStorage.setItem("showtime",showtime)
+    localStorage.setItem("movie",movie)
+    navigate(`/seat-selection/${screenId}`); // Navigate to Seat Selection page with Show ID
   };
 
   if (loading) {
@@ -178,7 +179,7 @@ const SelectionFormat: React.FC = () => {
                       padding: "10px 20px",
                       textTransform: "none",
                     }}
-                    onClick={() => handleTimingClick(timing.id)} // Navigate to Seat Selection
+                    onClick={() => handleTimingClick(timing.id,timing.time)} // Navigate to Seat Selection
                   >
                     {new Date(timing.time).toLocaleString("en-US", {
                       dateStyle: "short",

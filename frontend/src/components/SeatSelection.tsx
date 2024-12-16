@@ -27,7 +27,7 @@ const seatTypeColors: Record<string, string> = {
 };
 
 const SeatSelection: React.FC = () => {
-  const { showId } = useParams<{ showId: string }>();
+  const { screenId } = useParams<{ screenId: string }>();
   const navigate = useNavigate();
   const [seats, setSeats] = useState<Seat[]>([]);
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
@@ -40,9 +40,10 @@ const SeatSelection: React.FC = () => {
   useEffect(() => {
     const fetchSeats = async () => {
       try {
-        console.log(showId);
+        console.log(screenId);
 
-        const fetchedSeats = await getSeatsByScreen(showId!);
+        const fetchedSeats = await getSeatsByScreen(screenId!);
+      
         setSeats(fetchedSeats[0]);
         setColumns(fetchedSeats[1]);
       } catch (err) {
@@ -53,7 +54,7 @@ const SeatSelection: React.FC = () => {
     };
 
     fetchSeats();
-  }, [showId]);
+  }, [screenId]);
 
   const handleSeatClick = (seatNum: string) => {
     setSelectedSeats((prev) =>
@@ -61,51 +62,22 @@ const SeatSelection: React.FC = () => {
         ? prev.filter((seat) => seat !== seatNum)
         : [...prev, seatNum]
     );
+    console.log(selectedSeats);
+    
   };
-
-  const handleAssignType = async () => {
-    if (!assignedType) return;
-
-    const seatPrice =
-      assignedType === "Premium"
-        ? 750
-        : assignedType === "Gold"
-        ? 450
-        : assignedType === "Silver"
-        ? 350
-        : 200;
-
-    const updatedSeats = seats.map((seat) =>
-      selectedSeats.includes(seat.seat_num)
-        ? { ...seat, _type: assignedType, price: seatPrice }
-        : seat
-    );
-
-    try {
-      await updateSeats(showId!, selectedSeats, assignedType, seatPrice);
-      setSeats(updatedSeats);
-      setSuccessMessage("Seats updated successfully!");
-    } catch (err) {
-      setError("Failed to update seats. Please try again.");
-    } finally {
-      setSelectedSeats([]);
-    }
-  };
-
-  const handleBookSeats = async () => {
+ const handleBookSeats = async () => {
+const email=JSON.parse(localStorage.getItem("user")).email
+  
     try {
       const response = axios.post("http://localhost:8000/show/add_booking", {
-          movie: "", 
-          // time: , 
-          email: localStorage.getItem("user").email, 
+          movie: localStorage.getItem("movie"), 
+          time:localStorage.getItem("showtime"), 
+          email:email,  
           seats: selectedSeats, 
         });
-
-      if (!response.ok) {
-        throw new Error("Failed to book seats");
-      }
-
-      const data = await response.json();
+        console.log(response);
+        
+     
       alert("Ticket booked")
       navigate(`/home`);
     } catch (err) {
