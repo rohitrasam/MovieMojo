@@ -1,7 +1,9 @@
 
 import React, { useState, useEffect } from "react";
-import { Button, TextField, Typography, List, ListItem, ListItemText, Divider, Box, Alert, CircularProgress, Grid } from "@mui/material";
+import { Button, TextField, Typography, List, ListItem, ListItemText, Divider, Box, Alert, CircularProgress, 
+  Grid, Link, Container } from "@mui/material";
 import axios from 'axios';
+import { Navigate, useNavigate } from "react-router-dom";
 
 const UserProfile: React.FC = () => {
   const [username, setUsername] = useState(""); 
@@ -13,7 +15,8 @@ const UserProfile: React.FC = () => {
   const [isPasswordChanging, setIsPasswordChanging] = useState(false); 
   const [showBookings, setShowBookings] = useState(false); 
   const [bookings, setBookings] = useState<any[]>([]);
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const fetchData = async () => {
     try {
@@ -26,8 +29,10 @@ const UserProfile: React.FC = () => {
         throw new Error("User not logged in or missing details.");
       }
 
-        const bookingsResponse = await axios.get(`http://localhost:8000/show/get_user_booking/${id}`); 
+        const bookingsResponse = await axios.get(`http://localhost:8000/show/get_user_booking/${user.id}`); 
         setBookings(bookingsResponse.data); 
+        console.log(bookingsResponse.data);
+        
         setLoading(false); 
 
     } catch (error) {
@@ -37,10 +42,8 @@ const UserProfile: React.FC = () => {
     }
   };  fetchData();
 },[]);
-
-        
  
-  const handleChangePassword = async () => {
+const handleChangePassword = async () => {
     if (!password) {
       setErrorMessage("Please enter a new password.");
       return;
@@ -67,7 +70,16 @@ const UserProfile: React.FC = () => {
     setPassword(""); 
   };
 
+  const handleDashboard = () => {
+    navigate("/home"); 
+  };
+
   return (
+    <Container maxWidth="lg" sx={{ height: '100vh', overflow: 'scroll', padding: 2 ,
+      '&::-webkit-scrollbar': {
+      display: 'none',
+    }
+  }}>
     <Box
       sx={{
         padding: "20px",
@@ -87,13 +99,12 @@ const UserProfile: React.FC = () => {
         <CircularProgress sx={{ marginBottom: "20px" }} />
       ) : (
         <>
-          <Box component="form" sx={{ marginBottom: "20px" }}>
+          <Box component="form" sx={{ marginBottom: "20px"}}>
             <Grid container spacing={1}>
-            <Typography variant="h4" gutterBottom sx={{ marginBottom: "10px", marginTop:"10px"}}>
-            User Profile
-           </Typography>
-
               <Grid item xs={12}>
+              <Typography variant="h4" gutterBottom sx={{marginBottom: "10px", marginTop:"10px"}}>
+                User Profile
+              </Typography>
                 <TextField
                   fullWidth
                   label="Username"
@@ -170,9 +181,13 @@ const UserProfile: React.FC = () => {
                   {bookings.map((bookings, index) => (
                     <React.Fragment key={index}>
                       <ListItem>
-                        <ListItemText
-                          primary={`Movie: ${bookings.movieName}`}
-                          secondary={`Date: ${bookings.date}, Seats: ${bookings.seats.join(", ")}`}
+                        <ListItemText sx={{ marginRight: "9px" }}
+                          primary={`Movie: ${bookings.show}`}
+                          secondary={`Date:${bookings.time} `}   
+                        />
+                        <ListItemText sx={{ marginTop: "5px" }}
+                          primary={`Seat:${bookings.seat.seat_num}`}
+                          secondary={`${bookings.screen}`}
                         />
                       </ListItem>
                       <Divider />
@@ -186,11 +201,21 @@ const UserProfile: React.FC = () => {
               )}
             </Box>
           )}
+              <Box sx={{ display: "flex", gap: "10px", marginTop: "20px", marginBottom:"40px" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleDashboard}
+                sx={{ flex: 1 }}
+              >
+                Dashboard
+              </Button>
+            </Box>
           </Box>
-         
-        </>
+          </>
       )}
-    </Box>
+          </Box>
+          </Container>
   );
 };
 
