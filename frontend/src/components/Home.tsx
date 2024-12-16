@@ -125,7 +125,7 @@ const Home: React.FC = () => {
       <div>
         <SideBar setLangFilter={setLangFilter} setFormatFilter={setFormatFilter} setGenreFilter={setGenreFilter} />
       </div>
-      <div style={{ overflowY: 'scroll', height: '100vh', marginLeft: '10px', paddingLeft: '20px', width: '100%' }}>
+      <div style={{ scrollbarWidth: 'none', overflowY: 'scroll', height: '100vh', marginLeft: '10px', paddingLeft: '20px', width: '100%' }}>
         <Box display="flex" alignItems="center">
           <Button
             variant="contained"
