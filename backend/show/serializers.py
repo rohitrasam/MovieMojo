@@ -40,6 +40,7 @@ class UserBookingSerializer(serializers.ModelSerializer):
     seat = SeatSerializer()
     user = serializers.SerializerMethodField()
     show = serializers.SerializerMethodField()
+    screen = serializers.SerializerMethodField()
 
     class Meta:
         model = Booking
@@ -53,3 +54,6 @@ class UserBookingSerializer(serializers.ModelSerializer):
 
     def get_show(self, obj: Booking):
         return obj.show.movie.name
+
+    def get_screen(self, obj: Booking):
+        return obj.show.screen.name
