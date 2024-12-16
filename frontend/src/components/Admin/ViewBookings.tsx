@@ -110,7 +110,8 @@ const ViewBookings: React.FC = () => {
       setFilteredScreens(screens.filter(
         (screen) =>
           screen.theatre.name === selectedTheatre.name &&
-          screen.theatre.city.name === selectedCity
+          screen.theatre.city.name === selectedCity &&
+          screen.theatre.address === selectedTheatre.address
       ));
     }
   }, [selectedCity, selectedTheatre, screens]);
@@ -244,6 +245,7 @@ const ViewBookings: React.FC = () => {
                         })}
                         </TableCell>
                         <TableCell>{show.screen.rows * show.screen.cols}</TableCell>
+                        <TableCell>{show.bookings}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

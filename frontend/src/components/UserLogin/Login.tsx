@@ -91,8 +91,6 @@ import { Link, useNavigate } from "react-router-dom";
           "user",
           JSON.stringify({ fullName, email, isAdmin })
         );
-      } else {
-        alert("Failed to get user details.");
       }
       alert("Login successful!"); 
 
