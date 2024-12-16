@@ -18,9 +18,9 @@ const UserProfile: React.FC = () => {
     const fetchData = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("user") || "{}");
-  
       if (user && user.fullName) {
         setUsername(user.fullName);  // Set the user's first_name here
+        setEmail(user.email)
         setLoading(false);
       } else {
         throw new Error("User not logged in or missing details.");
@@ -119,7 +119,7 @@ const UserProfile: React.FC = () => {
                       label="Email"
                       type="email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      // onChange={(e) => setEmail(e.target.value)}
                       sx={{ marginBottom: "10px" }}
                     />
                     <TextField
