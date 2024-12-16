@@ -122,7 +122,8 @@ const ViewBookings: React.FC = () => {
         (show) =>
           show.screen.theatre.name === selectedTheatre.name && 
           show.screen.theatre.city.name === selectedCity && 
-          show.screen.theatre.address === selectedTheatre.address
+          show.screen.theatre.address === selectedTheatre.address &&
+          show.screen.name === selectedScreen.name
       ));
     }
   }, [selectedCity, selectedTheatre,selectedScreen, shows]);
