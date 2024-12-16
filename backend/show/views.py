@@ -71,7 +71,7 @@ def add_booking(request: Request):
         user = AppUser.objects.get(email=data['email'])
         seats = Seat.objects.filter(screen=show.screen.id, seat_num__in=request.data["seats"])
         for seat in seats:
-            booking = Booking.objects.create(show=show, date=show.time.date(), user=user, seat=seat)
+            booking = Booking.objects.create(show=show, user=user, seat=seat)
         return Response("Seats booked successfully!", status=status.HTTP_200_OK)
     except Exception as e:
         return Response("Couldn't book seats. Please try again!", status=status.HTTP_400_BAD_REQUEST)
