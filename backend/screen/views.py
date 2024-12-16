@@ -59,6 +59,15 @@ def get_seats(request: Request):
     screen = Screen.objects.prefetch_related('seat_screen')
     return Response(ScreenSeatSerializer(screen, many=True).data, status=status.HTTP_200_OK)
 
+@api_view(["GET"])
+def get_screen_seats(request: Request, screen_id: int):
+    try:
+        data = Screen.objects.get(id=screen_id)
+        screen = ScreenSeatSerializer(data)
+        return Response(screen.data, status=status.HTTP_200_OK)
+    except:
+        return Response("Screens not found.", status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['PATCH'])
 def update_seats(request):
     try:
