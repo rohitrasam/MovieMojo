@@ -19,20 +19,20 @@ const UserProfile: React.FC = () => {
     try {
       const user = JSON.parse(localStorage.getItem("user") || "{}");
       if (user && user.fullName) {
-        setUsername(user.fullName);  // Set the user's first_name here
+        setUsername(user.fullName);  
         setEmail(user.email)
         setLoading(false);
       } else {
         throw new Error("User not logged in or missing details.");
       }
 
-        const bookingsResponse = await axios.get(""); 
+        const bookingsResponse = await axios.get(`http://localhost:8000/show/get_user_booking/${id}`); 
         setBookings(bookingsResponse.data); 
         setLoading(false); 
 
     } catch (error) {
-      console.error("Error loading user details:", error);
-      setErrorMessage("Failed to load user details.");
+      console.error("Error loading user bookings:", error);
+      setErrorMessage("Failed to load user bookings.");
       setLoading(false);
     }
   };  fetchData();
@@ -167,12 +167,12 @@ const UserProfile: React.FC = () => {
             <Box sx={{ marginBottom: "40px" }}>
               {bookings.length > 0 ? (
                 <List>
-                  {bookings.map((booking, index) => (
+                  {bookings.map((bookings, index) => (
                     <React.Fragment key={index}>
                       <ListItem>
                         <ListItemText
-                          primary={`Movie: ${booking.movieName}`}
-                          secondary={`Date: ${booking.date}, Seats: ${booking.seats.join(", ")}`}
+                          primary={`Movie: ${bookings.movieName}`}
+                          secondary={`Date: ${bookings.date}, Seats: ${bookings.seats.join(", ")}`}
                         />
                       </ListItem>
                       <Divider />

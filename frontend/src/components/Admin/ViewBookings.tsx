@@ -241,7 +241,6 @@ const ViewBookings: React.FC = () => {
                             hour: "2-digit",
                             minute: "2-digit",
                             hour12: true,
-                            timeZone: "UTC"
                         })}
                         </TableCell>
                         <TableCell>{show.screen.rows * show.screen.cols}</TableCell>
