@@ -1,4 +1,4 @@
-from .serializers import AdminShowSerializer, HomeShowSerializer
+from .serializers import AdminShowSerializer, HomeShowSerializer, UserBookingSerializer
 from models.models import *
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -64,11 +64,24 @@ def get_total_shows(request: Request):
 
 @api_view(["POST"])
 def add_booking(request: Request):
-    pass
+    try:
+        data = request.data
+        movie = Movie.objects.get(name=data["movie"])
+        show = Show.objects.get(movie=movie, time=data['time'])
+        user = AppUser.objects.get(email=data['email'])
+        seats = Seat.objects.filter(screen=show.screen.id, seat_num__in=request.data["seats"])
+        for seat in seats:
+            booking = Booking.objects.create(show=show, date=show.time.date(), user=user, seat=seat)
+        return Response("Seats booked successfully!", status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response("Couldn't book seats. Please try again!", status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["GET"])
 def get_user_booking(request: Request, user_id: int):
-    pass
+    user = AppUser.objects.get(id=user_id)
+    bookings_data = user.booking_user.all()
+    bookings = UserBookingSerializer(bookings_data, many=True)
+    return Response(bookings.data, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
 def get_total_bookings(request: Request):
