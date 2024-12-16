@@ -17,7 +17,7 @@ const MovieTemplate: React.FC<MovieTemplateProps> = ({ movie }) => {
   return (
     <Card
       sx={{
-        width: '350px', // Increased card width
+        width: '325px', // Increased card width
         margin: 2,
         display: 'flex',
         flexDirection: 'column',
