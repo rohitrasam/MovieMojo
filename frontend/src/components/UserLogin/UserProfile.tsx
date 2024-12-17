@@ -181,9 +181,9 @@ const handleChangePassword = async () => {
                   {bookings.map((bookings, index) => (
                     <React.Fragment key={index}>
                       <ListItem>
-                        <ListItemText sx={{ marginRight: "9px" }}
+                        <ListItemText sx={{width: "200px", marginRight: "9px" }}
                           primary={`Movie: ${bookings.show}`}
-                          secondary={`Date:${bookings.time} `}   
+                          secondary={`Date: ${bookings.time} `}   
                         />
                         <ListItemText sx={{ marginTop: "5px" }}
                           primary={`Seat:${bookings.seat.seat_num}`}
