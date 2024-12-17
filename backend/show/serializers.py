@@ -47,7 +47,7 @@ class UserBookingSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
     def get_time(self, obj: Booking):
-        return obj.show.time
+        return obj.show.time.strftime("%d-%m-%Y, %I:%M %p")
 
     def get_user(self, obj: Booking):
         return f"{obj.user.first_name} {obj.user.last_name}"
